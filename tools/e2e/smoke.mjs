@@ -6,8 +6,15 @@
  * Usage: npm run build && node tools/e2e/smoke.mjs
  * Requires playwright to be resolvable (it is pre-installed in the dev image).
  */
-import { chromium } from 'playwright'
-import { spawn } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
+import { pathToFileURL } from 'node:url'
+
+// Playwright may be installed locally or globally in the image; try both.
+const playwright = await import('playwright').catch(async () => {
+  const root = execFileSync('npm', ['root', '-g'], { encoding: 'utf8' }).trim()
+  return import(pathToFileURL(`${root}/playwright/index.js`).href)
+})
+const chromium = playwright.chromium ?? playwright.default?.chromium
 import { mkdirSync } from 'node:fs'
 import { setTimeout as sleep } from 'node:timers/promises'
 
