@@ -51,10 +51,14 @@ try {
   page.on('pageerror', (e) => consoleErrors.push(String(e)))
 
   const shot = (name) => page.screenshot({ path: `${OUT}${name}.png`, fullPage: true })
-  const go = async (hash) => {
-    await page.goto(BASE + hash)
+  // The controls are exercised at normal speed; the full battle is then replayed
+  // with ?speed=12 so that it finishes inside the test.
+  const go = async (hash, speed = 1) => {
+    await page.goto(`${BASE}?speed=${speed}${hash}`)
     await page.waitForTimeout(220)
   }
+  const unitPositions = async (p) =>
+    (await p.locator('.unit').evaluateAll((nodes) => nodes.map((n) => n.getAttribute('transform')).join('|')))
 
   console.log('setup screen')
   await go('')
@@ -86,12 +90,49 @@ try {
   await page.locator('.marker.open').first().click()
   await page.waitForTimeout(220)
   check('battle screen reached', page.url().includes('#/battle/'))
-  await shot('04-battle')
-  await page.getByRole('button', { name: 'ניצחון (זמני)' }).click()
-  await page.waitForTimeout(220)
+  check('the arena is drawn', (await page.locator('svg.arena').count()) === 1)
+  check('six units on the field', (await page.locator('.unit').count()) === 6)
+  check('three portraits in the hud', (await page.locator('.portrait').count()) === 3)
+  check('the battle opens paused behind the intro panel', (await page.locator('.overlay .panel').count()) === 1)
+  await shot('04-battle-intro')
+
+  await page.getByRole('button', { name: 'התחל קרב' }).click()
+  const before = await unitPositions(page)
+  await page.waitForTimeout(1200)
+  const after = await unitPositions(page)
+  check('units move once the battle starts', before !== after)
+  await shot('05-battle-running')
+
+  await page.locator('.portrait').first().click()
+  check('a portrait selects a single hero', (await page.locator('.portrait.selected').count()) === 1)
+  await page.getByRole('button', { name: 'בחר הכול' }).click()
+  check('"select all" selects every living hero', (await page.locator('.portrait.selected').count()) === 3)
+
+  check('the battle is still running during the control checks',
+    await page.locator('.overlay').evaluate((n) => n.classList.contains('hidden')))
+  await page.locator('.hud-actions button', { hasText: 'השהה' }).click()
+  const paused = await unitPositions(page)
+  await page.waitForTimeout(700)
+  check('pause really stops the simulation', paused === (await unitPositions(page)))
+  await page.locator('.hud-actions button', { hasText: 'המשך' }).click()
+  await page.waitForTimeout(500)
+  check('resume starts it again', paused !== (await unitPositions(page)))
+
+  console.log('battle to the end (accelerated)')
+  await go('#/battle/asia-1', 12)
+  await page.getByRole('button', { name: 'התחל קרב' }).click()
+  await page.waitForSelector('.overlay:not(.hidden) .panel', { timeout: 90_000 })
+  const verdict = await page.locator('.overlay .panel h2').innerText()
+  check('the battle ends with a verdict', verdict === 'המבצר נכבש' || verdict === 'הקרב אבד')
+  check('the easiest fortress is won without upgrades', verdict === 'המבצר נכבש')
+  check('no enemy is left standing',
+    (await page.locator('.unit.enemy:not(.dead)').count()) === 0)
+  await shot('06-battle-end')
+  await page.locator('.overlay .panel button').click()
+  await page.waitForTimeout(260)
   check('result screen reached', page.url().includes('#/result/'))
   check('first battle grants stars', (await page.locator('.stars').innerText()).includes('8'))
-  await shot('05-result')
+  await shot('07-result')
 
   console.log('upgrades and missions')
   await go('#/upgrades')
@@ -101,13 +142,13 @@ try {
     await page.waitForTimeout(80)
   }
   check('"want more stars?" modal appears', (await page.locator('.modal').count()) === 1)
-  await shot('06-modal')
+  await shot('08-modal')
   await page.getByRole('button', { name: 'לתפריט המשימות' }).click()
   await page.waitForTimeout(220)
   check('modal leads to the missions menu', page.url().includes('#/missions'))
   check('all curriculum topics listed', (await page.locator('.topic').count()) === 26)
   check('every topic is still marked as coming soon', (await page.locator('.topic.soon').count()) === 26)
-  await shot('07-missions')
+  await shot('09-missions')
 
   console.log('conquered state is remembered')
   await go('#/continent/asia')

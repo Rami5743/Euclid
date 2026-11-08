@@ -1,45 +1,214 @@
-import { BASE_STATS, HERO_NAMES, type HeroClass } from '../../content/heroes'
+import { createBattle, issueOrder, step as stepSimulation } from '../../battle/sim'
+import { battleConfigFor } from '../../battle/setup'
+import { TICK, type BattleState, type Unit } from '../../battle/types'
+import { HERO_NAMES } from '../../content/heroes'
 import { fortressById } from '../../content/world'
+import { profile } from '../../state/profile'
+import { createScene, type Scene, type ScenePick } from '../../render/scene'
 import { el, page } from '../components/layout'
 import { navigate, type Screen } from '../router'
 
-/**
- * Placeholder for the real time battle (milestones M3 and M4).
- * For now it shows the line-ups and lets the flow around the battle be tested
- * end to end through two temporary buttons.
- */
 export function battleScreen(params: Record<string, string>): Screen {
   const hit = fortressById(params.id ?? '')
-  if (!hit) return page({ title: 'מבצר לא נמצא' }, el('p', {}, 'חזרה למפת העולם.'))
+  const config = hit ? battleConfigFor(hit.fortress.id, profile(), (Date.now() & 0xffff) || 1) : null
+  if (!hit || !config) return page({ title: 'מבצר לא נמצא' }, el('p', {}, 'חזרה למפת העולם.'))
   const { continent, fortress } = hit
 
-  const lineup = (title: string, scale: number): HTMLElement =>
-    el('section', { class: 'card lineup' },
-      el('h3', {}, title),
-      ...(Object.keys(HERO_NAMES) as HeroClass[]).map((cls) => {
-        const s = BASE_STATS[cls]
-        return el('p', { class: 'muted' },
-          `${HERO_NAMES[cls]}: חיים ${Math.round(s.hp * scale)}, ` +
-          `התקפה ${Math.round(s.attack * scale)}, הגנה ${Math.round(s.defense * scale)}`)
-      }),
+  const state: BattleState = createBattle(config)
+  const selected = new Set<string>(state.units.filter((u) => u.side === 'player').map((u) => u.id))
+
+  // Optional time multiplier, used by the automated tests and for manual
+  // inspection: open the game with ?speed=8 to run battles faster.
+  const speed = clampSpeed(new URLSearchParams(location.search).get('speed'))
+
+  let running = false
+  let finished = false
+  let frame = 0
+  let last = 0
+  let accumulator = 0
+
+  // Test hook: the end to end tests read the live simulation from here.
+  ;(window as unknown as { __battle?: BattleState }).__battle = state
+
+  const scene: Scene = createScene(state, (pick: ScenePick) => onPick(pick))
+  const stage = el('div', { class: 'stage' })
+  stage.append(scene.el)
+
+  // --- overlays -----------------------------------------------------------
+  const overlay = el('div', { class: 'overlay' })
+  stage.append(overlay)
+
+  const showIntro = (): void => {
+    overlay.replaceChildren(
+      el('div', { class: 'panel' },
+        el('h2', {}, fortress.name),
+        el('p', {}, `רמת האויב: ${difficultyWord(fortress.difficulty)}. שלושת הגיבורים שלך מול שלושת מגיני המבצר.`),
+        el('p', { class: 'muted' },
+          'הקשה על גיבור בוחרת אותו, הקשה על אויב שולחת אותו לתקוף, והקשה על הקרקע שולחת אותו לנוע. ' +
+          'אפשר לבחור את כולם בכפתור שלמטה.'),
+        startButton(),
+      ),
     )
+    overlay.classList.remove('hidden')
+  }
 
-  const temp = el('div', { class: 'row' })
-  const win = el('button', { class: 'btn primary', type: 'button' }, 'ניצחון (זמני)')
-  const lose = el('button', { class: 'btn', type: 'button' }, 'הפסד (זמני)')
-  win.addEventListener('click', () => navigate(`/result/${fortress.id}/win`))
-  lose.addEventListener('click', () => navigate(`/result/${fortress.id}/lose`))
-  temp.append(win, lose)
+  const showResult = (won: boolean): void => {
+    const go = el('button', { class: 'btn primary', type: 'button' }, 'המשך')
+    go.addEventListener('click', () => navigate(`/result/${fortress.id}/${won ? 'win' : 'lose'}`))
+    overlay.replaceChildren(
+      el('div', { class: 'panel' },
+        el('h2', {}, won ? 'המבצר נכבש' : 'הקרב אבד'),
+        el('p', {}, won ? 'כל מגיני המבצר הובסו.' : 'כל הגיבורים שלך נפלו. אפשר לשדרג ולנסות שוב.'),
+        go,
+      ),
+    )
+    overlay.classList.remove('hidden')
+  }
 
-  return page(
-    { title: fortress.name, subtitle: `${continent.name} · ${continent.domain}` },
-    el('p', { class: 'notice' },
-      'מנוע הקרב בזמן אמת עדיין לא נבנה. בשלב הזה אפשר לבדוק את זרימת המשחק סביב הקרב ' +
-      'בעזרת שני הכפתורים הזמניים שלמטה.'),
-    el('div', { class: 'grid' },
-      lineup('הגיבורים שלך', 1),
-      lineup('מגיני המבצר', fortress.difficulty),
-    ),
-    temp,
+  function startButton(): HTMLElement {
+    const b = el('button', { class: 'btn primary', type: 'button' }, 'התחל קרב')
+    b.addEventListener('click', () => {
+      overlay.classList.add('hidden')
+      running = true
+      last = performance.now()
+    })
+    return b
+  }
+
+  // --- controls -----------------------------------------------------------
+  const portraits = el('div', { class: 'portraits' })
+  const pauseButton = el('button', { class: 'btn small', type: 'button' }, 'השהה')
+  const allButton = el('button', { class: 'btn small', type: 'button' }, 'בחר הכול')
+  const holdButton = el('button', { class: 'btn small', type: 'button' }, 'עמוד במקום')
+
+  pauseButton.addEventListener('click', () => {
+    if (finished) return
+    running = !running
+    last = performance.now()
+    pauseButton.textContent = running ? 'השהה' : 'המשך'
+  })
+  allButton.addEventListener('click', () => {
+    selected.clear()
+    for (const u of state.units) if (u.side === 'player' && u.alive) selected.add(u.id)
+    updatePortraits()
+  })
+  holdButton.addEventListener('click', () => {
+    for (const id of selected) issueOrder(state, id, { kind: 'hold' })
+  })
+
+  // The portraits are built once and only updated afterwards. Rebuilding them
+  // every frame would replace the DOM under the player's finger mid-tap.
+  const playerUnits: Unit[] = state.units.filter((u) => u.side === 'player')
+  const portraitViews = playerUnits.map((unit) => {
+    const fill = el('span', { class: 'portrait-fill' })
+    const button = el('button', { class: `portrait ${unit.cls}`, type: 'button' },
+      el('span', { class: 'portrait-name' }, unit.name || HERO_NAMES[unit.cls]),
+      el('span', { class: 'portrait-bar' }, fill),
+    )
+    button.addEventListener('click', () => {
+      if (!unit.alive) return
+      selected.clear()
+      selected.add(unit.id)
+      updatePortraits()
+    })
+    portraits.append(button)
+    return { unit, button, fill }
+  })
+
+  function updatePortraits(): void {
+    for (const view of portraitViews) {
+      const ratio = Math.max(0, view.unit.hp / view.unit.maxHp)
+      view.fill.style.width = `${(ratio * 100).toFixed(0)}%`
+      view.button.classList.toggle('selected', selected.has(view.unit.id))
+      view.button.classList.toggle('dead', !view.unit.alive)
+    }
+  }
+  updatePortraits()
+
+  function onPick(pick: ScenePick): void {
+    if (!running) return
+    const target = pick.unit
+    if (target && target.side === 'player' && target.alive) {
+      selected.clear()
+      selected.add(target.id)
+      updatePortraits()
+      return
+    }
+    if (selected.size === 0) return
+    for (const id of selected) {
+      if (target && target.side === 'enemy' && target.alive) issueOrder(state, id, { kind: 'attack', targetId: target.id })
+      else issueOrder(state, id, { kind: 'move', x: pick.x, y: pick.y })
+    }
+  }
+
+  const onKey = (e: KeyboardEvent): void => {
+    if (e.code === 'Space') {
+      e.preventDefault()
+      pauseButton.click()
+    }
+  }
+  addEventListener('keydown', onKey)
+
+  // --- loop ---------------------------------------------------------------
+  // The loop is driven by performance.now(), not by the timestamp handed to
+  // requestAnimationFrame: some browsers, headless ones in particular, advance
+  // that timestamp faster than the wall clock, which would run the battle at
+  // the wrong speed.
+  const tick = (): void => {
+    frame = requestAnimationFrame(tick)
+    if (running && !finished) {
+      const now = performance.now()
+      accumulator += Math.min(0.1, (now - last) / 1000) * speed
+      last = now
+      let steps = 0
+      while (accumulator >= TICK && steps < 8 * speed) {
+        step()
+        accumulator -= TICK
+        steps++
+      }
+    }
+    scene.update(state, selected)
+  }
+
+  const step = (): void => {
+    stepSimulation(state)
+    if (state.winner && !finished) {
+      finished = true
+      running = false
+      showResult(state.winner === 'player')
+    }
+    updatePortraits()
+  }
+
+  showIntro()
+  frame = requestAnimationFrame(tick)
+
+  const shell = page(
+    { title: fortress.name, subtitle: `${continent.name} · ${continent.domain}`, showStars: false },
+    stage,
+    el('div', { class: 'hud' }, portraits, el('div', { class: 'hud-actions' }, allButton, holdButton, pauseButton)),
   )
+
+  return {
+    el: shell.el,
+    destroy() {
+      cancelAnimationFrame(frame)
+      removeEventListener('keydown', onKey)
+      scene.destroy()
+      shell.destroy()
+    },
+  }
+}
+
+function clampSpeed(raw: string | null): number {
+  const value = Number(raw ?? 1)
+  if (!Number.isFinite(value) || value <= 0) return 1
+  return Math.min(16, Math.max(1, value))
+}
+
+function difficultyWord(d: number): string {
+  if (d <= 0.9) return 'קל'
+  if (d <= 1.3) return 'בינוני'
+  if (d <= 1.8) return 'קשה'
+  return 'קשה מאוד'
 }
