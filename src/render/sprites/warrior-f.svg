@@ -1,15 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">
-  <g stroke="#3b2a1a" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M24 60 h7 v-12 h-7 Z" fill="#6b4a2a"/>
-    <path d="M34 60 h7 v-12 h-7 Z" fill="#7d5932"/>
-    <path d="M22 30 q10 -6 20 0 l3 18 h-26 Z" fill="currentColor"/>
-    <path d="M24 32 q8 -4 16 0 v10 q-8 4 -16 0 Z" fill="#b9bec6"/>
-    <path d="M42 34 l10 -4 2 4 -10 5 Z" fill="#d8c6a8"/>
-    <circle cx="32" cy="18" r="8" fill="#f1c9a2"/>
-    <path d="M24 18 q0 -10 8 -10 q8 0 8 10 q-4 -5 -8 -5 q-4 0 -8 5 Z" fill="#6b3f1c"/>
-    <path d="M24 16 q-3 10 0 16 M40 16 q3 10 0 16" fill="#6b3f1c"/>
-    <path d="M50 12 l4 2 -16 24 -4 -2 Z" fill="#cfd6de"/>
-    <path d="M34 36 l6 3 -3 5 -5 -4 Z" fill="#8a5a2b"/>
-    <ellipse cx="22" cy="38" rx="6" ry="8" fill="#9aa3ad"/>
+  <g stroke="#3b2a1a" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+    <!-- cape -->
+    <path d="M22 28 q-7 14 -5 28 l9 -3 q-3 -14 1 -24 Z" fill="currentColor" opacity="0.75"/>
+    <!-- legs and boots -->
+    <path d="M25 46 h6 v9 h-6 Z" fill="#7a6246"/>
+    <path d="M34 46 h6 v9 h-6 Z" fill="#8b7150"/>
+    <path d="M23 55 h9 v5 h-10 q-1 -3 1 -5 Z" fill="#4d3a26"/>
+    <path d="M33 55 h9 q2 2 1 5 h-10 Z" fill="#5c4630"/>
+    <!-- tunic -->
+    <path d="M23 30 q9 -6 18 0 l2 17 q-11 4 -22 0 Z" fill="currentColor"/>
+    <!-- breastplate -->
+    <path d="M25 31 q7 -4 14 0 v9 q-7 4 -14 0 Z" fill="#c3c8d0"/>
+    <path d="M25 33 q7 -4 14 0" fill="none" stroke="#9aa3ad"/>
+    <path d="M32 31 v9" fill="none" stroke="#9aa3ad"/>
+    <!-- belt -->
+    <path d="M24 41 q8 4 16 0 l0 4 q-8 4 -16 0 Z" fill="#6b4a24"/>
+    <circle cx="32" cy="43.5" r="1.8" fill="#e0b84f"/>
+    <!-- pauldrons -->
+    <ellipse cx="23.5" cy="31" rx="4.6" ry="4" fill="#aeb6bf"/>
+    <ellipse cx="40.5" cy="31" rx="4.6" ry="4" fill="#aeb6bf"/>
+    <!-- sword arm -->
+    <path d="M41 33 l9 -5 3 4 -9 6 Z" fill="#e6c9a3"/>
+    <path d="M49 28 l3 4" stroke="#8a5a2b" stroke-width="2.4"/>
+    <path d="M53 27 l3 1 -13 21 -3 -2 Z" fill="#dde3ea"/>
+    <path d="M53.5 28.5 l1 0.4 -11.5 18.6 -1 -0.6 Z" fill="#aab4c0" stroke="none"/>
+    <!-- shield -->
+    <path d="M17 32 q6 -3 12 0 v8 q-6 7 -12 0 Z" fill="#9aa3ad"/>
+    <path d="M23 32 v14" fill="none" stroke="#6f7883"/>
+    <!-- head -->
+    <circle cx="32" cy="20" r="7.6" fill="#f2cba4"/>
+    <circle cx="35.4" cy="20" r="1" fill="#3b2a1a" stroke="none"/>
+    <path d="M24.6 20 q0 -10 7.4 -10 q7.4 0 7.4 10 q-3.6 -5 -7.4 -5 q-3.8 0 -7.4 5 Z" fill="#7a461d"/>
+    <path d="M25 19 q-4 10 -1 17 l4 -1 q-3 -8 0 -15 Z" fill="#7a461d"/>
+    <path d="M39 19 q4 9 2 15" fill="none" stroke="#7a461d" stroke-width="2.4"/>
   </g>
 </svg>

@@ -415,3 +415,39 @@ svg.arena { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 .portrait-name { font-size: 14px; }
 .portrait-bar { display: block; height: 8px; border-radius: 4px; background: rgba(47, 36, 24, 0.25); overflow: hidden; }
 .portrait-fill { display: block; height: 100%; background: #4f9d3a; }
+
+/* Battle polish */
+.ring { animation: ring-spin 3s linear infinite; }
+
+@keyframes ring-spin { to { stroke-dashoffset: -56; } }
+
+.shot.heal circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: heal-pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes heal-pulse { from { transform: scale(0.8); } to { transform: scale(1.25); } }
+
+.unit .sprite, .unit { transition: none; }
+.unit.dead .shadow { opacity: 0.5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ring, .shot.heal circle { animation: none; }
+}
+
+/* Page polish */
+.top { border-bottom: 2px solid rgba(138, 90, 43, 0.25); }
+
+.card { position: relative; }
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: calc(var(--radius) - 6px);
+  border: 1px solid rgba(138, 90, 43, 0.18);
+  pointer-events: none;
+}
+
+.panel h2, h1 { font-weight: 800; }

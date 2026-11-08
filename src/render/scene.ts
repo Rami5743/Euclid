@@ -125,8 +125,8 @@ function createUnitView(unit: Unit): UnitView {
   // A nested <svg> with no explicit size would fill the whole scene viewport.
   sizeNested(sprite, 64, 64)
 
-  const barBg = svg('rect', { class: 'hp-bg', x: '-48', y: '-196', width: '96', height: '14', rx: '7' })
-  const barFill = svg('rect', { class: 'hp', x: '-45', y: '-193', width: '90', height: '8', rx: '4' })
+  const barBg = svg('rect', { class: 'hp-bg', x: '-42', y: '-186', width: '84', height: '13', rx: '6.5' })
+  const barFill = svg('rect', { class: 'hp', x: '-39.5', y: '-183.5', width: '79', height: '8', rx: '4' })
 
   group.append(shadow, sprite, barBg, barFill)
 
@@ -141,12 +141,14 @@ function createUnitView(unit: Unit): UnitView {
       ring.setAttribute('cy', py.toFixed(1))
       ring.style.display = selected && u.alive ? '' : 'none'
 
-      const s = SPRITE_SCALE * (u.alive ? 1 : 0.9)
+      const s = SPRITE_SCALE * (u.alive ? 1 : 0.92)
+      // A fallen hero lies on the ground, pivoting around the feet.
+      const fall = u.alive ? '' : `rotate(${(u.facing * -78).toFixed(0)}) `
       sprite.setAttribute('transform',
-        `scale(${(u.facing * s).toFixed(3)} ${s.toFixed(3)}) translate(-32 -60)`)
+        `${fall}scale(${(u.facing * s).toFixed(3)} ${s.toFixed(3)}) translate(-32 -60)`)
 
       const ratio = Math.max(0, u.hp / u.maxHp)
-      barFill.setAttribute('width', (90 * ratio).toFixed(1))
+      barFill.setAttribute('width', (79 * ratio).toFixed(1))
       const hurt = time - u.lastHitAt < 0.18
       group.classList.toggle('hurt', hurt && u.alive)
       group.classList.toggle('dead', !u.alive)

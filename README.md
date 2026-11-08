@@ -36,7 +36,22 @@ tools/        headless balance simulation (M6) - not written yet
   `npm run balance` prints the win rate for every combination of fortress
   difficulty and star budget, and `npm run balance:check` verifies the numbers
   the game ships with.
-- **M7** art pass: detailed vector sprites.
+- **M7 - art (done).** Detailed vector sprites for the three heroes in two
+  variants each, a drawn battlefield, fallen heroes, selection and healing
+  effects.
+
+## What is not built yet
+
+The missions themselves. `src/missions` is a working seam with an empty
+provider, and the menu lists the curriculum topics marked as coming soon.
+Everything else - maps, battles, upgrades, the star economy - is in place and
+tested, so adding missions means implementing `MissionsProvider` and nothing
+else.
+
+Two things to decide when the missions arrive: how many stars a solved mission
+is worth, and whether the campaign's full ladder (about a thousand stars from
+the first fortress to the last) matches the number of missions a year of
+seventh grade actually offers.
 
 ## Balance
 
@@ -64,6 +79,15 @@ granted at the end of the first battle, and the third stays out of reach.
   times to calibrate difficulty.
 - **Difficulty by a single multiplier** per fortress on every enemy stat, which
   keeps the progression curve tunable from one number.
+
+## Testing
+
+```
+npm run check      type check + unit tests + balance check + browser test
+npm test           unit tests only (the simulation)
+npm run balance    the win rate table used for tuning
+npm run e2e        the browser test alone, screenshots in tools/e2e/out
+```
 
 ## Curriculum source
 
