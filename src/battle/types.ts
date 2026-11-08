@@ -89,7 +89,7 @@ export function baseDamage(attack: number, defense: number): number {
 }
 
 /** Half width of the random spread around the base damage. */
-export const DAMAGE_SPREAD = 0.1
+export const DAMAGE_SPREAD = 0.3
 
 /** Units closer than this push each other apart. */
 export const UNIT_RADIUS = 0.45

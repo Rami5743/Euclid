@@ -4,6 +4,7 @@ import { TICK, type BattleState, type Unit } from '../../battle/types'
 import { HERO_NAMES } from '../../content/heroes'
 import { fortressById } from '../../content/world'
 import { profile } from '../../state/profile'
+import { challengeLabel } from '../../state/power'
 import { setLastBattle } from '../../state/lastBattle'
 import { createScene, type Scene, type ScenePick } from '../../render/scene'
 import { el, page } from '../components/layout'
@@ -43,7 +44,7 @@ export function battleScreen(params: Record<string, string>): Screen {
     overlay.replaceChildren(
       el('div', { class: 'panel' },
         el('h2', {}, fortress.name),
-        el('p', {}, `רמת האויב: ${difficultyWord(fortress.difficulty)}. שלושת הגיבורים שלך מול שלושת מגיני המבצר.`),
+        el('p', {}, `רמת האויב: ${challengeLabel(fortress, profile())}. שלושת הגיבורים שלך מול שלושת מגיני המבצר.`),
         el('p', { class: 'muted' },
           'הקשה על גיבור בוחרת אותו, הקשה על אויב שולחת אותו לתקוף, והקשה על הקרקע שולחת אותו לנוע. ' +
           'אפשר לבחור את כולם בכפתור שלמטה.'),
@@ -218,9 +219,3 @@ function clampSpeed(raw: string | null): number {
   return Math.min(16, Math.max(1, value))
 }
 
-function difficultyWord(d: number): string {
-  if (d <= 0.9) return 'קל'
-  if (d <= 1.3) return 'בינוני'
-  if (d <= 1.8) return 'קשה'
-  return 'קשה מאוד'
-}

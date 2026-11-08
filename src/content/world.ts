@@ -14,8 +14,13 @@ export interface Topic {
 export interface Fortress {
   id: string
   name: string
-  /** multiplier applied to every enemy stat; 1 = same as the player's base */
+  /** multiplier applied to the enemy's hit points, attack and defense */
   difficulty: number
+  /**
+   * Stars that need to be invested in upgrades before this fortress becomes
+   * winnable. Measured with tools/balance.ts, not guessed.
+   */
+  starsNeeded: number
   /** map position in percent of the continent map */
   x: number
   y: number
@@ -49,10 +54,10 @@ export const CONTINENTS: Continent[] = [
       { id: 'powers', name: 'חזקות עם מעריך טבעי ושורש ריבועי' },
     ],
     fortresses: [
-      { id: 'asia-home', name: 'מצודת הבית', difficulty: 0, x: 22, y: 62, home: true },
-      { id: 'asia-1', name: 'מגדל הציר', difficulty: 0.8, x: 45, y: 30 },
-      { id: 'asia-2', name: 'חומות הכפור', difficulty: 1.15, x: 68, y: 58 },
-      { id: 'asia-3', name: 'מבצר הדרקון', difficulty: 1.6, x: 84, y: 26 },
+      { id: 'asia-home', name: 'מצודת הבית', difficulty: 0, starsNeeded: 0, x: 22, y: 62, home: true },
+      { id: 'asia-1', name: 'מגדל הציר', difficulty: 0.85, starsNeeded: 0, x: 45, y: 30 },
+      { id: 'asia-2', name: 'חומות הכפור', difficulty: 1.1, starsNeeded: 8, x: 68, y: 58 },
+      { id: 'asia-3', name: 'מבצר הדרקון', difficulty: 1.2, starsNeeded: 32, x: 84, y: 26 },
     ],
   },
   {
@@ -71,10 +76,10 @@ export const CONTINENTS: Continent[] = [
       { id: 'graph-points', name: 'נקודות על גרף' },
     ],
     fortresses: [
-      { id: 'europe-home', name: 'מצודת הבית', difficulty: 0, x: 20, y: 55, home: true },
-      { id: 'europe-1', name: 'טירת הנעלם', difficulty: 1.4, x: 44, y: 32 },
-      { id: 'europe-2', name: 'מבצר שני האגפים', difficulty: 1.8, x: 66, y: 62 },
-      { id: 'europe-3', name: 'ארמון הסוגריים', difficulty: 2.3, x: 85, y: 34 },
+      { id: 'europe-home', name: 'מצודת הבית', difficulty: 0, starsNeeded: 0, x: 20, y: 55, home: true },
+      { id: 'europe-1', name: 'טירת הנעלם', difficulty: 1.25, starsNeeded: 64, x: 44, y: 32 },
+      { id: 'europe-2', name: 'מבצר שני האגפים', difficulty: 1.3, starsNeeded: 100, x: 66, y: 62 },
+      { id: 'europe-3', name: 'ארמון הסוגריים', difficulty: 1.35, starsNeeded: 180, x: 85, y: 34 },
     ],
   },
   {
@@ -93,10 +98,10 @@ export const CONTINENTS: Continent[] = [
       { id: 'pythagoras', name: 'משפט פיתגורס ושימושיו' },
     ],
     fortresses: [
-      { id: 'africa-home', name: 'מצודת הבית', difficulty: 0, x: 24, y: 30, home: true },
-      { id: 'africa-1', name: 'מבצר הזווית', difficulty: 2.0, x: 48, y: 58 },
-      { id: 'africa-2', name: 'חומת המשולש', difficulty: 2.5, x: 70, y: 28 },
-      { id: 'africa-3', name: 'מצודת פיתגורס', difficulty: 3.1, x: 86, y: 62 },
+      { id: 'africa-home', name: 'מצודת הבית', difficulty: 0, starsNeeded: 0, x: 24, y: 30, home: true },
+      { id: 'africa-1', name: 'מבצר הזווית', difficulty: 1.4, starsNeeded: 280, x: 48, y: 58 },
+      { id: 'africa-2', name: 'חומת המשולש', difficulty: 1.45, starsNeeded: 400, x: 70, y: 28 },
+      { id: 'africa-3', name: 'מצודת פיתגורס', difficulty: 1.5, starsNeeded: 560, x: 86, y: 62 },
     ],
   },
   {
@@ -111,10 +116,10 @@ export const CONTINENTS: Continent[] = [
       { id: 'probability', name: 'הסתברות בהקשר של שכיחות יחסית' },
     ],
     fortresses: [
-      { id: 'america-home', name: 'מצודת הבית', difficulty: 0, x: 26, y: 64, home: true },
-      { id: 'america-1', name: 'מבצר המזל', difficulty: 2.8, x: 50, y: 32 },
-      { id: 'america-2', name: 'מגדל הסיכויים', difficulty: 3.4, x: 72, y: 60 },
-      { id: 'america-3', name: 'ארמון הגורל', difficulty: 4.0, x: 86, y: 30 },
+      { id: 'america-home', name: 'מצודת הבית', difficulty: 0, starsNeeded: 0, x: 26, y: 64, home: true },
+      { id: 'america-1', name: 'מבצר המזל', difficulty: 1.55, starsNeeded: 680, x: 50, y: 32 },
+      { id: 'america-2', name: 'מגדל הסיכויים', difficulty: 1.6, starsNeeded: 800, x: 72, y: 60 },
+      { id: 'america-3', name: 'ארמון הגורל', difficulty: 1.65, starsNeeded: 1000, x: 86, y: 30 },
     ],
   },
 ]

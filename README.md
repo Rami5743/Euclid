@@ -27,13 +27,30 @@ tools/        headless balance simulation (M6) - not written yet
 
 - **M0 - framework (done).** Router, screens, profile state, star economy,
   upgrade screen, "want more stars?" modal, empty missions menu.
-- **M1** world map and continent maps as drawn maps rather than card lists.
-- **M2** hero setup: class, gender, name.
-- **M3** deterministic battle simulation, headless, with unit tests.
-- **M4** SVG rendering, unified pointer controls, battle HUD.
-- **M5** battle results feeding the star economy.
-- **M6** balance pass driven by `tools/balance.ts`.
+- **M1 - maps (done).** Drawn world and continent maps with interactive markers.
+- **M2 - heroes (done).** Gender and name for each of the three heroes.
+- **M3 - simulation (done).** Deterministic battle simulation, headless, tested.
+- **M4 - battle (done).** SVG rendering, pointer controls for touch and mouse.
+- **M5 - results (done).** Battle outcome feeding the star economy.
+- **M6 - balance (done).** Difficulty and star figures measured, not guessed:
+  `npm run balance` prints the win rate for every combination of fortress
+  difficulty and star budget, and `npm run balance:check` verifies the numbers
+  the game ships with.
 - **M7** art pass: detailed vector sprites.
+
+## Balance
+
+The campaign is a ladder of twelve fortresses. Each one carries a difficulty
+multiplier on the enemy's hit points, attack and defense, and the number of
+stars the player needs to have invested in upgrades before it becomes winnable.
+Both numbers come from `tools/balance.ts`, which runs hundreds of headless
+battles per cell with the simulation's own AI on both sides. Since a real
+player plays better than that AI, the measured rates are a lower bound.
+
+The three rules of the opening, verified on every run of `npm run check`:
+the first fortress is won without any upgrades, the second cannot be won
+without them, the second becomes winnable but barely after the eight stars
+granted at the end of the first battle, and the third stays out of reach.
 
 ## Design decisions
 

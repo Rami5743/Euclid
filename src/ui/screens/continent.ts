@@ -1,5 +1,6 @@
 import { continentById, type ContinentId } from '../../content/world'
 import { profile } from '../../state/profile'
+import { challengeLabel, investedStars } from '../../state/power'
 import { el, page } from '../components/layout'
 import { mapView, type MapMarker } from '../components/mapView'
 import { navigate, type Screen } from '../router'
@@ -16,13 +17,6 @@ const ART: Record<ContinentId, string> = {
   america: americaArt,
 }
 
-export function difficultyLabel(d: number): string {
-  if (d <= 0.9) return 'קל'
-  if (d <= 1.3) return 'בינוני'
-  if (d <= 1.8) return 'קשה'
-  return 'קשה מאוד'
-}
-
 export function continentScreen(params: Record<string, string>): Screen {
   const continent = continentById(params.id ?? '')
   if (!continent) return page({ title: 'יבשת לא נמצאה' }, el('p', {}, 'חזרה למפת העולם.'))
@@ -33,11 +27,17 @@ export function continentScreen(params: Record<string, string>): Screen {
       return { x: f.x, y: f.y, label: f.name, sub: 'הבית שלך', state: 'home', icon: fortressIcon }
     }
     const conquered = p.conquered.includes(f.id)
+    const short = f.starsNeeded - investedStars(p)
+    const sub = conquered
+      ? 'נכבש'
+      : short > 0
+        ? `${challengeLabel(f, p)} · ★ ${f.starsNeeded}`
+        : challengeLabel(f, p)
     return {
       x: f.x,
       y: f.y,
       label: f.name,
-      sub: conquered ? 'נכבש' : difficultyLabel(f.difficulty),
+      sub,
       state: conquered ? 'done' : 'open',
       icon: fortressIcon,
       onClick: () => navigate(`/battle/${f.id}`),

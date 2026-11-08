@@ -22,3 +22,10 @@ export const FIRST_BATTLE_GRANT = 8
 export function effectiveValue(base: number, _stat: Stat, level: number): number {
   return base * multiplier(level)
 }
+
+/** Total cost of reaching a level from zero. */
+export function cumulativeCost(level: number): number {
+  let sum = 0
+  for (let i = 0; i < Math.min(level, MAX_LEVEL); i++) sum += COSTS[i]!
+  return sum
+}
