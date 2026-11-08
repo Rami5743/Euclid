@@ -132,6 +132,9 @@ try {
   await page.waitForTimeout(260)
   check('result screen reached', page.url().includes('#/result/'))
   check('first battle grants stars', (await page.locator('.stars').innerText()).includes('8'))
+  check('the result reports every hero', (await page.locator('.stat-row').count()) === 3)
+  check('the result offers a rematch',
+    (await page.getByRole('button', { name: 'קרב נוסף באותו מבצר' }).count()) === 1)
   await shot('07-result')
 
   console.log('upgrades and missions')

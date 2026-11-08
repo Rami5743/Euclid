@@ -4,6 +4,7 @@ import { TICK, type BattleState, type Unit } from '../../battle/types'
 import { HERO_NAMES } from '../../content/heroes'
 import { fortressById } from '../../content/world'
 import { profile } from '../../state/profile'
+import { setLastBattle } from '../../state/lastBattle'
 import { createScene, type Scene, type ScenePick } from '../../render/scene'
 import { el, page } from '../components/layout'
 import { navigate, type Screen } from '../router'
@@ -53,6 +54,17 @@ export function battleScreen(params: Record<string, string>): Screen {
   }
 
   const showResult = (won: boolean): void => {
+    setLastBattle({
+      fortressId: fortress.id,
+      won,
+      seconds: state.time,
+      heroes: playerUnits.map((u) => ({
+        cls: u.cls,
+        name: u.name || HERO_NAMES[u.cls],
+        alive: u.alive,
+        health: Math.max(0, u.hp / u.maxHp),
+      })),
+    })
     const go = el('button', { class: 'btn primary', type: 'button' }, 'המשך')
     go.addEventListener('click', () => navigate(`/result/${fortress.id}/${won ? 'win' : 'lose'}`))
     overlay.replaceChildren(
