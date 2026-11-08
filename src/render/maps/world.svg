@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="מפת העולם">
+  <defs>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cfe3df"/>
+      <stop offset="100%" stop-color="#aec9c6"/>
+    </linearGradient>
+    <linearGradient id="land" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8d2a2"/>
+      <stop offset="100%" stop-color="#d3b47c"/>
+    </linearGradient>
+    <filter id="grain" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer result="g"><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
+      <feComposite in="SourceGraphic" in2="g" operator="over"/>
+    </filter>
+    <pattern id="waves" width="54" height="28" patternUnits="userSpaceOnUse">
+      <path d="M0 18 q 13 -10 27 0 q 13 10 27 0" fill="none" stroke="#8fb3ae" stroke-width="1.6" opacity="0.55"/>
+    </pattern>
+  </defs>
+
+  <rect width="1000" height="600" fill="url(#sea)"/>
+  <rect width="1000" height="600" fill="url(#waves)"/>
+
+  <g filter="url(#grain)">
+    <g fill="url(#land)" stroke="#9c6f3c" stroke-width="3" stroke-linejoin="round">
+      <path d="M180 90 C230 70 300 90 310 140 C320 190 270 210 265 250 C260 290 300 300 300 340 C300 420 250 520 210 540 C180 555 160 520 170 470 C180 420 210 380 205 330 C200 290 150 280 135 240 C115 190 130 110 180 90 Z"/>
+      <path d="M430 110 C470 85 540 90 570 115 C600 140 590 180 560 195 C530 210 500 200 470 210 C440 220 410 200 408 170 C406 140 410 125 430 110 Z"/>
+      <path d="M440 265 C500 245 575 255 600 295 C625 335 600 380 570 410 C545 435 520 470 495 470 C470 470 455 440 450 405 C445 370 425 340 425 310 C425 288 428 270 440 265 Z"/>
+      <path d="M610 120 C680 95 790 105 870 135 C910 150 915 190 880 205 C845 220 820 210 800 230 C780 250 790 285 760 300 C720 320 690 300 660 280 C630 260 600 250 595 215 C590 180 585 130 610 120 Z"/>
+      <path d="M842 352 C872 340 906 352 912 374 C918 396 892 410 866 404 C840 398 826 364 842 352 Z"/>
+      <path d="M352 468 C372 458 396 470 392 486 C388 502 362 506 350 494 C340 484 340 474 352 468 Z"/>
+    </g>
+
+    <g fill="none" stroke="#a8803f" stroke-width="2" opacity="0.5" stroke-linecap="round">
+      <path d="M215 150 l16 -14 16 14 M243 190 l16 -14 16 14"/>
+      <path d="M470 140 l14 -12 14 12 M505 150 l14 -12 14 12"/>
+      <path d="M470 320 l16 -13 16 13 M505 350 l16 -13 16 13 M488 385 l16 -13 16 13"/>
+      <path d="M660 160 l18 -15 18 15 M700 175 l18 -15 18 15 M742 160 l18 -15 18 15"/>
+    </g>
+
+    <g fill="#7d9b74" opacity="0.65">
+      <circle cx="205" cy="430" r="7"/><circle cx="222" cy="448" r="6"/><circle cx="188" cy="452" r="6"/>
+      <circle cx="540" cy="160" r="6"/><circle cx="556" cy="176" r="5"/>
+      <circle cx="560" cy="300" r="6"/><circle cx="575" cy="320" r="5"/>
+      <circle cx="700" cy="262" r="6"/><circle cx="718" cy="276" r="5"/>
+    </g>
+  </g>
+
+  <g transform="translate(86 516)" opacity="0.8">
+    <circle r="34" fill="#f6eddc" stroke="#8a5a2b" stroke-width="2.5"/>
+    <path d="M0 -28 L7 -6 L28 0 L7 6 L0 28 L-7 6 L-28 0 L-7 -6 Z" fill="#c98a16" stroke="#5d3b1a" stroke-width="1.5"/>
+    <text x="0" y="-36" text-anchor="middle" font-size="15" font-weight="700" fill="#5d3b1a">צ</text>
+  </g>
+
+  <rect x="8" y="8" width="984" height="584" fill="none" stroke="#8a5a2b" stroke-width="5" rx="14" opacity="0.85"/>
+</svg>

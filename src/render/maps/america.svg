@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="יבשת אמריקה">
+  <defs>
+    <linearGradient id="m-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eccfa4"/><stop offset="100%" stop-color="#cfa272"/>
+    </linearGradient>
+    <linearGradient id="m-mesa" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c98a62"/><stop offset="100%" stop-color="#9e6443"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="600" fill="url(#m-g)"/>
+  <g fill="url(#m-mesa)" stroke="#7d4c31" stroke-width="2.5">
+    <path d="M60 260 h150 l16 26 v70 h-182 v-70 Z"/>
+    <path d="M560 160 h190 l18 28 v64 h-226 v-64 Z"/>
+    <path d="M300 470 h120 l14 22 v58 h-148 v-58 Z"/>
+  </g>
+  <path d="M-10 356 C130 330 220 392 340 372 C460 352 540 300 660 320 C780 340 880 300 1010 320"
+        fill="none" stroke="#7fa9c4" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+  <g stroke="#3f6b3c" stroke-width="9" stroke-linecap="round" fill="none">
+    <path d="M150 520 v-56 M150 492 h-22 v-22 M150 504 h24 v-26"/>
+    <path d="M820 500 v-50 M820 476 h-20 v-20 M820 486 h22 v-24"/>
+    <path d="M470 120 v-44 M470 100 h-18 v-18"/>
+  </g>
+  <g fill="#8a6a4a" opacity="0.5">
+    <ellipse cx="240" cy="180" rx="9" ry="5"/><ellipse cx="620" cy="470" rx="11" ry="6"/><ellipse cx="900" cy="250" rx="8" ry="5"/>
+  </g>
+  <path d="M260 384 L500 192 L720 360 L860 180" fill="none" stroke="#8a5a2b" stroke-width="5"
+        stroke-dasharray="14 12" stroke-linecap="round" opacity="0.55"/>
+  <rect x="8" y="8" width="984" height="584" fill="none" stroke="#8a5a2b" stroke-width="5" rx="14" opacity="0.85"/>
+</svg>

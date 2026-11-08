@@ -230,3 +230,100 @@ button.card:active { transform: translateY(1px); }
   .stat-row { grid-template-columns: 1fr auto auto; }
   .stat-level { grid-column: 2 / 3; }
 }
+
+/* Drawn maps with interactive markers */
+.map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 3;
+  border: 2px solid var(--oak);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  background: var(--parchment-deep);
+}
+
+.map-art, .map-art svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.map-markers { position: absolute; inset: 0; }
+
+.marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 2px;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--gold);
+  cursor: default;
+}
+
+button.marker { cursor: pointer; }
+button.marker:active { transform: translate(-50%, -50%) scale(0.95); }
+
+.marker-icon svg {
+  width: clamp(30px, 5.5vw, 48px);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 2px 2px rgba(47, 36, 24, 0.35));
+}
+
+.marker-caption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  background: rgba(246, 237, 220, 0.92);
+  border: 1px solid var(--oak);
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.marker-sub { font-weight: 600; font-size: 12px; color: var(--ink-soft); }
+.marker.open { color: #b23b2e; }
+.marker.done { color: var(--moss); }
+.marker.done .marker-sub { color: var(--moss); }
+.marker.home { color: #2f6fb3; }
+
+/* Hero setup */
+.setup-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+
+.name-input {
+  flex: 1;
+  min-width: 160px;
+  min-height: 44px;
+  padding: 0 12px;
+  font: inherit;
+  color: var(--ink);
+  background: #fffdf7;
+  border: 2px solid var(--oak);
+  border-radius: var(--radius);
+}
+
+.chip {
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px dashed var(--oak);
+  background: rgba(255, 255, 255, 0.6);
+  font: inherit;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.chip:active { transform: translateY(1px); }
