@@ -77,12 +77,24 @@ function playerArmy(levels: Levels): UnitSpec[] {
   }))
 }
 
-export function winRate(difficulty: number, budget: number, runs = 200): number {
+/**
+ * 'active' stands for a player who moves and heals, played here by the
+ * simulation's own AI. 'passive' is the opposite extreme: the heroes hold
+ * their ground, strike whatever comes into reach and never heal, which is
+ * exactly what happens on screen when no orders are given. A real player sits
+ * between the two, so the pair brackets the real win rate.
+ */
+export type Style = 'active' | 'passive'
+
+export function winRate(difficulty: number, budget: number, runs = 200, style: Style = 'active'): number {
   const player = playerArmy(spendStars(budget))
   const enemy = enemySpecs(difficulty)
   let wins = 0
   for (let seed = 1; seed <= runs; seed++) {
-    if (simulate({ player, enemy, seed }).winner === 'player') wins++
+    const config = style === 'passive'
+      ? { player, enemy, seed, manual: 'player' as const }
+      : { player, enemy, seed }
+    if (simulate(config).winner === 'player') wins++
   }
   return wins / runs
 }
@@ -125,6 +137,8 @@ function openingChecks(): Check[] {
       rate: winRate(second.difficulty, FIRST_BATTLE_GRANT, RUNS), min: 0.12, max: 0.6 },
     { label: 'third fortress, after the first grant, still out of reach',
       rate: winRate(third.difficulty, FIRST_BATTLE_GRANT, RUNS), min: 0, max: 0.05 },
+    { label: 'first fortress is won even without a single order',
+      rate: winRate(first.difficulty, 0, RUNS, 'passive'), min: 0.8, max: 1 },
   ]
 }
 

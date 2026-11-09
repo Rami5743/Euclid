@@ -16,6 +16,7 @@ route('/battle/:id', battleScreen)
 route('/result/:id/:outcome', resultScreen)
 route('/upgrades', upgradesScreen)
 route('/missions', missionsScreen)
+route('/missions/:id', missionsScreen)
 route('/setup', setupScreen)
 
 notFound((): Screen => {

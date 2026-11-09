@@ -1,8 +1,9 @@
 # Euclid
 
-משחק אסטרטגיה ללימוד מתמטיקה בכיתה ז. השחקן כובש מבצרים בארבע יבשות, אחת לכל
-תחום בתוכנית הלימודים, ומשדרג שלושה גיבורים בעזרת כוכבים שמתקבלים על פתרון
-משימות במתמטיקה.
+משחק אסטרטגיה ללימוד מתמטיקה בכיתה ז. השחקן כובש מבצרים בשבע יבשות, לפי סדר
+ההוראה של תוכנית הלימודים, ומשדרג שלושה גיבורים בעזרת כוכבים שמתקבלים על פתרון
+משימות במתמטיקה. יבשת נפתחת רק אחרי שקודמתה נכבשה, ונושא לימוד נפתח רק אחרי
+שהנושא שלפניו נפתר.
 
 ```
 Stack:  TypeScript + Vite · SVG rendering · localStorage · static hosting
@@ -40,8 +41,8 @@ tools/        headless balance simulation (M6) - not written yet
   difficulty and star budget, and `npm run balance:check` verifies the numbers
   the game ships with.
 - **M7 - art (done).** Detailed vector sprites for the three heroes in two
-  variants each, a drawn battlefield, fallen heroes, selection and healing
-  effects.
+  variants each, a drawn battlefield, fallen heroes, walking and striking
+  animation, fireballs, floating damage, selection and healing effects.
 
 ## What is not built yet
 
@@ -56,6 +57,22 @@ is worth, and whether the campaign's full ladder (about a thousand stars from
 the first fortress to the last) matches the number of missions a year of
 seventh grade actually offers.
 
+## The world
+
+Seven continents, in the order the curriculum teaches their topics: Asia,
+Australia, Africa, Europe, South America, North America, Antarctica. Twenty one
+fortresses in all, three per continent, plus the player's own fortress in each.
+
+Everything is placed by real longitude and latitude. There is one drawn world
+map; a continent map is the same art zoomed into that continent's window, so
+the two always agree. `src/render/maps/projection.ts` holds the projection, and
+`tools/genworld.py` regenerates the map asset from its coastline outlines.
+
+A continent opens only once the one before it is fully conquered, and the
+missions menu shows only the continent being played and only the topics that
+are open: the first from the start, each next one after the one before it is
+solved.
+
 ## Balance
 
 The campaign is a ladder of twelve fortresses. Each one carries a difficulty
@@ -65,10 +82,18 @@ Both numbers come from `tools/balance.ts`, which runs hundreds of headless
 battles per cell with the simulation's own AI on both sides. Since a real
 player plays better than that AI, the measured rates are a lower bound.
 
-The three rules of the opening, verified on every run of `npm run check`:
-the first fortress is won without any upgrades, the second cannot be won
-without them, the second becomes winnable but barely after the eight stars
-granted at the end of the first battle, and the third stays out of reach.
+The tool measures two styles, which bracket a real player: *active*, where the
+simulation's own AI moves and heals, and *passive*, where the heroes hold their
+ground and never heal - exactly what happens on screen when no orders are
+given. On screen the player's side is hand commanded: it never walks off on its
+own and never heals on its own.
+
+The rules of the opening, verified on every run of `npm run check`: the first
+fortress is won without any upgrades and without a single order, the second
+cannot be won without upgrades, it becomes winnable but barely after the eight
+stars granted at the end of the first battle, and the third stays out of reach.
+Every one of the twenty one fortresses is also checked to be a real challenge
+at its own star figure, and comfortable at four times it.
 
 ## Design decisions
 

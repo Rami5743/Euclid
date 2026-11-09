@@ -46,10 +46,12 @@ export interface Unit {
   facing: -1 | 1
   /** simulation time of the last damage taken, for the hit flash */
   lastHitAt: number
+  /** simulation time of the last blow struck, for the attack animation */
+  lastAttackAt: number
   alive: boolean
 }
 
-export type ProjectileKind = 'arrow' | 'bolt' | 'heal'
+export type ProjectileKind = 'arrow' | 'fire' | 'heal'
 
 export interface Projectile {
   id: string
@@ -57,10 +59,20 @@ export interface Projectile {
   side: Side
   x: number
   y: number
+  /** direction of travel in radians, for drawing */
+  angle: number
   targetId: string
   /** damage, or healing when kind is 'heal' */
   amount: number
   speed: number
+}
+
+/** Render only: something worth showing above a unit's head. */
+export interface BattleEvent {
+  kind: 'damage' | 'heal'
+  unitId: string
+  amount: number
+  time: number
 }
 
 export interface Arena {
@@ -73,9 +85,18 @@ export interface BattleState {
   arena: Arena
   units: Unit[]
   projectiles: Projectile[]
+  /** recent damage and healing, for the renderer; pruned as time passes */
+  events: BattleEvent[]
   rng: Rng
   winner: Side | null
   nextId: number
+  /**
+   * The side a person commands by hand. Its units never walk off on their own
+   * and never heal on their own: they hold their ground, strike what comes
+   * into reach, and do anything else only when ordered. The other side, and
+   * both sides in the headless balance runs, act by themselves.
+   */
+  manual: Side | null
 }
 
 export const TICK = 1 / 30

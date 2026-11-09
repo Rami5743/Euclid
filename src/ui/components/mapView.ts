@@ -1,11 +1,11 @@
+import { toPercent, type ViewBox } from '../../render/maps/projection'
 import { el } from './layout'
 
-export type MarkerState = 'home' | 'done' | 'open' | 'continent'
+export type MarkerState = 'player' | 'enemy' | 'continent' | 'locked'
 
 export interface MapMarker {
-  /** position in percent of the map */
-  x: number
-  y: number
+  lon: number
+  lat: number
   label: string
   sub?: string
   state: MarkerState
@@ -14,17 +14,26 @@ export interface MapMarker {
 }
 
 /**
- * A drawn map (an SVG asset) with interactive markers placed on top of it.
- * The art stays in src/render/maps, the interaction stays here.
+ * A window onto the drawn world map, with interactive markers placed on top of
+ * it by longitude and latitude. A continent map is the same art zoomed in.
  */
-export function mapView(background: string, markers: MapMarker[]): HTMLElement {
+export function mapView(background: string, view: ViewBox, markers: MapMarker[]): HTMLElement {
   const art = el('div', { class: 'map-art', 'aria-hidden': 'true' })
   art.innerHTML = background
+  const inner = art.firstElementChild
+  if (inner instanceof SVGSVGElement) {
+    inner.setAttribute('viewBox', `${view.x.toFixed(1)} ${view.y.toFixed(1)} ${view.w.toFixed(1)} ${view.h.toFixed(1)}`)
+    inner.setAttribute('preserveAspectRatio', 'xMidYMid slice')
+  }
 
   const layer = el('div', { class: 'map-markers' })
   for (const m of markers) {
+    const { left, top } = toPercent(m.lon, m.lat, view)
     const tag: 'button' | 'div' = m.onClick ? 'button' : 'div'
-    const node = el(tag, { class: `marker ${m.state}`, style: `left:${m.x}%; top:${m.y}%` })
+    const node = el(tag, {
+      class: `marker ${m.state}`,
+      style: `left:${left.toFixed(2)}%; top:${top.toFixed(2)}%`,
+    })
     if (tag === 'button') node.setAttribute('type', 'button')
     const icon = el('span', { class: 'marker-icon' })
     icon.innerHTML = m.icon

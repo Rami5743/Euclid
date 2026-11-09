@@ -1,57 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="מפת העולם">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="מפת העולם">
   <defs>
-    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#cfe3df"/>
-      <stop offset="100%" stop-color="#aec9c6"/>
+    <linearGradient id="w-sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cfe3df"/><stop offset="100%" stop-color="#a9c6c3"/>
     </linearGradient>
-    <linearGradient id="land" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#e8d2a2"/>
-      <stop offset="100%" stop-color="#d3b47c"/>
+    <linearGradient id="w-land" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e9d6a9"/><stop offset="100%" stop-color="#d2b27c"/>
     </linearGradient>
-    <filter id="grain" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7" result="n"/>
-      <feColorMatrix in="n" type="saturate" values="0"/>
-      <feComponentTransfer result="g"><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
-      <feComposite in="SourceGraphic" in2="g" operator="over"/>
-    </filter>
-    <pattern id="waves" width="54" height="28" patternUnits="userSpaceOnUse">
-      <path d="M0 18 q 13 -10 27 0 q 13 10 27 0" fill="none" stroke="#8fb3ae" stroke-width="1.6" opacity="0.55"/>
+    <pattern id="w-waves" width="120" height="60" patternUnits="userSpaceOnUse">
+      <path d="M0 40 q30 -22 60 0 q30 22 60 0" fill="none" stroke="#8fb3ae" stroke-width="2.4" opacity="0.4"/>
     </pattern>
   </defs>
-
-  <rect width="1000" height="600" fill="url(#sea)"/>
-  <rect width="1000" height="600" fill="url(#waves)"/>
-
-  <g filter="url(#grain)">
-    <g fill="url(#land)" stroke="#9c6f3c" stroke-width="3" stroke-linejoin="round">
-      <path d="M180 90 C230 70 300 90 310 140 C320 190 270 210 265 250 C260 290 300 300 300 340 C300 420 250 520 210 540 C180 555 160 520 170 470 C180 420 210 380 205 330 C200 290 150 280 135 240 C115 190 130 110 180 90 Z"/>
-      <path d="M430 110 C470 85 540 90 570 115 C600 140 590 180 560 195 C530 210 500 200 470 210 C440 220 410 200 408 170 C406 140 410 125 430 110 Z"/>
-      <path d="M440 265 C500 245 575 255 600 295 C625 335 600 380 570 410 C545 435 520 470 495 470 C470 470 455 440 450 405 C445 370 425 340 425 310 C425 288 428 270 440 265 Z"/>
-      <path d="M610 120 C680 95 790 105 870 135 C910 150 915 190 880 205 C845 220 820 210 800 230 C780 250 790 285 760 300 C720 320 690 300 660 280 C630 260 600 250 595 215 C590 180 585 130 610 120 Z"/>
-      <path d="M842 352 C872 340 906 352 912 374 C918 396 892 410 866 404 C840 398 826 364 842 352 Z"/>
-      <path d="M352 468 C372 458 396 470 392 486 C388 502 362 506 350 494 C340 484 340 474 352 468 Z"/>
-    </g>
-
-    <g fill="none" stroke="#a8803f" stroke-width="2" opacity="0.5" stroke-linecap="round">
-      <path d="M215 150 l16 -14 16 14 M243 190 l16 -14 16 14"/>
-      <path d="M470 140 l14 -12 14 12 M505 150 l14 -12 14 12"/>
-      <path d="M470 320 l16 -13 16 13 M505 350 l16 -13 16 13 M488 385 l16 -13 16 13"/>
-      <path d="M660 160 l18 -15 18 15 M700 175 l18 -15 18 15 M742 160 l18 -15 18 15"/>
-    </g>
-
-    <g fill="#7d9b74" opacity="0.65">
-      <circle cx="205" cy="430" r="7"/><circle cx="222" cy="448" r="6"/><circle cx="188" cy="452" r="6"/>
-      <circle cx="540" cy="160" r="6"/><circle cx="556" cy="176" r="5"/>
-      <circle cx="560" cy="300" r="6"/><circle cx="575" cy="320" r="5"/>
-      <circle cx="700" cy="262" r="6"/><circle cx="718" cy="276" r="5"/>
-    </g>
+  <rect width="2000" height="1000" fill="url(#w-sea)"/>
+  <rect width="2000" height="1000" fill="url(#w-waves)"/>
+  <g fill="url(#w-land)" stroke="#9c6f3c" stroke-width="5" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <path d="M950.0 261.1 L955.6 255.6 L994.4 244.4 L977.8 233.3 L994.4 227.8 L1011.1 216.7 L1022.2 211.1 L1038.9 205.6 L1044.4 194.4 L1055.6 183.3 L1072.2 200.0 L1105.6 200.0 L1116.7 188.9 L1133.3 183.3 L1155.6 172.2 L1166.7 166.7 L1144.4 138.9 L1122.2 133.3 L1138.9 111.1 L1222.2 122.2 L1305.6 111.1 L1388.9 100.0 L1444.4 94.4 L1527.8 72.2 L1611.1 77.8 L1722.2 100.0 L1777.8 94.4 L1888.9 116.7 L1944.4 122.2 L2000.0 138.9 L1972.2 155.6 L1916.7 166.7 L1877.8 183.3 L1833.3 172.2 L1794.4 205.6 L1777.8 222.2 L1750.0 261.1 L1722.2 266.7 L1700.0 288.9 L1677.8 288.9 L1666.7 311.1 L1677.8 333.3 L1650.0 366.7 L1611.1 388.9 L1600.0 416.7 L1588.9 444.4 L1572.2 494.4 L1555.6 466.7 L1544.4 433.3 L1527.8 411.1 L1522.2 383.3 L1500.0 377.8 L1472.2 388.9 L1455.6 405.6 L1444.4 427.8 L1427.8 455.6 L1405.6 411.1 L1388.9 383.3 L1377.8 366.7 L1350.0 361.1 L1316.7 361.1 L1288.9 344.4 L1266.7 333.3 L1311.1 361.1 L1327.8 377.8 L1305.6 400.0 L1277.8 427.8 L1244.4 433.3 L1238.9 405.6 L1216.7 383.3 L1194.4 344.4 L1188.9 327.8 L1200.0 300.0 L1166.7 300.0 L1150.0 294.4 L1127.8 288.9 L1111.1 277.8 L1088.9 288.9 L1100.0 277.8 L1077.8 266.7 L1066.7 255.6 L1044.4 255.6 L1016.7 266.7 L988.9 272.2 L966.7 294.4 L950.0 288.9 Z"/>
+    <path d="M905.6 383.3 L911.1 433.3 L927.8 455.6 L977.8 472.2 L1016.7 466.7 L1050.0 477.8 L1050.0 505.6 L1072.2 533.3 L1066.7 594.4 L1083.3 650.0 L1100.0 688.9 L1138.9 688.9 L1183.3 655.6 L1194.4 616.7 L1222.2 588.9 L1227.8 561.1 L1222.2 516.7 L1238.9 494.4 L1266.7 488.9 L1283.3 438.9 L1244.4 433.3 L1211.1 416.7 L1205.6 377.8 L1188.9 344.4 L1177.8 327.8 L1138.9 322.2 L1094.4 327.8 L1055.6 311.1 L1016.7 300.0 L988.9 305.6 L966.7 300.0 L944.4 327.8 L922.2 355.6 Z"/>
+    <path d="M66.7 133.3 L111.1 111.1 L277.8 111.1 L388.9 116.7 L472.2 111.1 L527.8 127.8 L555.6 155.6 L566.7 188.9 L638.9 222.2 L666.7 238.9 L633.3 255.6 L611.1 272.2 L583.3 305.6 L550.0 361.1 L527.8 333.3 L500.0 338.9 L461.1 355.6 L461.1 377.8 L488.9 400.0 L511.1 383.3 L533.3 444.4 L566.7 455.6 L555.6 411.1 L500.0 422.2 L472.2 411.1 L416.7 388.9 L388.9 366.7 L366.7 333.3 L333.3 311.1 L311.1 277.8 L305.6 233.3 L266.7 205.6 L222.2 166.7 L166.7 166.7 L111.1 188.9 L77.8 155.6 Z"/>
+    <path d="M550.0 455.6 L577.8 438.9 L611.1 433.3 L655.6 444.4 L711.1 472.2 L722.2 500.0 L755.6 511.1 L805.6 527.8 L788.9 572.2 L733.3 638.9 L700.0 688.9 L677.8 716.7 L655.6 727.8 L638.9 750.0 L622.2 788.9 L588.9 794.4 L594.4 750.0 L600.0 711.1 L605.6 666.7 L611.1 611.1 L577.8 577.8 L550.0 533.3 L555.6 500.0 L566.7 488.9 Z"/>
+    <path d="M1627.8 622.2 L1633.3 644.4 L1638.9 688.9 L1661.1 688.9 L1694.4 677.8 L1716.7 677.8 L1750.0 694.4 L1766.7 694.4 L1777.8 711.1 L1811.1 716.7 L1833.3 705.6 L1850.0 666.7 L1850.0 638.9 L1811.1 605.6 L1788.9 561.1 L1755.6 566.7 L1722.2 566.7 L1694.4 577.8 L1677.8 600.0 Z"/>
+    <path d="M0.0 900.0 L166.7 916.7 L333.3 905.6 L500.0 911.1 L666.7 888.9 L750.0 866.7 L888.9 888.9 L1055.6 883.3 L1222.2 877.8 L1388.9 872.2 L1555.6 866.7 L1722.2 866.7 L1888.9 888.9 L2000.0 900.0 L2000.0 1000.0 L0.0 1000.0 Z"/>
   </g>
-
-  <g transform="translate(86 516)" opacity="0.8">
-    <circle r="34" fill="#f6eddc" stroke="#8a5a2b" stroke-width="2.5"/>
-    <path d="M0 -28 L7 -6 L28 0 L7 6 L0 28 L-7 6 L-28 0 L-7 -6 Z" fill="#c98a16" stroke="#5d3b1a" stroke-width="1.5"/>
-    <text x="0" y="-36" text-anchor="middle" font-size="15" font-weight="700" fill="#5d3b1a">צ</text>
+  <g fill="url(#w-land)" stroke="#9c6f3c" stroke-width="4" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <path d="M750.0 166.7 L722.2 138.9 L694.4 111.1 L722.2 83.3 L777.8 55.6 L833.3 50.0 L877.8 94.4 L861.1 122.2 L805.6 155.6 Z"/>
+    <path d="M1238.9 566.7 L1277.8 583.3 L1266.7 638.9 L1244.4 622.2 Z"/>
+    <path d="M1722.2 322.2 L1750.0 311.1 L1783.3 277.8 L1805.6 255.6 L1788.9 250.0 L1766.7 294.4 L1738.9 316.7 Z"/>
+    <path d="M972.2 222.2 L988.9 205.6 L983.3 177.8 L966.7 177.8 L955.6 200.0 L966.7 222.2 Z"/>
+    <path d="M944.4 211.1 L966.7 205.6 L966.7 194.4 L950.0 194.4 Z"/>
+    <path d="M1961.1 694.4 L1988.9 711.1 L1966.7 727.8 L1944.4 755.6 L1927.8 750.0 L1955.6 722.2 Z"/>
+    <path d="M1527.8 472.2 L1583.3 533.3 L1655.6 544.4 L1711.1 550.0 L1727.8 544.4 L1666.7 511.1 L1611.1 500.0 L1555.6 477.8 Z"/>
+    <path d="M1666.7 400.0 L1688.9 427.8 L1700.0 455.6 L1677.8 466.7 L1661.1 438.9 Z"/>
+    <path d="M1444.4 450.0 L1455.6 461.1 L1450.0 466.7 L1438.9 461.1 Z"/>
+    <path d="M866.7 138.9 L900.0 133.3 L922.2 138.9 L894.4 150.0 Z"/>
+    <path d="M527.8 377.8 L566.7 372.2 L588.9 388.9 L555.6 388.9 Z"/>
   </g>
-
-  <rect x="8" y="8" width="984" height="584" fill="none" stroke="#8a5a2b" stroke-width="5" rx="14" opacity="0.85"/>
+  <g fill="none" stroke="#a8803f" stroke-width="4" opacity="0.4" stroke-linecap="round" vector-effect="non-scaling-stroke">
+    <path d="M1490 306 l7 -7 l7 7 M1506 310 l7 -7 l7 7"/>
+    <path d="M1423 311 l7 -7 l7 7 M1439 315 l7 -7 l7 7"/>
+    <path d="M1379 300 l7 -7 l7 7 M1395 304 l7 -7 l7 7"/>
+    <path d="M1034 244 l7 -7 l7 7 M1050 248 l7 -7 l7 7"/>
+    <path d="M379 278 l7 -7 l7 7 M395 282 l7 -7 l7 7"/>
+    <path d="M601 583 l7 -7 l7 7 M617 587 l7 -7 l7 7"/>
+    <path d="M1157 528 l7 -7 l7 7 M1173 532 l7 -7 l7 7"/>
+    <path d="M1796 639 l7 -7 l7 7 M1812 643 l7 -7 l7 7"/>
+  </g>
+  <g fill="#7d9b74" opacity="0.5">
+    <circle cx="1111" cy="500" r="6"/><circle cx="1120" cy="506" r="5"/><circle cx="1103" cy="505" r="5"/>
+    <circle cx="667" cy="528" r="6"/><circle cx="676" cy="534" r="5"/><circle cx="659" cy="533" r="5"/>
+    <circle cx="1556" cy="500" r="6"/><circle cx="1565" cy="506" r="5"/><circle cx="1548" cy="505" r="5"/>
+    <circle cx="1139" cy="194" r="6"/><circle cx="1148" cy="200" r="5"/><circle cx="1131" cy="199" r="5"/>
+    <circle cx="472" cy="222" r="6"/><circle cx="481" cy="228" r="5"/><circle cx="464" cy="227" r="5"/>
+    <circle cx="1750" cy="583" r="6"/><circle cx="1759" cy="589" r="5"/><circle cx="1742" cy="588" r="5"/>
+  </g>
 </svg>

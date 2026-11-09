@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { createBattle, healthShare, issueOrder, simulate, step, type UnitSpec } from '../src/battle/sim'
+import {
+  castHealOn, createBattle, healReady, healthShare, healTargetFor, issueOrder, simulate, step,
+  type UnitSpec,
+} from '../src/battle/sim'
 import { baseDamage, DAMAGE_SPREAD, TICK, UNIT_RADIUS, type BattleState } from '../src/battle/types'
 import { BASE_STATS } from '../src/content/heroes'
 import { enemySpecs, playerSpecs, statsWithUpgrades } from '../src/battle/setup'
@@ -186,6 +189,7 @@ describe('army construction', () => {
     },
     stars: 0,
     conquered: [],
+    solvedTopics: [],
     flags: { sawUpgrades: true, setupDone: true },
   })
 
@@ -208,5 +212,85 @@ describe('army construction', () => {
     const specs = playerSpecs(profile())
     expect(specs.map((s) => s.cls)).toEqual(['warrior', 'archer', 'mage'])
     expect(specs[0]!.name).toBe('א')
+  })
+})
+
+describe('a side commanded by hand', () => {
+  it('holds its ground instead of walking off', () => {
+    const state = createBattle({ player: trio(), enemy: trio(), seed: 21, manual: 'player' })
+    const before = state.units.filter((u) => u.side === 'player').map((u) => `${u.x},${u.y}`)
+    run(state, 2)
+    const after = state.units.filter((u) => u.side === 'player').map((u) => `${u.x},${u.y}`)
+    expect(after).toEqual(before)
+    // while the other side closes in on its own
+    const enemy = state.units.find((u) => u.side === 'enemy' && u.cls === 'warrior')!
+    expect(enemy.x).toBeLessThan(state.arena.width - 3)
+  })
+
+  it('returns to holding after an order is carried out', () => {
+    const state = createBattle({ player: trio(), enemy: trio(), seed: 22, manual: 'player' })
+    const unit = state.units.find((u) => u.side === 'player')!
+    issueOrder(state, unit.id, { kind: 'move', x: 6, y: 3 })
+    for (let i = 0; i < 400 && unit.order.kind === 'move'; i++) step(state, TICK)
+    expect(unit.order.kind).toBe('hold')
+  })
+
+  it('does not heal on its own, but heals when ordered', () => {
+    const state = createBattle({
+      player: [spec('mage'), spec('warrior')], enemy: [spec('archer')], seed: 23, manual: 'player',
+    })
+    const mage = state.units[0]!
+    const warrior = state.units[1]!
+    const enemy = state.units[2]!
+    // Kept out of reach, so that only healing can change the warrior's health.
+    const park = (): void => { enemy.x = state.arena.width - 1; enemy.y = 1 }
+    park()
+    warrior.hp = warrior.maxHp * 0.3
+    const wounded = warrior.hp
+    for (let i = 0; i < Math.round(3 / TICK); i++) { park(); step(state, TICK) }
+    expect(warrior.hp).toBe(wounded)
+
+    const target = healTargetFor(state, mage.id)
+    expect(target?.id).toBe(warrior.id)
+    expect(healReady(state, mage.id)).toBe(true)
+    const before = warrior.hp
+    expect(castHealOn(state, mage.id, warrior.id)).toBe(true)
+    for (let i = 0; i < Math.round(1 / TICK); i++) { park(); step(state, TICK) }
+    expect(warrior.hp).toBeGreaterThan(before)
+    // and the cast is on cooldown right afterwards
+    expect(healReady(state, mage.id)).toBe(false)
+  })
+
+  it('refuses a heal out of range or on an enemy', () => {
+    const state = createBattle({
+      player: [spec('mage'), spec('warrior')], enemy: [spec('warrior')], seed: 24, manual: 'player',
+    })
+    const mage = state.units[0]!
+    const warrior = state.units[1]!
+    const enemy = state.units[2]!
+    warrior.hp = 10
+    warrior.x = mage.x + 20
+    expect(castHealOn(state, mage.id, warrior.id)).toBe(false)
+    expect(castHealOn(state, mage.id, enemy.id)).toBe(false)
+  })
+
+  it('still fights back without any order', () => {
+    const state = createBattle({ player: trio(), enemy: trio(), seed: 25, manual: 'player' })
+    const enemyHp = () => state.units.filter((u) => u.side === 'enemy').reduce((s, u) => s + u.hp, 0)
+    const before = enemyHp()
+    run(state, 25)
+    expect(enemyHp()).toBeLessThan(before)
+  })
+})
+
+describe('the mage throws fire', () => {
+  it('its shots are fireballs', () => {
+    const state = createBattle({ player: [spec('mage')], enemy: [spec('warrior')], seed: 26 })
+    let kinds = new Set<string>()
+    for (let i = 0; i < 400 && !state.winner; i++) {
+      step(state, TICK)
+      for (const p of state.projectiles) kinds.add(p.kind)
+    }
+    expect(kinds.has('fire')).toBe(true)
   })
 })

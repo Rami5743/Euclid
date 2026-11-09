@@ -20,9 +20,11 @@ export interface BattleConfig {
   seed: number
   arenaWidth?: number
   arenaHeight?: number
+  /** the side a person commands by hand; omitted means both sides act alone */
+  manual?: Side
 }
 
-const PROJECTILE_SPEED: Record<string, number> = { arrow: 14, bolt: 10, heal: 12 }
+const PROJECTILE_SPEED: Record<string, number> = { arrow: 14, fire: 9, heal: 12 }
 /** A mage heals an ally that lost at least this share of its hit points. */
 const HEAL_THRESHOLD = 0.85
 const ARRIVE = 0.15
@@ -47,9 +49,11 @@ export function createBattle(config: BattleConfig): BattleState {
     arena,
     units: [],
     projectiles: [],
+    events: [],
     rng,
     winner: null,
     nextId: 1,
+    manual: config.manual ?? null,
   }
 
   const place = (specs: UnitSpec[], side: Side): void => {
@@ -67,13 +71,14 @@ export function createBattle(config: BattleConfig): BattleState {
         hp: spec.stats.hp,
         maxHp: spec.stats.hp,
         stats: spec.stats,
-        order: { kind: 'auto' },
+        order: side === state.manual ? { kind: 'hold' } : { kind: 'auto' },
         targetId: null,
         // A random first swing keeps the two sides from firing in lockstep.
         cooldown: between(rng, 0, 1 / spec.stats.attackRate),
         healCooldown: between(rng, 0, spec.stats.healRate ?? 3),
         facing: side === 'player' ? 1 : -1,
         lastHitAt: -99,
+        lastAttackAt: -99,
         alive: true,
       })
     })
@@ -87,6 +92,56 @@ export function createBattle(config: BattleConfig): BattleState {
 export function issueOrder(state: BattleState, unitId: string, order: Order): void {
   const unit = unitById(state, unitId)
   if (unit?.alive) unit.order = order
+}
+
+/** What a unit falls back to when its order is done. */
+function restingOrder(state: BattleState, unit: Unit): Order {
+  return unit.side === state.manual ? { kind: 'hold' } : { kind: 'auto' }
+}
+
+/** The ally a mage would heal: the most wounded one within its range. */
+export function healTargetFor(state: BattleState, mageId: string): Unit | null {
+  const mage = unitById(state, mageId)
+  if (!mage?.alive || !mage.stats.healing) return null
+  let worst: Unit | null = null
+  for (const ally of livingUnits(state, mage.side)) {
+    if (ally.id === mage.id || ally.hp >= ally.maxHp) continue
+    if (distance(mage, ally) > mage.stats.range) continue
+    if (!worst || ally.hp / ally.maxHp < worst.hp / worst.maxHp) worst = ally
+  }
+  return worst
+}
+
+export function healReady(state: BattleState, mageId: string): boolean {
+  const mage = unitById(state, mageId)
+  return Boolean(mage?.alive && mage.stats.healing && mage.healCooldown <= 0)
+}
+
+/** An ordered heal. Returns false when it cannot be cast right now. */
+export function castHealOn(state: BattleState, mageId: string, targetId: string): boolean {
+  const mage = unitById(state, mageId)
+  const target = unitById(state, targetId)
+  const healing = mage?.stats.healing
+  if (!mage?.alive || !healing || mage.healCooldown > 0) return false
+  if (!target?.alive || target.side !== mage.side || target.id === mage.id) return false
+  if (distance(mage, target) > mage.stats.range) return false
+  spawnHeal(state, mage, target, healing)
+  return true
+}
+
+function spawnHeal(state: BattleState, mage: Unit, target: Unit, healing: number): void {
+  state.projectiles.push({
+    id: `p${state.nextId++}`,
+    kind: 'heal',
+    side: mage.side,
+    x: mage.x,
+    y: mage.y,
+    angle: Math.atan2(target.y - mage.y, target.x - mage.x),
+    targetId: target.id,
+    amount: healing,
+    speed: PROJECTILE_SPEED.heal!,
+  })
+  mage.healCooldown = mage.stats.healRate ?? 3
 }
 
 export function step(state: BattleState, dt: number = TICK): void {
@@ -106,6 +161,10 @@ export function step(state: BattleState, dt: number = TICK): void {
   separate(state)
   clampToArena(state)
   resolveWinner(state)
+  // Render only data: keep the recent past, drop the rest.
+  if (state.events.length > 0) {
+    state.events = state.events.filter((e) => state.time - e.time < 2)
+  }
 }
 
 function stepProjectiles(state: BattleState, dt: number): void {
@@ -118,18 +177,26 @@ function stepProjectiles(state: BattleState, dt: number): void {
     const d = Math.hypot(dx, dy)
     const travel = p.speed * dt
     if (d <= travel) {
-      if (p.kind === 'heal') target.hp = Math.min(target.maxHp, target.hp + p.amount)
-      else damage(state, target, p.amount)
+      if (p.kind === 'heal') {
+        const healed = Math.min(target.maxHp - target.hp, p.amount)
+        target.hp += healed
+        state.events.push({ kind: 'heal', unitId: target.id, amount: healed, time: state.time })
+      } else {
+        damage(state, target, p.amount)
+      }
       continue
     }
     p.x += (dx / d) * travel
     p.y += (dy / d) * travel
+    p.angle = Math.atan2(dy, dx)
     kept.push(p)
   }
   state.projectiles = kept
 }
 
 function castHeal(state: BattleState, unit: Unit): void {
+  // A hand commanded side heals only when told to.
+  if (unit.side === state.manual) return
   const healing = unit.stats.healing
   if (!healing || unit.healCooldown > 0) return
   const allies = livingUnits(state, unit.side).filter(
@@ -140,17 +207,7 @@ function castHeal(state: BattleState, unit: Unit): void {
     if (!worst || a.hp / a.maxHp < worst.hp / worst.maxHp) worst = a
   }
   if (!worst) return
-  state.projectiles.push({
-    id: `p${state.nextId++}`,
-    kind: 'heal',
-    side: unit.side,
-    x: unit.x,
-    y: unit.y,
-    targetId: worst.id,
-    amount: healing,
-    speed: PROJECTILE_SPEED.heal!,
-  })
-  unit.healCooldown = unit.stats.healRate ?? 3
+  spawnHeal(state, unit, worst, healing)
 }
 
 function act(state: BattleState, unit: Unit, dt: number): void {
@@ -184,7 +241,7 @@ function resolveIntent(state: BattleState, unit: Unit): Intent {
   const order = unit.order
   if (order.kind === 'move') {
     if (distance(unit, order) <= ARRIVE) {
-      unit.order = { kind: 'auto' }
+      unit.order = restingOrder(state, unit)
     } else {
       return { kind: 'move', x: order.x, y: order.y }
     }
@@ -192,7 +249,7 @@ function resolveIntent(state: BattleState, unit: Unit): Intent {
   if (unit.order.kind === 'attack') {
     const target = unitById(state, unit.order.targetId)
     if (target?.alive) return { kind: 'attack', targetId: target.id }
-    unit.order = { kind: 'auto' }
+    unit.order = restingOrder(state, unit)
   }
   if (unit.order.kind === 'hold') {
     const inRange = state.units.filter(
@@ -219,25 +276,29 @@ function strike(state: BattleState, unit: Unit, target: Unit): void {
   const amount = baseDamage(unit.stats.attack, target.stats.defense) *
     (1 + between(state.rng, -DAMAGE_SPREAD, DAMAGE_SPREAD))
   unit.cooldown = 1 / unit.stats.attackRate
+  unit.lastAttackAt = state.time
   if (unit.stats.range <= 1.5) {
     damage(state, target, amount)
     return
   }
+  const kind = unit.cls === 'mage' ? 'fire' : 'arrow'
   state.projectiles.push({
     id: `p${state.nextId++}`,
-    kind: unit.cls === 'mage' ? 'bolt' : 'arrow',
+    kind,
     side: unit.side,
     x: unit.x,
     y: unit.y,
+    angle: Math.atan2(target.y - unit.y, target.x - unit.x),
     targetId: target.id,
     amount,
-    speed: PROJECTILE_SPEED[unit.cls === 'mage' ? 'bolt' : 'arrow']!,
+    speed: PROJECTILE_SPEED[kind]!,
   })
 }
 
 function damage(state: BattleState, target: Unit, amount: number): void {
   target.hp -= amount
   target.lastHitAt = state.time
+  state.events.push({ kind: 'damage', unitId: target.id, amount, time: state.time })
   if (target.hp <= 0) {
     target.hp = 0
     target.alive = false

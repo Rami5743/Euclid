@@ -1,4 +1,6 @@
-import { createBattle, issueOrder, step as stepSimulation } from '../../battle/sim'
+import {
+  castHealOn, createBattle, healReady, healTargetFor, issueOrder, step as stepSimulation,
+} from '../../battle/sim'
 import { battleConfigFor } from '../../battle/setup'
 import { TICK, type BattleState, type Unit } from '../../battle/types'
 import { heroTitle } from '../../content/heroes'
@@ -55,8 +57,9 @@ export function battleScreen(params: Record<string, string>): Screen {
         el('h2', {}, fortress.name),
         el('p', {}, `רמת האויב: ${fortress.level}. שלושת הגיבורים שלך מול שלושת מגיני המבצר.`),
         el('p', { class: 'muted' },
-          'הקשה על גיבור בוחרת אותו, הקשה על אויב שולחת אותו לתקוף, והקשה על הקרקע שולחת אותו לנוע. ' +
-          'אפשר לבחור את כולם בכפתור שלמטה.'),
+          'הגיבורים שלך אינם זזים מעצמם. הם עומדים במקומם ותוקפים כל אויב שנכנס לטווח, ' +
+          'וכל תנועה היא לפי פקודה שלך. הקשה על גיבור בוחרת אותו, הקשה על אויב שולחת אותו לתקוף, ' +
+          'והקשה על הקרקע שולחת אותו לנוע. גם הריפוי אינו אוטומטי, ומופעל בכפתור הריפוי.'),
         startButton(),
       ),
     )
@@ -100,6 +103,7 @@ export function battleScreen(params: Record<string, string>): Screen {
   // --- controls -----------------------------------------------------------
   const portraits = el('div', { class: 'portraits' })
   const pauseButton = el('button', { class: 'btn small', type: 'button' }, 'השהה')
+  const healButton = el('button', { class: 'btn small', type: 'button' }, 'ריפוי')
   const allButton = el('button', { class: 'btn small', type: 'button' }, 'בחר הכול')
   const holdButton = el('button', { class: 'btn small', type: 'button' }, 'עמוד במקום')
 
@@ -117,6 +121,23 @@ export function battleScreen(params: Record<string, string>): Screen {
   holdButton.addEventListener('click', () => {
     for (const id of selected) issueOrder(state, id, { kind: 'hold' })
   })
+
+  // Healing is never automatic: the mage casts it on the most wounded ally
+  // within its range, and only when this is pressed.
+  const mage = state.units.find((u) => u.side === 'player' && u.cls === 'mage')
+  healButton.addEventListener('click', () => {
+    if (!mage) return
+    const target = healTargetFor(state, mage.id)
+    if (!target) return
+    castHealOn(state, mage.id, target.id)
+    updateHeal()
+  })
+
+  function updateHeal(): void {
+    const ready = mage ? healReady(state, mage.id) && healTargetFor(state, mage.id) !== null : false
+    if (ready) healButton.removeAttribute('disabled')
+    else healButton.setAttribute('disabled', 'true')
+  }
 
   // The portraits are built once and only updated afterwards. Rebuilding them
   // every frame would replace the DOM under the player's finger mid-tap.
@@ -138,6 +159,7 @@ export function battleScreen(params: Record<string, string>): Screen {
   })
 
   function updatePortraits(): void {
+    updateHeal()
     for (const view of portraitViews) {
       const ratio = Math.max(0, view.unit.hp / view.unit.maxHp)
       view.fill.style.width = `${(ratio * 100).toFixed(0)}%`
@@ -180,7 +202,7 @@ export function battleScreen(params: Record<string, string>): Screen {
     frame = requestAnimationFrame(tick)
     if (running && !finished) {
       const now = performance.now()
-      accumulator += Math.min(0.1, (now - last) / 1000) * speed
+      accumulator += Math.min(0.1, (now - last) / 1000) * speed * PACE
       last = now
       let steps = 0
       while (accumulator >= TICK && steps < 8 * speed) {
@@ -208,7 +230,7 @@ export function battleScreen(params: Record<string, string>): Screen {
   const shell = page(
     { title: fortress.name, subtitle: `${continent.name} · ${continent.domain}`, showStars: false },
     stage,
-    el('div', { class: 'hud' }, portraits, el('div', { class: 'hud-actions' }, allButton, holdButton, pauseButton)),
+    el('div', { class: 'hud' }, portraits, el('div', { class: 'hud-actions' }, healButton, allButton, holdButton, pauseButton)),
   )
 
   return {
@@ -221,6 +243,13 @@ export function battleScreen(params: Record<string, string>): Screen {
     },
   }
 }
+
+/**
+ * How fast a battle runs on screen compared to the simulation's own clock.
+ * Below one so that a person has time to look and to give orders; it changes
+ * nothing about the fight itself, only how quickly it is played back.
+ */
+const PACE = 0.6
 
 function clampSpeed(raw: string | null): number {
   const value = Number(raw ?? 1)

@@ -16,6 +16,8 @@ export interface Profile {
   stars: number
   /** ids of fortresses already conquered */
   conquered: string[]
+  /** ids of curriculum topics whose missions have been solved */
+  solvedTopics: string[]
   flags: {
     /** the upgrade screen stays hidden until the first battle is over */
     sawUpgrades: boolean
@@ -37,11 +39,19 @@ function freshProfile(): Profile {
     },
     stars: 0,
     conquered: [],
+    solvedTopics: [],
     flags: { sawUpgrades: false, setupDone: false },
   }
 }
 
-let current: Profile = store.read<Profile>(KEY) ?? freshProfile()
+function migrate(profile: Profile): Profile {
+  // Older saves predate some fields; fill them in rather than start over.
+  profile.solvedTopics ??= []
+  profile.conquered ??= []
+  return profile
+}
+
+let current: Profile = migrate(store.read<Profile>(KEY) ?? freshProfile())
 
 type Listener = (p: Profile) => void
 const listeners = new Set<Listener>()

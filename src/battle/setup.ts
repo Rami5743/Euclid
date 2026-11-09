@@ -54,5 +54,12 @@ export function enemySpecs(difficulty: number): UnitSpec[] {
 export function battleConfigFor(fortressId: string, profile: Profile, seed: number): BattleConfig | null {
   const hit = fortressById(fortressId)
   if (!hit || hit.fortress.home) return null
-  return { player: playerSpecs(profile), enemy: enemySpecs(hit.fortress.difficulty), seed }
+  return {
+    player: playerSpecs(profile),
+    enemy: enemySpecs(hit.fortress.difficulty),
+    seed,
+    // On screen the player's side is commanded by hand: it holds its ground
+    // and heals only when told to.
+    manual: 'player',
+  }
 }

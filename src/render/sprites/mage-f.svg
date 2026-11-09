@@ -11,8 +11,8 @@
     <path d="M39 33 l8 -3 1.5 4 -8 4 Z" fill="#f2cba4"/>
     <path d="M47 16 L47 52" fill="none" stroke="#7a5326" stroke-width="2.8"/>
     <path d="M47 16 q-4 -2 -4 -5 q4 1 4 5 Z" fill="#7a5326"/>
-    <circle cx="47" cy="12" r="4.6" fill="#8fd4e8" stroke="#2f6fb3" stroke-width="1.5"/>
-    <circle cx="45.8" cy="10.8" r="1.4" fill="#f2fbff" stroke="none"/>
+    <circle cx="47" cy="12" r="4.8" fill="#f08a2c" stroke="#b4460d" stroke-width="1.5"/>
+    <circle cx="45.6" cy="10.6" r="1.6" fill="#fff3cf" stroke="none"/>
     <!-- head -->
     <circle cx="32" cy="21" r="7.4" fill="#f2cba4"/>
     <circle cx="35.3" cy="21" r="1" fill="#3b2a1a" stroke="none"/>

@@ -295,10 +295,11 @@ button.marker:active { transform: translate(-50%, -50%) scale(0.95); }
 }
 
 .marker-sub { font-weight: 600; font-size: 12px; color: var(--ink-soft); }
-.marker.open { color: #b23b2e; }
-.marker.done { color: var(--moss); }
-.marker.done .marker-sub { color: var(--moss); }
-.marker.home { color: #2f6fb3; }
+.marker.enemy { color: #b23b2e; }
+.marker.player { color: #2f6fb3; }
+.marker.player .marker-sub { color: #2f6fb3; }
+.marker.locked { color: #8d8477; }
+.marker.locked .marker-caption { opacity: 0.75; }
 
 /* Hero setup */
 .setup-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
@@ -354,9 +355,6 @@ svg.arena { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 
 .ring { fill: none; stroke: var(--gold); stroke-width: 6; stroke-dasharray: 16 12; }
 
-.shot.arrow rect { fill: #5d4b3a; }
-.shot.bolt circle { fill: #8fd4e8; stroke: #2f6fb3; stroke-width: 3; }
-.shot.heal circle { fill: #9ee08a; stroke: #4f7a3f; stroke-width: 3; }
 
 .overlay {
   position: absolute;
@@ -421,19 +419,19 @@ svg.arena { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 
 @keyframes ring-spin { to { stroke-dashoffset: -56; } }
 
-.shot.heal circle {
+.shot.heal g {
   transform-box: fill-box;
   transform-origin: center;
   animation: heal-pulse 0.5s ease-in-out infinite alternate;
 }
 
-@keyframes heal-pulse { from { transform: scale(0.8); } to { transform: scale(1.25); } }
+@keyframes heal-pulse { from { transform: scale(0.85); } to { transform: scale(1.2); } }
 
 .unit .sprite, .unit { transition: none; }
 .unit.dead .shadow { opacity: 0.5; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ring, .shot.heal circle { animation: none; }
+  .ring, .shot.heal g { animation: none; }
 }
 
 /* Page polish */
@@ -451,3 +449,26 @@ svg.arena { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 }
 
 .panel h2, h1 { font-weight: 800; }
+
+/* Battle effects */
+.vignette { pointer-events: none; }
+
+.burst { pointer-events: none; fill: none; stroke-width: 7; }
+.burst.damage { stroke: #ffd38a; }
+.burst.heal { stroke: #9ee08a; }
+
+.floater {
+  pointer-events: none;
+  font-family: system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 54px;
+  paint-order: stroke;
+  stroke: rgba(47, 36, 24, 0.85);
+  stroke-width: 8px;
+  stroke-linejoin: round;
+}
+
+.floater.damage { fill: #ffe3a8; }
+.floater.heal { fill: #bdf2ab; }
+
+.layer-shots .shot { pointer-events: none; }

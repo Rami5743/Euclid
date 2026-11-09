@@ -64,8 +64,8 @@ try {
     await page.goto(`${BASE}?speed=${speed}${hash}`)
     await page.waitForTimeout(220)
   }
-  const unitPositions = async (p) =>
-    (await p.locator('.unit').evaluateAll((nodes) => nodes.map((n) => n.getAttribute('transform')).join('|')))
+  const unitPositions = async (p, selector = '.unit') =>
+    (await p.locator(selector).evaluateAll((nodes) => nodes.map((n) => n.getAttribute('transform')).join('|')))
 
   console.log('setup screen')
   await go('')
@@ -85,22 +85,30 @@ try {
 
   console.log('world map')
   check('world map art is drawn', (await page.locator('.map-art svg').count()) === 1)
-  check('four continent markers', (await page.locator('.marker.continent').count()) === 4)
+  check('only the first continent is open', (await page.locator('.marker.continent').count()) === 1)
+  check('the other six are locked', (await page.locator('.marker.locked').count()) === 6)
+  check('a locked continent cannot be entered', (await page.locator('button.marker.locked').count()) === 0)
+  const worldView = await page.locator('.map-art svg').getAttribute('viewBox')
   await shot('02-world')
 
   console.log('continents')
-  for (const id of ['asia', 'europe', 'africa', 'america']) {
-    await go(`#/continent/${id}`)
-    check(`${id}: map art`, (await page.locator('.map-art svg').count()) === 1)
-    check(`${id}: one home and three fortresses`,
-      (await page.locator('.marker.home').count()) === 1 &&
-      (await page.locator('.marker.open, .marker.done').count()) === 3)
-    await shot(`03-${id}`)
-  }
+  await go('#/continent/asia')
+  check('asia: map art', (await page.locator('.map-art svg').count()) === 1)
+  check('asia: the continent map is a zoom of the world map',
+    (await page.locator('.map-art svg').getAttribute('viewBox')) !== worldView)
+  check('asia: one fortress of the player and three of the enemy',
+    (await page.locator('.marker.player').count()) === 1 &&
+    (await page.locator('.marker.enemy').count()) === 3)
+  await shot('03-asia')
+
+  await go('#/continent/europe')
+  check('a locked continent says so',
+    (await page.locator('.notice').innerText()).includes('נעולה'))
+  await shot('03-europe-locked')
 
   console.log('battle flow')
   await go('#/continent/asia')
-  await page.locator('.marker.open').first().click()
+  await page.locator('.marker.enemy').first().click()
   await page.waitForTimeout(220)
   check('battle screen reached', page.url().includes('#/battle/'))
   check('the arena is drawn', (await page.locator('svg.arena').count()) === 1)
@@ -109,11 +117,15 @@ try {
   check('the battle opens paused behind the intro panel', (await page.locator('.overlay .panel').count()) === 1)
   await shot('04-battle-intro')
 
+  check('healing starts out unavailable',
+    (await page.locator('.hud-actions button', { hasText: 'ריפוי' }).isDisabled()))
   await page.getByRole('button', { name: 'התחל קרב' }).click()
-  const before = await unitPositions(page)
+  const beforeAll = await unitPositions(page)
+  const beforeMine = await unitPositions(page, '.unit.player')
   await page.waitForTimeout(1200)
-  const after = await unitPositions(page)
-  check('units move once the battle starts', before !== after)
+  check('the enemy advances on its own', beforeAll !== (await unitPositions(page)))
+  check('the player\'s heroes do not move on their own',
+    beforeMine === (await unitPositions(page, '.unit.player')))
   await shot('05-battle-running')
 
   await page.locator('.portrait').first().click()
@@ -162,15 +174,19 @@ try {
   await page.getByRole('button', { name: 'לתפריט המשימות' }).click()
   await page.waitForTimeout(220)
   check('modal leads to the missions menu', page.url().includes('#/missions'))
-  check('all curriculum topics listed', (await page.locator('.topic').count()) === 26)
-  check('every topic is still marked as coming soon', (await page.locator('.topic.soon').count()) === 26)
+  check('only the open topic of the current continent is listed',
+    (await page.locator('.topic').count()) === 1)
+  check('the topic is still marked as coming soon', (await page.locator('.topic.soon').count()) === 1)
+  check('the missions menu names the continent being played',
+    (await page.locator('.subtitle').innerText()).includes('אסיה'))
   await shot('09-missions')
 
   console.log('conquered state is remembered')
   await go('#/continent/asia')
-  check('a conquered fortress is marked', (await page.locator('.marker.done').count()) === 1)
+  check('a conquered fortress joins the player', (await page.locator('.marker.player').count()) === 2)
   check('a conquered fortress cannot be attacked again',
-    (await page.locator('button.marker.done').count()) === 0)
+    (await page.locator('button.marker.player').count()) === 0)
+  check('two enemy fortresses are left', (await page.locator('.marker.enemy').count()) === 2)
   await go('#/battle/asia-1')
   check('going straight to a conquered fortress is refused',
     (await page.locator('.notice').innerText()).includes('כבר נכבש'))
