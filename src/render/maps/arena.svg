@@ -1,91 +1,198 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1400" preserveAspectRatio="none" aria-hidden="true">
   <defs>
-    <linearGradient id="ar-field" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#d3dca7"/><stop offset="55%" stop-color="#b6c98c"/><stop offset="100%" stop-color="#9fb679"/>
+    <linearGradient id="ar-ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7f9a52"/>
+      <stop offset="45%" stop-color="#8fab5d"/>
+      <stop offset="100%" stop-color="#6f8a47"/>
     </linearGradient>
-    <linearGradient id="ar-wall" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ded5c3"/><stop offset="100%" stop-color="#9d9080"/>
+    <linearGradient id="ar-road" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b79a6a"/><stop offset="100%" stop-color="#9c7f52"/>
     </linearGradient>
-    <linearGradient id="ar-tent" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f0e6d2"/><stop offset="100%" stop-color="#cdbb9b"/>
+    <linearGradient id="ar-stone" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b9b3a6"/><stop offset="55%" stop-color="#9d968a"/><stop offset="100%" stop-color="#7d766c"/>
     </linearGradient>
-    <pattern id="ar-grass" width="210" height="190" patternUnits="userSpaceOnUse">
-      <path d="M30 150 q7 -20 14 -30 M38 152 q3 -16 12 -26 M150 170 q7 -18 14 -28 M158 172 q3 -14 12 -24"
-            fill="none" stroke="#86a063" stroke-width="4" stroke-linecap="round" opacity="0.28"/>
+    <linearGradient id="ar-stone-dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8e887c"/><stop offset="100%" stop-color="#6b6559"/>
+    </linearGradient>
+    <linearGradient id="ar-canvas" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f1e6cd"/><stop offset="60%" stop-color="#d8c6a2"/><stop offset="100%" stop-color="#b7a382"/>
+    </linearGradient>
+    <linearGradient id="ar-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6fa6bd"/><stop offset="100%" stop-color="#4d7f98"/>
+    </linearGradient>
+    <radialGradient id="ar-leaf">
+      <stop offset="0%" stop-color="#5f8f4a"/><stop offset="70%" stop-color="#47713a"/><stop offset="100%" stop-color="#355a2c"/>
+    </radialGradient>
+    <radialGradient id="ar-fire">
+      <stop offset="0%" stop-color="#fff0c2"/><stop offset="45%" stop-color="#f3a63a"/><stop offset="100%" stop-color="rgba(217,72,15,0)"/>
+    </radialGradient>
+    <radialGradient id="ar-shadow">
+      <stop offset="0%" stop-color="rgba(30,36,20,0.42)"/><stop offset="100%" stop-color="rgba(30,36,20,0)"/>
+    </radialGradient>
+    <pattern id="ar-blades" width="160" height="150" patternUnits="userSpaceOnUse">
+      <path d="M24 118 q6 -24 13 -34 M34 120 q3 -18 11 -27 M104 138 q6 -22 13 -32 M114 140 q3 -16 11 -25
+               M66 72 q5 -18 11 -26 M140 60 q5 -18 11 -26"
+            fill="none" stroke="#6b8a44" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
     </pattern>
   </defs>
 
-  <rect width="2400" height="1400" fill="url(#ar-field)"/>
-  <rect width="2400" height="1400" fill="url(#ar-grass)"/>
+  <rect width="2400" height="1400" fill="url(#ar-ground)"/>
+  <rect width="2400" height="1400" fill="url(#ar-blades)"/>
 
-  <g fill="#c2d294" opacity="0.65">
-    <ellipse cx="430" cy="300" rx="320" ry="96"/>
-    <ellipse cx="1520" cy="1130" rx="430" ry="116"/>
-    <ellipse cx="1960" cy="430" rx="270" ry="84"/>
-    <ellipse cx="900" cy="880" rx="360" ry="100"/>
+  <!-- ground patches -->
+  <g opacity="0.55">
+    <ellipse cx="520" cy="300" rx="330" ry="110" fill="#9cb768"/>
+    <ellipse cx="1500" cy="1140" rx="470" ry="140" fill="#9cb768"/>
+    <ellipse cx="2000" cy="420" rx="280" ry="100" fill="#7d9a4e"/>
+    <ellipse cx="900" cy="900" rx="400" ry="130" fill="#85a254"/>
+    <ellipse cx="1750" cy="760" rx="260" ry="90" fill="#9cb768"/>
   </g>
 
-  <path d="M120 700 C600 636 900 782 1400 718 C1700 680 1900 742 2290 700"
-        fill="none" stroke="#c9b68d" stroke-width="96" stroke-linecap="round" opacity="0.5"/>
-  <path d="M120 700 C600 636 900 782 1400 718 C1700 680 1900 742 2290 700"
-        fill="none" stroke="#b8a179" stroke-width="4" stroke-dasharray="26 34" opacity="0.5"/>
-
-  <g fill="#9aa08e" opacity="0.8" stroke="#7d8271" stroke-width="4">
-    <ellipse cx="690" cy="1010" rx="38" ry="24"/>
-    <ellipse cx="748" cy="1032" rx="22" ry="14"/>
-    <ellipse cx="1660" cy="260" rx="34" ry="21"/>
+  <!-- road -->
+  <path d="M-40 690 C560 614 900 786 1400 714 C1720 668 1960 742 2440 694"
+        fill="none" stroke="url(#ar-road)" stroke-width="150" stroke-linecap="round"/>
+  <path d="M-40 690 C560 614 900 786 1400 714 C1720 668 1960 742 2440 694"
+        fill="none" stroke="#8c7046" stroke-width="150" stroke-linecap="round" opacity="0.25"
+        stroke-dasharray="4 70"/>
+  <g fill="#8d8577" opacity="0.8">
+    <ellipse cx="300" cy="648" rx="17" ry="10"/><ellipse cx="760" cy="706" rx="14" ry="8"/>
+    <ellipse cx="1180" cy="752" rx="19" ry="11"/><ellipse cx="1660" cy="690" rx="15" ry="9"/>
+    <ellipse cx="2050" cy="716" rx="18" ry="10"/>
   </g>
 
+  <!-- pond -->
   <g>
-    <g stroke="#6f5836" stroke-width="16" stroke-linecap="round" fill="none">
-      <path d="M250 268 v-78"/><path d="M2110 1104 v-78"/><path d="M1180 232 v-66"/>
-    </g>
-    <g fill="#4f7a3f">
-      <circle cx="250" cy="176" r="58"/><circle cx="214" cy="206" r="40"/><circle cx="288" cy="208" r="40"/>
-      <circle cx="2110" cy="1014" r="56"/><circle cx="2076" cy="1044" r="38"/><circle cx="2146" cy="1044" r="38"/>
-      <circle cx="1180" cy="156" r="46"/><circle cx="1150" cy="184" r="32"/><circle cx="1212" cy="184" r="32"/>
-    </g>
-    <g fill="#5f8f4c" opacity="0.65">
-      <circle cx="232" cy="160" r="26"/><circle cx="2094" cy="998" r="24"/><circle cx="1166" cy="142" r="20"/>
+    <ellipse cx="1240" cy="1250" rx="330" ry="110" fill="#8a9a5e"/>
+    <ellipse cx="1240" cy="1246" rx="304" ry="94" fill="url(#ar-water)"/>
+    <g fill="none" stroke="#bfe0ea" stroke-width="5" opacity="0.6">
+      <path d="M1100 1224 q40 -16 80 0"/><path d="M1240 1272 q40 -16 80 0"/><path d="M1310 1206 q34 -14 68 0"/>
     </g>
   </g>
 
-  <g fill="#e7d47a" opacity="0.85">
-    <circle cx="540" cy="1060" r="7"/><circle cx="566" cy="1082" r="6"/><circle cx="512" cy="1086" r="6"/>
-    <circle cx="1820" cy="980" r="7"/><circle cx="1846" cy="1002" r="6"/>
-    <circle cx="980" cy="320" r="7"/><circle cx="1006" cy="340" r="6"/>
+  <!-- rocks -->
+  <g>
+    <ellipse cx="1700" cy="300" rx="64" ry="24" fill="url(#ar-shadow)"/>
+    <path d="M1650 300 l26 -46 44 -10 36 30 -10 30 Z" fill="url(#ar-stone)" stroke="#5f5a50" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M1676 254 l20 26 44 -6" fill="none" stroke="#cfc9bd" stroke-width="4" opacity="0.7"/>
+    <ellipse cx="420" cy="1060" rx="48" ry="18" fill="url(#ar-shadow)"/>
+    <path d="M384 1058 l20 -34 34 -6 26 22 -8 22 Z" fill="url(#ar-stone)" stroke="#5f5a50" stroke-width="4" stroke-linejoin="round"/>
   </g>
 
-  <!-- enemy fortress -->
-  <g stroke="#6b5847" stroke-width="7" stroke-linejoin="round">
-    <path d="M2140 1140 V560 h44 v-64 h54 v64 h66 v-64 h54 v64 h34 v580 Z" fill="url(#ar-wall)"/>
-    <path d="M2140 660 h252" fill="none" stroke="#b3a692" stroke-width="5"/>
-    <path d="M2140 790 h252" fill="none" stroke="#b3a692" stroke-width="5"/>
-    <path d="M2140 920 h252" fill="none" stroke="#b3a692" stroke-width="5"/>
-    <path d="M2232 1140 v-170 a46 46 0 0 1 92 0 v170 Z" fill="#7d5932"/>
-    <path d="M2278 1000 v140" fill="none" stroke="#5d4228" stroke-width="5"/>
-    <rect x="2168" y="700" width="48" height="66" rx="6" fill="#5d4b3a"/>
-    <rect x="2320" y="700" width="48" height="66" rx="6" fill="#5d4b3a"/>
-  </g>
-  <g stroke="#6f5836" stroke-width="8">
-    <path d="M2186 496 v-86"/><path d="M2338 496 v-86"/>
-  </g>
-  <g fill="#b23b2e" stroke="#6b3a2a" stroke-width="5">
-    <path d="M2186 412 l74 24 -74 24 Z"/><path d="M2338 412 l74 24 -74 24 Z"/>
+  <!-- trees -->
+  <g>
+    <g transform="translate(300 330)">
+      <ellipse cx="6" cy="18" rx="96" ry="34" fill="url(#ar-shadow)"/>
+      <path d="M-14 20 q10 -60 0 -104 h30 q-10 44 0 104 Z" fill="#6b4a26" stroke="#4a331a" stroke-width="5"/>
+      <circle cx="0" cy="-116" r="86" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="6"/>
+      <circle cx="-58" cy="-72" r="54" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="6"/>
+      <circle cx="58" cy="-74" r="56" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="6"/>
+      <circle cx="-26" cy="-150" r="36" fill="#6ea052" opacity="0.65"/>
+    </g>
+    <g transform="translate(1180 230) scale(0.8)">
+      <ellipse cx="6" cy="18" rx="96" ry="34" fill="url(#ar-shadow)"/>
+      <path d="M-14 20 q10 -60 0 -104 h30 q-10 44 0 104 Z" fill="#6b4a26" stroke="#4a331a" stroke-width="6"/>
+      <circle cx="0" cy="-116" r="86" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="7"/>
+      <circle cx="-58" cy="-72" r="54" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="7"/>
+      <circle cx="58" cy="-74" r="56" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="7"/>
+      <circle cx="-26" cy="-150" r="36" fill="#6ea052" opacity="0.65"/>
+    </g>
+    <g transform="translate(2140 1120) scale(0.9)">
+      <ellipse cx="6" cy="18" rx="96" ry="34" fill="url(#ar-shadow)"/>
+      <path d="M-14 20 q10 -60 0 -104 h30 q-10 44 0 104 Z" fill="#6b4a26" stroke="#4a331a" stroke-width="6"/>
+      <circle cx="0" cy="-116" r="86" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="7"/>
+      <circle cx="-58" cy="-72" r="54" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="7"/>
+      <circle cx="58" cy="-74" r="56" fill="url(#ar-leaf)" stroke="#2e4f26" stroke-width="7"/>
+      <circle cx="-26" cy="-150" r="36" fill="#6ea052" opacity="0.65"/>
+    </g>
   </g>
 
-  <!-- player camp -->
-  <g stroke="#6b5847" stroke-width="6" stroke-linejoin="round">
-    <path d="M40 1140 L170 836 L300 1140 Z" fill="url(#ar-tent)"/>
-    <path d="M140 1140 v-150 a30 30 0 0 1 60 0 v150 Z" fill="#8a6a44"/>
-    <path d="M170 836 l0 -70" stroke="#6f5836" stroke-width="9"/>
+  <!-- flowers -->
+  <g>
+    <g fill="#e8d75e" stroke="#b9a53c" stroke-width="3">
+      <circle cx="1020" cy="1080" r="9"/><circle cx="1048" cy="1104" r="8"/><circle cx="996" cy="1110" r="8"/>
+      <circle cx="1880" cy="980" r="9"/><circle cx="1908" cy="1004" r="8"/>
+    </g>
+    <g fill="#e07aa0" stroke="#b05078" stroke-width="3">
+      <circle cx="560" cy="430" r="9"/><circle cx="588" cy="452" r="8"/>
+      <circle cx="1560" cy="1080" r="9"/><circle cx="1590" cy="1100" r="8"/>
+    </g>
   </g>
-  <path d="M170 772 l80 26 -80 26 Z" fill="#2f6fb3" stroke="#28527a" stroke-width="5"/>
-  <g stroke="#6b5847" stroke-width="5" stroke-linejoin="round">
-    <path d="M300 1140 L392 920 L484 1140 Z" fill="url(#ar-tent)" opacity="0.95"/>
+
+  <!-- the enemy keep -->
+  <g>
+    <ellipse cx="2200" cy="1180" rx="300" ry="70" fill="url(#ar-shadow)"/>
+    <!-- curtain wall -->
+    <path d="M2060 1170 V640 h300 v530 Z" fill="url(#ar-stone)" stroke="#55504a" stroke-width="7" stroke-linejoin="round"/>
+    <g stroke="#7d766c" stroke-width="5" opacity="0.85">
+      <path d="M2060 740 h300 M2060 840 h300 M2060 940 h300 M2060 1040 h300"/>
+      <path d="M2135 640 v100 M2210 740 v100 M2285 640 v100 M2135 840 v100 M2285 840 v100 M2210 940 v100 M2135 1040 v100 M2285 1040 v100"/>
+    </g>
+    <!-- battlements -->
+    <g fill="url(#ar-stone-dark)" stroke="#55504a" stroke-width="6" stroke-linejoin="round">
+      <path d="M2050 640 h70 v-60 h-70 Z"/><path d="M2160 640 h70 v-60 h-70 Z"/><path d="M2270 640 h70 v-60 h-70 Z"/>
+    </g>
+    <!-- gate -->
+    <path d="M2140 1170 v-180 a70 70 0 0 1 140 0 v180 Z" fill="#6f4a24" stroke="#45290f" stroke-width="7"/>
+    <g stroke="#3c2a16" stroke-width="6" opacity="0.8">
+      <path d="M2210 1170 V930"/><path d="M2140 1050 h140"/><path d="M2140 1110 h140"/>
+    </g>
+    <g fill="#c9c2b4" stroke="#55504a" stroke-width="4">
+      <circle cx="2168" cy="1082" r="9"/><circle cx="2252" cy="1082" r="9"/>
+    </g>
+    <!-- towers -->
+    <g>
+      <path d="M1990 1170 V560 h130 v610 Z" fill="url(#ar-stone)" stroke="#55504a" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M1980 560 h150 l-75 -120 Z" fill="#9c4b3a" stroke="#5f2d22" stroke-width="7" stroke-linejoin="round"/>
+      <rect x="2026" y="700" width="58" height="84" rx="28" fill="#3f3930" stroke="#55504a" stroke-width="5"/>
+      <path d="M2055 440 v-70" stroke="#5a4a32" stroke-width="8"/>
+      <path d="M2055 372 l92 28 -92 28 Z" fill="#b23b2e" stroke="#6b3a2a" stroke-width="6"/>
+    </g>
+    <g>
+      <path d="M2300 1170 V600 h120 v570 Z" fill="url(#ar-stone)" stroke="#55504a" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M2290 600 h140 l-70 -112 Z" fill="#9c4b3a" stroke="#5f2d22" stroke-width="7" stroke-linejoin="round"/>
+      <rect x="2332" y="730" width="54" height="80" rx="26" fill="#3f3930" stroke="#55504a" stroke-width="5"/>
+    </g>
+    <!-- torches -->
+    <g>
+      <circle cx="2104" cy="900" r="34" fill="url(#ar-fire)"/>
+      <path d="M2104 918 q-14 -24 0 -44 q14 20 0 44 Z" fill="#f3a63a" stroke="#c96a16" stroke-width="3"/>
+      <circle cx="2316" cy="900" r="34" fill="url(#ar-fire)"/>
+      <path d="M2316 918 q-14 -24 0 -44 q14 20 0 44 Z" fill="#f3a63a" stroke="#c96a16" stroke-width="3"/>
+    </g>
   </g>
-  <g fill="#6b4a24" opacity="0.85">
-    <rect x="520" y="1052" width="96" height="26" rx="10"/>
-    <rect x="536" y="1016" width="64" height="26" rx="10"/>
+
+  <!-- the player's camp -->
+  <g>
+    <ellipse cx="220" cy="1180" rx="250" ry="62" fill="url(#ar-shadow)"/>
+    <g>
+      <path d="M40 1170 L180 800 L320 1170 Z" fill="url(#ar-canvas)" stroke="#6b5847" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M180 800 L320 1170 L250 1170 Z" fill="#b19a76" opacity="0.5"/>
+      <path d="M130 1170 v-150 a52 52 0 0 1 104 0 v150 Z" fill="#6f4a24" stroke="#45290f" stroke-width="6"/>
+      <path d="M180 800 v-96" stroke="#5a4a32" stroke-width="9"/>
+      <path d="M180 706 l96 30 -96 30 Z" fill="#2f6fb3" stroke="#23527f" stroke-width="6"/>
+    </g>
+    <g transform="translate(236 1134) scale(0.56)">
+      <path d="M40 110 L180 -260 L320 110 Z" fill="url(#ar-canvas)" stroke="#6b5847" stroke-width="9" stroke-linejoin="round"/>
+      <path d="M180 -260 L320 110 L250 110 Z" fill="#b19a76" opacity="0.5"/>
+    </g>
+    <!-- campfire -->
+    <g transform="translate(470 1222)">
+      <ellipse cx="0" cy="26" rx="78" ry="26" fill="url(#ar-shadow)"/>
+      <g stroke="#5a4028" stroke-width="12" stroke-linecap="round">
+        <path d="M-46 16 L34 -10"/><path d="M46 16 L-34 -10"/>
+      </g>
+      <circle cx="0" cy="-14" r="54" fill="url(#ar-fire)"/>
+      <path d="M0 10 q-26 -40 0 -74 q26 34 0 74 Z" fill="#f3a63a" stroke="#c96a16" stroke-width="4"/>
+      <path d="M0 2 q-12 -22 0 -40 q12 18 0 40 Z" fill="#fff0c2"/>
+    </g>
+    <!-- barrels -->
+    <g transform="translate(660 1300)">
+      <ellipse cx="0" cy="14" rx="44" ry="14" fill="url(#ar-shadow)"/>
+      <rect x="-34" y="-60" width="68" height="74" rx="18" fill="#8a5f34" stroke="#4a331a" stroke-width="6"/>
+      <path d="M-34 -32 h68 M-34 -6 h68" stroke="#d6c08a" stroke-width="6"/>
+    </g>
   </g>
+
+  <!-- ambient edges -->
+  <rect width="2400" height="1400" fill="none" stroke="rgba(40,46,28,0.18)" stroke-width="60"/>
 </svg>

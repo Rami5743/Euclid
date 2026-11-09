@@ -353,7 +353,8 @@ svg.arena { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 .unit.player .hp { fill: #4f9d3a; }
 .unit.enemy .hp { fill: #d14b3a; }
 
-.ring { fill: none; stroke: var(--gold); stroke-width: 6; stroke-dasharray: 16 12; }
+.ring { fill: none; stroke: #5ad24a; stroke-width: 7; stroke-dasharray: 22 14; }
+.ring.player { stroke: #5ad24a; }
 
 
 .overlay {
@@ -475,3 +476,5 @@ svg.arena { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 .floater.heal { fill: #bdf2ab; }
 
 .layer-shots .shot { pointer-events: none; }
+
+.dust { fill: #cbb48a; pointer-events: none; }

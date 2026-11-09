@@ -6,10 +6,14 @@ import archerF from './sprites/archer-f.svg?raw'
 import archerM from './sprites/archer-m.svg?raw'
 import mageF from './sprites/mage-f.svg?raw'
 import mageM from './sprites/mage-m.svg?raw'
+import fallenArt from './sprites/fallen.svg?raw'
 
 /** Pixels of the scene coordinate system per arena tile. */
 export const SCALE = 100
-const SPRITE_SCALE = 3.1
+/** Sprites are authored in a 128 unit box with the feet at y = 122. */
+const SPRITE_BOX = 128
+const SPRITE_FEET = 122
+const SPRITE_SCALE = 2.05
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
 const SPRITES: Record<string, string> = {
@@ -103,7 +107,7 @@ export function createScene(state: BattleState, onPick: (pick: ScenePick) => voi
   for (const unit of state.units) {
     const view = createUnitView(unit)
     views.set(unit.id, view)
-    groundLayer.append(view.ring, view.shadow)
+    groundLayer.append(view.ring, view.shadow, view.dust)
     unitLayer.append(view.group)
   }
 
@@ -151,6 +155,7 @@ interface UnitView {
   group: SVGGElement
   ring: SVGEllipseElement
   shadow: SVGEllipseElement
+  dust: SVGEllipseElement
   /** last drawn position, for the walk animation */
   px: number
   py: number
@@ -160,22 +165,32 @@ interface UnitView {
 function createUnitView(unit: Unit): UnitView {
   const ring = svg('ellipse', { class: `ring ${unit.side}`, rx: '46', ry: '19', cx: '0', cy: '0' })
   ring.style.display = 'none'
-  const shadow = svg('ellipse', { class: 'shadow', rx: '52', ry: '22', cx: '0', cy: '0', fill: 'url(#fx-shadow)' })
+  const shadow = svg('ellipse', { class: 'shadow', rx: '58', ry: '24', cx: '0', cy: '0', fill: 'url(#fx-shadow)' })
+  const dust = svg('ellipse', { class: 'dust', rx: '34', ry: '12', cx: '0', cy: '0' })
+  dust.style.opacity = '0'
 
   const group = svg('g', { class: `unit ${unit.side} ${unit.cls}` })
   const sprite = svg('g', { class: 'sprite' })
   sprite.innerHTML = SPRITES[`${unit.cls}-${unit.gender}`] ?? ''
   // A nested <svg> with no explicit size would fill the whole scene viewport.
-  sizeNested(sprite, 64, 64)
+  sizeNested(sprite, SPRITE_BOX, SPRITE_BOX)
 
-  const barBg = svg('rect', { class: 'hp-bg', x: '-42', y: '-208', width: '84', height: '13', rx: '6.5' })
-  const barFill = svg('rect', { class: 'hp', x: '-39.5', y: '-205.5', width: '79', height: '8', rx: '4' })
-  group.append(sprite, barBg, barFill)
+  // What is left where a hero fell.
+  const fallen = svg('g', { class: 'fallen' })
+  fallen.innerHTML = fallenArt
+  sizeNested(fallen, SPRITE_BOX, SPRITE_BOX)
+  fallen.setAttribute('transform', `scale(${SPRITE_SCALE}) translate(${-SPRITE_BOX / 2} ${-SPRITE_FEET})`)
+  fallen.style.display = 'none'
+
+  const barBg = svg('rect', { class: 'hp-bg', x: '-50', y: '-266', width: '100', height: '16', rx: '8' })
+  const barFill = svg('rect', { class: 'hp', x: '-47', y: '-263', width: '94', height: '10', rx: '5' })
+  group.append(fallen, sprite, barBg, barFill)
 
   const view: UnitView = {
     group,
     ring,
     shadow,
+    dust,
     px: unit.x,
     py: unit.y,
     update(u, time, selected) {
@@ -200,16 +215,23 @@ function createUnitView(unit: Unit): UnitView {
       shadow.setAttribute('cx', px.toFixed(1))
       shadow.setAttribute('cy', (py + 6).toFixed(1))
       shadow.style.opacity = u.alive ? '1' : '0.45'
+      // A puff of dust follows a walking hero.
+      dust.setAttribute('cx', (px - 26 * u.facing).toFixed(1))
+      dust.setAttribute('cy', (py + 10).toFixed(1))
+      dust.style.opacity = moving && u.alive ? (0.18 + 0.12 * Math.abs(Math.sin(time * 9))).toFixed(2) : '0'
 
       const hurt = time - u.lastHitAt < 0.18
       const pop = hurt ? 1.06 : 1
-      const s = SPRITE_SCALE * (u.alive ? pop : 0.92)
-      const fall = u.alive ? '' : `rotate(${(u.facing * -78).toFixed(0)}) `
+      const s = SPRITE_SCALE * pop
       sprite.setAttribute('transform',
-        `${fall}rotate(${sway.toFixed(2)}) scale(${(u.facing * s).toFixed(3)} ${s.toFixed(3)}) translate(-32 -60)`)
+        `rotate(${sway.toFixed(2)}) scale(${(u.facing * s).toFixed(3)} ${s.toFixed(3)}) `
+        + `translate(${-SPRITE_BOX / 2} ${-SPRITE_FEET})`)
+      // A fallen hero leaves a shield and a banner on the ground.
+      sprite.style.display = u.alive ? '' : 'none'
+      fallen.style.display = u.alive ? 'none' : ''
 
       const ratio = Math.max(0, u.hp / u.maxHp)
-      barFill.setAttribute('width', (79 * ratio).toFixed(1))
+      barFill.setAttribute('width', (94 * ratio).toFixed(1))
       group.classList.toggle('hurt', hurt && u.alive)
       group.classList.toggle('dead', !u.alive)
       barBg.style.display = u.alive ? '' : 'none'

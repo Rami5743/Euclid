@@ -1,26 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">
-  <g stroke="#3b2a1a" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" aria-hidden="true">
+  <defs>
+    <linearGradient id="mf-robe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="currentColor"/><stop offset="100%" stop-color="rgba(0,0,0,0.42)"/>
+    </linearGradient>
+    <radialGradient id="mf-orb">
+      <stop offset="0%" stop-color="#fff3cf"/><stop offset="45%" stop-color="#f3a63a"/><stop offset="100%" stop-color="#c0450c"/>
+    </radialGradient>
+    <radialGradient id="mf-halo">
+      <stop offset="0%" stop-color="rgba(243,166,58,0.75)"/><stop offset="100%" stop-color="rgba(243,166,58,0)"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#2a1f14" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
     <!-- robe -->
-    <path d="M21 60 q11 -5 22 0 l-4 -31 q-7 -4 -14 0 Z" fill="currentColor"/>
-    <path d="M27 29 q5 22 0 29 q6 2 10 0 q-5 -7 -4 -29 Z" fill="#e7e2d6" opacity="0.65"/>
-    <path d="M24 46 q8 4 16 0" fill="none" stroke="#e0b84f" stroke-width="1.8"/>
-    <path d="M22 57 q10 -4 20 0" fill="none" stroke="#e0b84f" stroke-width="1.6"/>
+    <path d="M40 122 q24 -10 48 0 l-10 -64 q-14 -8 -28 0 Z" fill="url(#mf-robe)"/>
+    <path d="M56 58 q8 36 0 62 q10 3 18 0 q-8 -28 -6 -62 Z" fill="#efe6d2" opacity="0.7"/>
+    <path d="M44 104 q20 8 40 0" fill="none" stroke="#e8c45a" stroke-width="4"/>
+    <path d="M42 118 q22 -8 44 0" fill="none" stroke="#e8c45a" stroke-width="3.4"/>
     <!-- sash -->
-    <path d="M25 37 q7 4 14 0 l0 3.5 q-7 4 -14 0 Z" fill="#7a4a86"/>
-    <!-- staff arm -->
-    <path d="M39 33 l8 -3 1.5 4 -8 4 Z" fill="#f2cba4"/>
-    <path d="M47 16 L47 52" fill="none" stroke="#7a5326" stroke-width="2.8"/>
-    <path d="M47 16 q-4 -2 -4 -5 q4 1 4 5 Z" fill="#7a5326"/>
-    <circle cx="47" cy="12" r="4.8" fill="#f08a2c" stroke="#b4460d" stroke-width="1.5"/>
-    <circle cx="45.6" cy="10.6" r="1.6" fill="#fff3cf" stroke="none"/>
+    <path d="M50 80 q14 8 28 0 l0 8 q-14 8 -28 0 Z" fill="#6d3f7a"/>
+    <!-- staff -->
+    <path d="M92 36 L92 118" fill="none" stroke="#7a5326" stroke-width="6"/>
+    <path d="M92 36 q-10 -6 -10 -14 q10 4 10 14 Z" fill="#7a5326"/>
+    <circle cx="92" cy="26" r="18" fill="url(#mf-halo)" stroke="none"/>
+    <circle cx="92" cy="26" r="9" fill="url(#mf-orb)" stroke="#8e3b0a" stroke-width="2.6"/>
+    <circle cx="89" cy="23" r="3" fill="#fff6e0" stroke="none"/>
+    <!-- arm -->
+    <path d="M78 62 l14 -6 4 9 -14 7 Z" fill="#f2cba4"/>
     <!-- head -->
-    <circle cx="32" cy="21" r="7.4" fill="#f2cba4"/>
-    <circle cx="35.3" cy="21" r="1" fill="#3b2a1a" stroke="none"/>
-    <path d="M25 21 q-3 10 0 16 l4 -1 q-3 -8 -1 -14 Z" fill="#c9b0d6"/>
-    <path d="M39 21 q3 9 1 14" fill="none" stroke="#c9b0d6" stroke-width="2.2"/>
+    <path d="M52 46 q12 -8 24 0 l-2 10 q-10 6 -20 0 Z" fill="#f2cba4"/>
+    <circle cx="72" cy="50" r="2.2" fill="#2a1f14" stroke="none"/>
+    <path d="M50 50 q-8 24 -2 40 l10 -2 q-6 -20 -2 -36 Z" fill="#c9a0d6"/>
     <!-- pointed hat -->
-    <path d="M32 7 q7 6 10 12 q-10 -4 -20 0 q3 -6 10 -12 Z" fill="currentColor"/>
-    <path d="M22 19 q10 -4 20 0 q-10 4 -20 0 Z" fill="#5c3a66"/>
-    <circle cx="35" cy="14" r="1.6" fill="#e0b84f" stroke="none"/>
+    <path d="M64 10 q14 14 22 28 q-22 -8 -44 0 q8 -16 22 -28 Z" fill="currentColor"/>
+    <path d="M42 38 q22 -8 44 0 q-22 10 -44 0 Z" fill="rgba(0,0,0,0.3)"/>
+    <circle cx="74" cy="28" r="3.4" fill="#e8c45a"/>
   </g>
 </svg>
