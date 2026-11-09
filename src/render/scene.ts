@@ -164,6 +164,8 @@ interface UnitView {
   py: number
   /** walk cycle phase, advanced by the ground actually covered */
   phase: number
+  /** simulation time this unit was last seen to move */
+  lastMoveAt: number
   update: (unit: Unit, time: number, selected: boolean) => void
 }
 
@@ -201,15 +203,21 @@ function createUnitView(unit: Unit): UnitView {
     px: unit.x,
     py: unit.y,
     phase: Math.random() * Math.PI * 2,
+    lastMoveAt: -99,
     update(u, time, selected) {
       const px = u.x * SCALE
       const py = u.y * SCALE
       const stepped = Math.hypot(u.x - view.px, u.y - view.py)
-      const moving = stepped > 0.004
       view.px = u.x
       view.py = u.y
       // The cycle is driven by ground covered, so the stride matches the pace.
-      if (moving) view.phase += stepped * 4.4
+      // Frames fall between simulation steps, where nothing moves at all, so
+      // walking is remembered for a moment rather than read off one frame.
+      if (stepped > 0.0008) {
+        view.phase += stepped * 4.4
+        view.lastMoveAt = time
+      }
+      const moving = time - view.lastMoveAt < 0.25
 
       const sinceAttack = time - u.lastAttackAt
       if (u.alive) {
