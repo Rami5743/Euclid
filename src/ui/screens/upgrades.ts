@@ -1,6 +1,7 @@
 import { BASE_STATS, HERO_NAMES, STAT_NAMES, UPGRADABLE, heroTitle, type HeroClass, type Stat } from '../../content/heroes'
 import { costOfNextLevel, effectiveValue } from '../../content/upgrades'
 import { profile, updateProfile } from '../../state/profile'
+import { investedStars } from '../../state/power'
 import { el, page } from '../components/layout'
 import { showModal } from '../components/modal'
 import { navigate, type Screen } from '../router'
@@ -31,7 +32,10 @@ export function upgradesScreen(): Screen {
   paint()
 
   return page(
-    { title: 'שדרוג הגיבורים', subtitle: 'כל דרגה מוסיפה שמונה אחוזים לתכונה' },
+    {
+      title: 'שדרוג הגיבורים',
+      subtitle: `כל דרגה מוסיפה שמונה אחוזים לתכונה · הושקעו עד כה ★ ${investedStars(profile())}`,
+    },
     body,
   )
 }

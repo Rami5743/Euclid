@@ -4,7 +4,6 @@ import { TICK, type BattleState, type Unit } from '../../battle/types'
 import { heroTitle } from '../../content/heroes'
 import { fortressById } from '../../content/world'
 import { profile } from '../../state/profile'
-import { challengeLabel } from '../../state/power'
 import { setLastBattle } from '../../state/lastBattle'
 import { createScene, type Scene, type ScenePick } from '../../render/scene'
 import { el, page } from '../components/layout'
@@ -44,7 +43,7 @@ export function battleScreen(params: Record<string, string>): Screen {
     overlay.replaceChildren(
       el('div', { class: 'panel' },
         el('h2', {}, fortress.name),
-        el('p', {}, `רמת האויב: ${challengeLabel(fortress, profile())}. שלושת הגיבורים שלך מול שלושת מגיני המבצר.`),
+        el('p', {}, `רמת האויב: ${fortress.level}. שלושת הגיבורים שלך מול שלושת מגיני המבצר.`),
         el('p', { class: 'muted' },
           'הקשה על גיבור בוחרת אותו, הקשה על אויב שולחת אותו לתקוף, והקשה על הקרקע שולחת אותו לנוע. ' +
           'אפשר לבחור את כולם בכפתור שלמטה.'),

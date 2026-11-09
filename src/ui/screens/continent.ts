@@ -1,6 +1,5 @@
 import { continentById, type ContinentId } from '../../content/world'
 import { profile } from '../../state/profile'
-import { challengeLabel, investedStars } from '../../state/power'
 import { el, page } from '../components/layout'
 import { mapView, type MapMarker } from '../components/mapView'
 import { navigate, type Screen } from '../router'
@@ -27,12 +26,12 @@ export function continentScreen(params: Record<string, string>): Screen {
       return { x: f.x, y: f.y, label: f.name, sub: 'הבית שלך', state: 'home', icon: fortressIcon }
     }
     const conquered = p.conquered.includes(f.id)
-    const short = f.starsNeeded - investedStars(p)
+    // Level and the stars it takes, as plain numbers.
     const sub = conquered
       ? 'נכבש'
-      : short > 0
-        ? `${challengeLabel(f, p)} · ★ ${f.starsNeeded}`
-        : challengeLabel(f, p)
+      : f.starsNeeded > 0
+        ? `${f.level} · ★ ${f.starsNeeded}`
+        : String(f.level)
     return {
       x: f.x,
       y: f.y,
