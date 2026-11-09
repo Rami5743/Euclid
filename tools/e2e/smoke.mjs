@@ -136,6 +136,9 @@ try {
   check('the battle is still running during the control checks',
     await page.locator('.overlay').evaluate((n) => n.classList.contains('hidden')))
   await page.locator('.hud-actions button', { hasText: 'השהה' }).click()
+  // One frame for the walking animation to settle, or the snapshot catches a
+  // mid-stride transform that the next frame drops.
+  await page.waitForTimeout(150)
   const paused = await unitPositions(page)
   await page.waitForTimeout(700)
   check('pause really stops the simulation', paused === (await unitPositions(page)))
