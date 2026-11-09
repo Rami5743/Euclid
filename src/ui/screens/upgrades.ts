@@ -1,4 +1,4 @@
-import { BASE_STATS, HERO_NAMES, STAT_NAMES, UPGRADABLE, type HeroClass, type Stat } from '../../content/heroes'
+import { BASE_STATS, HERO_NAMES, STAT_NAMES, UPGRADABLE, heroTitle, type HeroClass, type Stat } from '../../content/heroes'
 import { costOfNextLevel, effectiveValue } from '../../content/upgrades'
 import { profile, updateProfile } from '../../state/profile'
 import { el, page } from '../components/layout'
@@ -20,8 +20,9 @@ export function upgradesScreen(): Screen {
       ...(Object.keys(HERO_NAMES) as HeroClass[]).map((cls) => {
         const hero = p.heroes[cls]
         const rows = UPGRADABLE[cls].map((stat) => statRow(cls, stat, paint))
+        const title = heroTitle(cls, hero.gender)
         return el('section', { class: 'card hero' },
-          el('h3', {}, hero.name ? `${hero.name} · ${HERO_NAMES[cls]}` : HERO_NAMES[cls]),
+          el('h3', {}, hero.name ? `${hero.name} · ${title}` : title),
           el('div', { class: 'stats' }, ...rows),
         )
       }),

@@ -1,7 +1,7 @@
 import { createBattle, issueOrder, step as stepSimulation } from '../../battle/sim'
 import { battleConfigFor } from '../../battle/setup'
 import { TICK, type BattleState, type Unit } from '../../battle/types'
-import { HERO_NAMES } from '../../content/heroes'
+import { heroTitle } from '../../content/heroes'
 import { fortressById } from '../../content/world'
 import { profile } from '../../state/profile'
 import { challengeLabel } from '../../state/power'
@@ -61,7 +61,7 @@ export function battleScreen(params: Record<string, string>): Screen {
       seconds: state.time,
       heroes: playerUnits.map((u) => ({
         cls: u.cls,
-        name: u.name || HERO_NAMES[u.cls],
+        name: u.name || heroTitle(u.cls, u.gender),
         alive: u.alive,
         health: Math.max(0, u.hp / u.maxHp),
       })),
@@ -115,7 +115,7 @@ export function battleScreen(params: Record<string, string>): Screen {
   const portraitViews = playerUnits.map((unit) => {
     const fill = el('span', { class: 'portrait-fill' })
     const button = el('button', { class: `portrait ${unit.cls}`, type: 'button' },
-      el('span', { class: 'portrait-name' }, unit.name || HERO_NAMES[unit.cls]),
+      el('span', { class: 'portrait-name' }, unit.name || heroTitle(unit.cls, unit.gender)),
       el('span', { class: 'portrait-bar' }, fill),
     )
     button.addEventListener('click', () => {

@@ -71,6 +71,12 @@ try {
   await go('')
   check('first visit lands on hero setup', page.url().includes('#/setup'))
   check('three hero cards', (await page.locator('.hero-setup').count()) === 3)
+  const firstCard = page.locator('.hero-setup').first()
+  check('the male form comes first and is the default',
+    (await firstCard.locator('.setup-row .btn').first().innerText()) === 'לוחם' &&
+    (await firstCard.locator('.setup-row .btn').first().getAttribute('class')).includes('primary'))
+  check('the other option is the female form',
+    (await firstCard.locator('.setup-row .btn').nth(1).innerText()) === 'לוחמת')
   await page.locator('.hero-setup').first().locator('.chip').first().click()
   await shot('01-setup')
   await page.getByRole('button', { name: 'קדימה למפה' }).click()

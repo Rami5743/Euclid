@@ -16,5 +16,5 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["src", "tools", "vite.config.ts"]
+  "include": ["src", "test", "tools", "vite.config.ts", "vitest.config.ts"]
 }

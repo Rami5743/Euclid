@@ -13,6 +13,9 @@ Build:  npm run build      (type check + production bundle in dist/)
 ## Structure
 
 ```
+app/          development entry point (index.html)
+index.html    build output, committed, served by GitHub Pages
+assets/       build output, committed
 src/
   state/      profile + storage abstraction (localStorage today, cloud later)
   content/    world (continents, fortresses, curriculum topics), heroes, upgrades
@@ -84,11 +87,14 @@ granted at the end of the first battle, and the third stays out of reach.
 
 https://rami5743.github.io/Euclid/
 
-The repository root holds the development entry point, which loads TypeScript
-straight from `src/`. No browser can run that, so serving the repository root
-itself shows a blank page. `.github/workflows/pages.yml` builds the site on
-every push to main and publishes the build, and the Pages source is set to
-GitHub Actions.
+GitHub Pages serves this repository's root exactly as it is, so the built site
+lives there and is committed: `index.html` and `assets/` are build output, not
+sources. The development entry point is `app/index.html`, and `npm run build`
+writes the production files to the root.
+
+**After changing anything under `src/`, run `npm run build` and commit the
+result**, otherwise the published site stays on the previous version. The CI
+workflow fails when the committed build no longer matches the sources.
 
 ## Testing
 

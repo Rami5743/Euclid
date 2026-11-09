@@ -1,19 +1,16 @@
-import { HERO_NAMES, type HeroClass } from '../../content/heroes'
+import { HERO_NAMES, HERO_TITLES, heroTitle, type Gender, type HeroClass } from '../../content/heroes'
 import { profile, updateProfile } from '../../state/profile'
 import { el, page } from '../components/layout'
 import { navigate, type Screen } from '../router'
 
-const DESCRIPTION: Record<HeroClass, string> = {
-  warrior: 'נלחם במגע. הרבה חיים, הרבה כוח התקפה והרבה הגנה.',
-  archer: 'נלחם מרחוק. פחות חיים, פחות כוח ופחות הגנה מהלוחם.',
-  mage: 'נלחם מטווח בינוני, חלש יותר משניהם, אבל יודע גם לרפא.',
+const SUGGESTIONS: Record<HeroClass, Record<Gender, string[]>> = {
+  warrior: { m: ['גדעון', 'בועז', 'אריאל'], f: ['לביאה', 'יעל', 'תמר'] },
+  archer: { m: ['עידו', 'ירון', 'איתי'], f: ['אילה', 'שחר', 'נועה'] },
+  mage: { m: ['אבנר', 'נדב', 'רועי'], f: ['הדס', 'מאיה', 'ליאור'] },
 }
 
-const SUGGESTIONS: Record<HeroClass, Record<'f' | 'm', string[]>> = {
-  warrior: { f: ['לביאה', 'יעל', 'תמר'], m: ['גדעון', 'בועז', 'אריאל'] },
-  archer: { f: ['אילה', 'שחר', 'נועה'], m: ['עידו', 'ירון', 'איתי'] },
-  mage: { f: ['הדס', 'מאיה', 'ליאור'], m: ['אבנר', 'נדב', 'רועי'] },
-}
+/** The male form is the default, and comes first. */
+const GENDERS: Gender[] = ['m', 'f']
 
 export function setupScreen(): Screen {
   const body = el('div', { class: 'stack' })
@@ -40,20 +37,19 @@ export function setupScreen(): Screen {
 
   return page(
     { title: 'הגיבורים שלי', subtitle: 'בחר מין ושם לכל אחד משלושת הגיבורים', showBack: profile().flags.setupDone },
-    el('p', { class: 'notice' }, 'המין והשם הם ענייני מראה בלבד ואינם משפיעים על הכוחות בקרב.'),
     body,
     el('div', { class: 'row' }, done),
   )
 }
 
-function heroCard(cls: HeroClass, gender: 'f' | 'm', name: string, repaint: () => void): HTMLElement {
+function heroCard(cls: HeroClass, gender: Gender, name: string, repaint: () => void): HTMLElement {
   const input = el('input', {
     class: 'name-input',
     type: 'text',
     maxlength: '14',
     placeholder: SUGGESTIONS[cls][gender][0]!,
     value: name,
-    'aria-label': `שם ה${HERO_NAMES[cls]}`,
+    'aria-label': `שם ה${heroTitle(cls, gender)}`,
   })
   input.addEventListener('input', () => {
     updateProfile((p) => {
@@ -61,8 +57,9 @@ function heroCard(cls: HeroClass, gender: 'f' | 'm', name: string, repaint: () =
     })
   })
 
-  const genderButton = (g: 'f' | 'm', label: string): HTMLElement => {
-    const b = el('button', { class: `btn small${gender === g ? ' primary' : ''}`, type: 'button' }, label)
+  const genderButton = (g: Gender): HTMLElement => {
+    const b = el('button', { class: `btn small${gender === g ? ' primary' : ''}`, type: 'button' },
+      HERO_TITLES[cls][g])
     b.addEventListener('click', () => {
       updateProfile((p) => {
         p.heroes[cls].gender = g
@@ -83,10 +80,9 @@ function heroCard(cls: HeroClass, gender: 'f' | 'm', name: string, repaint: () =
     return c
   })
 
+  // The two buttons carry the names themselves, so the card needs no heading.
   return el('section', { class: 'card hero-setup' },
-    el('h3', {}, HERO_NAMES[cls]),
-    el('p', { class: 'muted' }, DESCRIPTION[cls]),
-    el('div', { class: 'setup-row' }, genderButton('f', 'דמות נשית'), genderButton('m', 'דמות גברית')),
+    el('div', { class: 'setup-row' }, ...GENDERS.map(genderButton)),
     el('div', { class: 'setup-row' }, input),
     el('div', { class: 'setup-row chips' }, ...chips),
   )

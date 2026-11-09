@@ -17,10 +17,24 @@ export interface BaseStats {
   healRate?: number
 }
 
+export type Gender = 'm' | 'f'
+
+/** What each hero is called, in both forms. */
+export const HERO_TITLES: Record<HeroClass, Record<Gender, string>> = {
+  warrior: { m: 'לוחם', f: 'לוחמת' },
+  archer: { m: 'קשת', f: 'קשתית' },
+  mage: { m: 'מכשף', f: 'מכשפה' },
+}
+
+export function heroTitle(cls: HeroClass, gender: Gender): string {
+  return HERO_TITLES[cls][gender]
+}
+
+/** Default form, for places where no particular hero is meant. */
 export const HERO_NAMES: Record<HeroClass, string> = {
-  warrior: 'לוחם',
-  archer: 'קשת',
-  mage: 'מכשף',
+  warrior: HERO_TITLES.warrior.m,
+  archer: HERO_TITLES.archer.m,
+  mage: HERO_TITLES.mage.m,
 }
 
 /** Starting values; the real numbers are fixed in the balance pass (M6). */

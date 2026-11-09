@@ -6,7 +6,7 @@
   "description": "Math learning game for 7th grade - conquer continents by solving math missions",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "rm -rf assets && tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

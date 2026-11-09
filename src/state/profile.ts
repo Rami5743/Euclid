@@ -31,9 +31,9 @@ function freshProfile(): Profile {
     version: 1,
     heroes: {
       // Names and gender are chosen by the player in M2; empty means 'not named yet'.
-      warrior: { cls: 'warrior', gender: 'f', name: '', levels: {} },
+      warrior: { cls: 'warrior', gender: 'm', name: '', levels: {} },
       archer: { cls: 'archer', gender: 'm', name: '', levels: {} },
-      mage: { cls: 'mage', gender: 'f', name: '', levels: {} },
+      mage: { cls: 'mage', gender: 'm', name: '', levels: {} },
     },
     stars: 0,
     conquered: [],
