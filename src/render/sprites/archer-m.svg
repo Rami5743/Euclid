@@ -47,24 +47,39 @@
 
     <g class="part-head">
       <path d="M54 34 q12 -8 24 0 l-2 14 q-11 7 -22 0 Z" fill="#e8c096"/>
-      <circle cx="74" cy="38" r="2.4" fill="#241a10" stroke="none"/>
+      <g stroke="none">
+        <ellipse cx="63.6" cy="40" rx="2.1" ry="2.7" fill="#fdfbf6"/>
+        <ellipse cx="71.2" cy="40" rx="2.5" ry="3.1" fill="#fdfbf6"/>
+        <circle cx="64.2" cy="40.4" r="1.35" fill="#2a1f14"/>
+        <circle cx="71.9" cy="40.4" r="1.65" fill="#2a1f14"/>
+        <circle cx="63.7" cy="39.3" r="0.55" fill="#fdfbf6"/>
+        <circle cx="71.4" cy="39.3" r="0.65" fill="#fdfbf6"/>
+      </g>
+      <g fill="none" stroke="#5a4028" stroke-width="2.1" stroke-linecap="round">
+        <path d="M61 35.7 q2.6 -1.7 5.2 -0.5"/>
+        <path d="M68.8 35.3 q2.8 -1.5 5.2 0.3"/>
+      </g>
+      <path d="M74.6 42.2 q2.2 1.9 0.2 3.1" fill="none" stroke="#c08f61" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M64.4 46.2 q3.2 2.1 6.2 -0.6" fill="none" stroke="#a9643f" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M68.5 46.4 q3.4 2.2 6.6 -0.6" fill="none" stroke="#a9643f" stroke-width="2.2" stroke-linecap="round"/>
       <path d="M50 38 q0 -26 16 -26 q16 0 16 26 q-8 -9 -16 -9 q-8 0 -16 9 Z" fill="currentColor"/>
       <path d="M50 38 q-5 16 2 26 l11 -5 q-7 -11 -5 -21 Z" fill="currentColor"/>
       <path d="M50 38 q-5 16 2 26 l5 -2 q-6 -12 -3 -24 Z" fill="rgba(0,0,0,0.28)" stroke="none"/>
-      <path d="M54 46 q12 7 22 0 q-1 10 -11 10 q-10 0 -11 -10 Z" fill="#4a3824"/>
+      <path d="M57 50 q9 6 17 0 q-2 9 -8.5 9 q-6.5 0 -8.5 -9 Z" fill="#5a4530"/>
     </g>
 
     <g class="part-arm-front">
       <path d="M78 56 q14 -2 20 -6 l5 9 q-10 7 -24 9 Z" fill="#e8c096"/>
+      <circle cx="101" cy="64" r="5.5" fill="#e8c096"/>
       <g class="part-bow">
-        <path d="M104 18 q24 44 0 88" fill="none" stroke="url(#a-bow)" stroke-width="7"/>
-        <path d="M104 18 q4 44 0 88" fill="none" stroke="#efe6cf" stroke-width="2.6"/>
-        <path d="M100 14 l8 4 M100 110 l8 -4" stroke="#5d3b1a" stroke-width="4"/>
+        <path d="M104 26 q24 42 0 84" fill="none" stroke="url(#a-bow)" stroke-width="7"/>
+        <path d="M104 26 q4 42 0 84" fill="none" stroke="#efe6cf" stroke-width="2.6"/>
+        <path d="M100 22 l8 4 M100 114 l8 -4" stroke="#5d3b1a" stroke-width="4"/>
       </g>
       <g class="part-arrow">
-        <path d="M66 62 L116 62" stroke="#c6a96f" stroke-width="3.6"/>
-        <path d="M116 62 l-9 -5 M116 62 l-9 5" stroke="#9aa6b5" stroke-width="3"/>
-        <path d="M66 62 l-7 -5 M66 62 l-7 5" stroke="#efe6cf" stroke-width="3"/>
+        <path d="M64 68 L116 68" stroke="#c6a96f" stroke-width="3.6"/>
+        <path d="M116 68 l-9 -5 M116 68 l-9 5" stroke="#9aa6b5" stroke-width="3"/>
+        <path d="M64 68 l-7 -5 M64 68 l-7 5" stroke="#efe6cf" stroke-width="3"/>
       </g>
     </g>
   </g>

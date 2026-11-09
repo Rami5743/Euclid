@@ -26,16 +26,31 @@
 
     <g class="part-head">
       <path d="M54 36 q12 -8 24 0 l-2 14 q-11 7 -22 0 Z" fill="#e8c096"/>
-      <circle cx="74" cy="40" r="2.4" fill="#241a10" stroke="none"/>
-      <path d="M54 48 q12 8 22 0 q0 22 -11 22 q-11 0 -11 -22 Z" fill="#f2ead7"/>
-      <path d="M66 4 q14 14 22 30 q-24 -9 -46 0 q8 -17 24 -30 Z" fill="currentColor"/>
+      <g stroke="none">
+        <ellipse cx="63.6" cy="42" rx="2.1" ry="2.7" fill="#fdfbf6"/>
+        <ellipse cx="71.2" cy="42" rx="2.5" ry="3.1" fill="#fdfbf6"/>
+        <circle cx="64.2" cy="42.4" r="1.35" fill="#2a1f14"/>
+        <circle cx="71.9" cy="42.4" r="1.65" fill="#2a1f14"/>
+        <circle cx="63.7" cy="41.3" r="0.55" fill="#fdfbf6"/>
+        <circle cx="71.4" cy="41.3" r="0.65" fill="#fdfbf6"/>
+      </g>
+      <g fill="none" stroke="#5a4028" stroke-width="2.1" stroke-linecap="round">
+        <path d="M61 37.7 q2.6 -1.7 5.2 -0.5"/>
+        <path d="M68.8 37.3 q2.8 -1.5 5.2 0.3"/>
+      </g>
+      <path d="M74.6 44.2 q2.2 1.9 0.2 3.1" fill="none" stroke="#c08f61" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M64.4 48.2 q3.2 2.1 6.2 -0.6" fill="none" stroke="#a9643f" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M68.5 48.4 q3.4 2.2 6.6 -0.6" fill="none" stroke="#a9643f" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M56 52 q10 6 19 0 q-1 17 -9.5 17 q-8.5 0 -9.5 -17 Z" fill="#f2ead7"/>
+      <path d="M66 2 q14 14 22 30 q-24 -9 -46 0 q8 -17 24 -30 Z" fill="currentColor"/>
       <path d="M66 4 q-9 12 -14 20 l-8 10 q10 -4 20 -5 Z" fill="rgba(255,255,255,0.18)" stroke="none"/>
-      <path d="M42 34 q24 -9 46 0 q-24 11 -46 0 Z" fill="rgba(0,0,0,0.3)"/>
+      <path d="M42 32 q24 -9 46 0 q-24 11 -46 0 Z" fill="rgba(0,0,0,0.3)"/>
       <circle cx="78" cy="24" r="3.6" fill="#e8c45a"/>
     </g>
 
     <g class="part-arm-front">
       <path d="M78 58 q14 -4 20 -10 l7 8 q-10 10 -25 13 Z" fill="#e8c096"/>
+      <circle cx="99" cy="60" r="5.5" fill="#e8c096"/>
       <g class="part-staff">
         <path d="M100 32 L100 118" fill="none" stroke="#7a5326" stroke-width="7"/>
         <path d="M100 32 q-11 -7 -11 -16 q11 5 11 16 Z" fill="#7a5326"/>

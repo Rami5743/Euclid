@@ -52,22 +52,38 @@
     <g class="part-head">
       <path d="M54 34 q12 -8 24 0 l-2 14 q-11 7 -22 0 Z" fill="#f4cea8"/>
       
-      <circle cx="74" cy="38" r="2.4" fill="#241a10" stroke="none"/>
+      <g stroke="none">
+        <ellipse cx="63.6" cy="40" rx="2.1" ry="2.7" fill="#fdfbf6"/>
+        <ellipse cx="71.2" cy="40" rx="2.5" ry="3.1" fill="#fdfbf6"/>
+        <circle cx="64.2" cy="40.4" r="1.35" fill="#2a1f14"/>
+        <circle cx="71.9" cy="40.4" r="1.65" fill="#2a1f14"/>
+        <circle cx="63.7" cy="39.3" r="0.55" fill="#fdfbf6"/>
+        <circle cx="71.4" cy="39.3" r="0.65" fill="#fdfbf6"/>
+      </g>
+      <g fill="none" stroke="#5a4028" stroke-width="2.1" stroke-linecap="round">
+        <path d="M61 35.7 q2.6 -1.7 5.2 -0.5"/>
+        <path d="M68.8 35.3 q2.8 -1.5 5.2 0.3"/>
+      </g>
+      <path d="M74.6 42.2 q2.2 1.9 0.2 3.1" fill="none" stroke="#c08f61" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M64.4 46.2 q3.2 2.1 6.2 -0.6" fill="none" stroke="#c4576a" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M68.5 46.4 q3.4 2.2 6.6 -0.6" fill="none" stroke="#c4576a" stroke-width="2.2" stroke-linecap="round"/>
       <path d="M50 38 q2 -24 16 -24 q14 0 16 24 q-16 -9 -32 0 Z" fill="url(#w-steel)"/>
       <path d="M66 14 v-9" stroke="#8b94a2" stroke-width="4"/>
       <path d="M66 5 q12 -7 18 0 q-10 3 -12 10 Z" fill="currentColor"/>
       <path d="M66 20 v22" stroke="#8b94a2" stroke-width="4"/>
       <path d="M52 36 q4 -18 14 -19" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="3"/>
-      <path d="M50 40 q-8 22 -2 38 l12 -3 q-7 -18 -2 -33 Z" fill="#8a4b1c"/>
-      <path d="M48 76 q7 7 14 3" fill="none" stroke="#6d3a13" stroke-width="4"/>
+      <path d="M52 42 q-6 18 -2 30 l7 -2 q-4 -15 -1 -27 Z" fill="#8a4b1c"/>
+      <path d="M50 71 q4 4 8 1" fill="none" stroke="#6d3a13" stroke-width="3"/>
     </g>
 
     <g class="part-arm-front">
       <path d="M78 56 q16 -4 22 -12 l8 8 q-10 12 -26 16 Z" fill="#f4cea8"/>
-      <path d="M100 42 l10 7" stroke="#5d3b1a" stroke-width="8"/>
-      <path d="M112 34 l9 6 -30 50 -9 -6 Z" fill="url(#w-blade)"/>
-      <path d="M113.5 37 l3 2 -26 43 -3 -2 Z" fill="rgba(255,255,255,0.55)" stroke="none"/>
-      <path d="M103 46 l14 10" stroke="#e8c45a" stroke-width="5"/>
+      <circle cx="99" cy="51" r="5" fill="#f4cea8"/>
+      <path d="M102 46 L96.5 55.5" stroke="#5d3b1a" stroke-width="9"/>
+      <circle cx="95" cy="57.5" r="4" fill="#e8c45a"/>
+      <path d="M94 41 L110 51" stroke="#e8c45a" stroke-width="6"/>
+      <path d="M99 44 L106 48 L126 8 L120.5 5 Z" fill="url(#w-blade)"/>
+      <path d="M101.5 44.6 L104 46 L124 7 L122.6 6.2 Z" fill="rgba(255,255,255,0.6)" stroke="none"/>
     </g>
   </g>
 </svg>

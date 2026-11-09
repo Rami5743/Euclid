@@ -116,7 +116,7 @@ export function poseRig(rig: Rig, pose: Pose): void {
         rig.arrow.style.opacity = flying ? '0' : '1'
         rig.arrow.setAttribute('transform', `translate(${(-draw * 9).toFixed(2)} 0)`)
       }
-      if (rig.bow) rotate(rig.bow, draw * 4, 104, 62)
+      if (rig.bow) rotate(rig.bow, draw * 4, 104, 68)
       break
     }
     case 'mage': {
