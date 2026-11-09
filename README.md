@@ -80,6 +80,16 @@ granted at the end of the first battle, and the third stays out of reach.
 - **Difficulty by a single multiplier** per fortress on every enemy stat, which
   keeps the progression curve tunable from one number.
 
+## Published site
+
+https://rami5743.github.io/Euclid/
+
+The repository root holds the development entry point, which loads TypeScript
+straight from `src/`. No browser can run that, so serving the repository root
+itself shows a blank page. `.github/workflows/pages.yml` builds the site on
+every push to main and publishes the build, and the Pages source is set to
+GitHub Actions.
+
 ## Testing
 
 ```
