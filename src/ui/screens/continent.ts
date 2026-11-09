@@ -32,12 +32,16 @@ export function continentScreen(params: Record<string, string>): Screen {
       : f.starsNeeded > 0
         ? `${f.level} · ★ ${f.starsNeeded}`
         : String(f.level)
+    // A conquered fortress is not attacked again.
+    if (conquered) {
+      return { x: f.x, y: f.y, label: f.name, sub, state: 'done', icon: fortressIcon }
+    }
     return {
       x: f.x,
       y: f.y,
       label: f.name,
       sub,
-      state: conquered ? 'done' : 'open',
+      state: 'open',
       icon: fortressIcon,
       onClick: () => navigate(`/battle/${f.id}`),
     }

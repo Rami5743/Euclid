@@ -58,7 +58,8 @@ export function resultScreen(params: Record<string, string>): Screen {
 
   const actions = el('div', { class: 'row' },
     button(won ? 'שדרוג הגיבורים' : 'לשדרוג הגיבורים', '/upgrades', true),
-    button('קרב נוסף באותו מבצר', `/battle/${fortress.id}`),
+    // A conquered fortress is not fought over again.
+    ...(won ? [] : [button('קרב נוסף באותו מבצר', `/battle/${fortress.id}`)]),
     button('חזרה ליבשת', `/continent/${continent.id}`),
     button('תפריט המשימות', '/missions'),
   )

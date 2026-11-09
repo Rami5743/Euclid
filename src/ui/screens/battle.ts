@@ -15,6 +15,16 @@ export function battleScreen(params: Record<string, string>): Screen {
   if (!hit || !config) return page({ title: 'מבצר לא נמצא' }, el('p', {}, 'חזרה למפת העולם.'))
   const { continent, fortress } = hit
 
+  if (profile().conquered.includes(fortress.id)) {
+    const back = el('button', { class: 'btn primary', type: 'button' }, 'חזרה ליבשת')
+    back.addEventListener('click', () => navigate(`/continent/${continent.id}`))
+    return page(
+      { title: fortress.name, subtitle: continent.name, showStars: false },
+      el('p', { class: 'notice' }, 'המבצר הזה כבר נכבש.'),
+      el('div', { class: 'row' }, back),
+    )
+  }
+
   const state: BattleState = createBattle(config)
   const selected = new Set<string>(state.units.filter((u) => u.side === 'player').map((u) => u.id))
 

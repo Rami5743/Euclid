@@ -146,8 +146,8 @@ try {
   check('result screen reached', page.url().includes('#/result/'))
   check('first battle grants stars', (await page.locator('.stars').innerText()).includes('8'))
   check('the result reports every hero', (await page.locator('.stat-row').count()) === 3)
-  check('the result offers a rematch',
-    (await page.getByRole('button', { name: 'קרב נוסף באותו מבצר' }).count()) === 1)
+  check('a won fortress offers no rematch',
+    (await page.getByRole('button', { name: 'קרב נוסף באותו מבצר' }).count()) === 0)
   await shot('07-result')
 
   console.log('upgrades and missions')
@@ -169,6 +169,11 @@ try {
   console.log('conquered state is remembered')
   await go('#/continent/asia')
   check('a conquered fortress is marked', (await page.locator('.marker.done').count()) === 1)
+  check('a conquered fortress cannot be attacked again',
+    (await page.locator('button.marker.done').count()) === 0)
+  await go('#/battle/asia-1')
+  check('going straight to a conquered fortress is refused',
+    (await page.locator('.notice').innerText()).includes('כבר נכבש'))
 
   check('no console errors', consoleErrors.length === 0)
   if (consoleErrors.length) console.log(consoleErrors)
