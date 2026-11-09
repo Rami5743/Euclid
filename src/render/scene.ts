@@ -1,4 +1,5 @@
 import type { BattleState, Projectile, Unit } from '../battle/types'
+import { poseDeath, poseRig, readRig, type Rig } from './rig'
 import arenaArt from './maps/arena.svg?raw'
 import warriorF from './sprites/warrior-f.svg?raw'
 import warriorM from './sprites/warrior-m.svg?raw'
@@ -14,6 +15,8 @@ export const SCALE = 100
 const SPRITE_BOX = 128
 const SPRITE_FEET = 122
 const SPRITE_SCALE = 2.05
+/** How long a hero takes to fall. */
+const DEATH_SECONDS = 0.7
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
 const SPRITES: Record<string, string> = {
@@ -159,6 +162,8 @@ interface UnitView {
   /** last drawn position, for the walk animation */
   px: number
   py: number
+  /** walk cycle phase, advanced by the ground actually covered */
+  phase: number
   update: (unit: Unit, time: number, selected: boolean) => void
 }
 
@@ -186,6 +191,8 @@ function createUnitView(unit: Unit): UnitView {
   const barFill = svg('rect', { class: 'hp', x: '-47', y: '-263', width: '94', height: '10', rx: '5' })
   group.append(fallen, sprite, barBg, barFill)
 
+  const rig: Rig = readRig(sprite)
+
   const view: UnitView = {
     group,
     ring,
@@ -193,42 +200,60 @@ function createUnitView(unit: Unit): UnitView {
     dust,
     px: unit.x,
     py: unit.y,
+    phase: Math.random() * Math.PI * 2,
     update(u, time, selected) {
       const px = u.x * SCALE
       const py = u.y * SCALE
-      const moving = Math.hypot(u.x - view.px, u.y - view.py) > 0.004
+      const stepped = Math.hypot(u.x - view.px, u.y - view.py)
+      const moving = stepped > 0.004
       view.px = u.x
       view.py = u.y
+      // The cycle is driven by ground covered, so the stride matches the pace.
+      if (moving) view.phase += stepped * 4.4
 
-      // A walking hero bobs; a striking one lunges forward and back.
-      const bob = u.alive && moving ? Math.sin(time * 14) * 5 : 0
-      const sway = u.alive && moving ? Math.sin(time * 14) * 2.5 : 0
       const sinceAttack = time - u.lastAttackAt
-      const lunge = u.alive && sinceAttack >= 0 && sinceAttack < 0.26
-        ? Math.sin((sinceAttack / 0.26) * Math.PI) * 26 * u.facing
-        : 0
+      if (u.alive) {
+        poseRig(rig, {
+          cls: u.cls,
+          phase: view.phase,
+          stride: moving ? 1 : 0,
+          sinceAttack,
+          time,
+          alive: true,
+        })
+      } else {
+        poseDeath(rig, (time - u.lastHitAt) / DEATH_SECONDS)
+      }
 
-      group.setAttribute('transform', `translate(${(px + lunge).toFixed(1)} ${(py + bob).toFixed(1)})`)
+      // A struck hero lunges forward and back on the spot.
+      const lunge = u.alive && sinceAttack >= 0 && sinceAttack < 0.3
+        ? Math.sin((sinceAttack / 0.3) * Math.PI) * 16 * u.facing
+        : 0
+      group.setAttribute('transform', `translate(${(px + lunge).toFixed(1)} ${py.toFixed(1)})`)
+
       ring.setAttribute('cx', px.toFixed(1))
       ring.setAttribute('cy', py.toFixed(1))
       ring.style.display = selected && u.alive ? '' : 'none'
       shadow.setAttribute('cx', px.toFixed(1))
       shadow.setAttribute('cy', (py + 6).toFixed(1))
-      shadow.style.opacity = u.alive ? '1' : '0.45'
-      // A puff of dust follows a walking hero.
+      shadow.style.opacity = u.alive ? '1' : '0.4'
       dust.setAttribute('cx', (px - 26 * u.facing).toFixed(1))
       dust.setAttribute('cy', (py + 10).toFixed(1))
       dust.style.opacity = moving && u.alive ? (0.18 + 0.12 * Math.abs(Math.sin(time * 9))).toFixed(2) : '0'
 
       const hurt = time - u.lastHitAt < 0.18
-      const pop = hurt ? 1.06 : 1
+      const pop = hurt && u.alive ? 1.05 : 1
       const s = SPRITE_SCALE * pop
       sprite.setAttribute('transform',
-        `rotate(${sway.toFixed(2)}) scale(${(u.facing * s).toFixed(3)} ${s.toFixed(3)}) `
+        `scale(${(u.facing * s).toFixed(3)} ${s.toFixed(3)}) `
         + `translate(${-SPRITE_BOX / 2} ${-SPRITE_FEET})`)
-      // A fallen hero leaves a shield and a banner on the ground.
-      sprite.style.display = u.alive ? '' : 'none'
-      fallen.style.display = u.alive ? 'none' : ''
+
+      // The body stays while it falls, then what is left of it remains.
+      const dying = !u.alive ? (time - u.lastHitAt) / DEATH_SECONDS : 0
+      sprite.style.display = u.alive || dying < 1 ? '' : 'none'
+      sprite.style.opacity = u.alive ? '1' : String(Math.max(0, 1 - dying))
+      fallen.style.display = !u.alive && dying > 0.55 ? '' : 'none'
+      fallen.style.opacity = String(Math.min(1, Math.max(0, (dying - 0.55) / 0.45)))
 
       const ratio = Math.max(0, u.hp / u.maxHp)
       barFill.setAttribute('width', (94 * ratio).toFixed(1))

@@ -478,3 +478,54 @@ svg.arena { position: absolute; inset: 0; width: 100%; height: 100%; display: bl
 .layer-shots .shot { pointer-events: none; }
 
 .dust { fill: #cbb48a; pointer-events: none; }
+
+/* The field keeps moving: flames, banners, leaves, water, birds */
+.arena .flame, .arena .banner, .arena .canopy, .arena .ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.arena .flame { animation: flame 0.42s ease-in-out infinite alternate; }
+.arena .flame.slow { animation-duration: 0.56s; }
+.arena .flame.fast { animation-duration: 0.3s; }
+
+@keyframes flame {
+  from { transform: scale(0.86, 0.92) translateY(2%); }
+  to { transform: scale(1.1, 1.08) translateY(-3%); }
+}
+
+.arena .banner { transform-origin: left center; animation: banner 1.9s ease-in-out infinite alternate; }
+.arena .banner.slow { animation-duration: 2.6s; }
+
+@keyframes banner {
+  from { transform: skewY(-3deg) scaleX(0.94); }
+  to { transform: skewY(4deg) scaleX(1.03); }
+}
+
+.arena .canopy { animation: sway 4.2s ease-in-out infinite alternate; transform-origin: bottom center; }
+.arena .canopy.slow { animation-duration: 5.6s; }
+
+@keyframes sway {
+  from { transform: rotate(-1.6deg); }
+  to { transform: rotate(1.8deg); }
+}
+
+.arena .ripple { animation: ripple 3.4s ease-in-out infinite alternate; }
+.arena .ripple.slow { animation-duration: 4.6s; }
+.arena .ripple.fast { animation-duration: 2.6s; }
+
+@keyframes ripple {
+  from { transform: translateX(-14px); opacity: 0.35; }
+  to { transform: translateX(16px); opacity: 0.8; }
+}
+
+.arena .birds { animation: fly 34s linear infinite; }
+
+@keyframes fly {
+  from { transform: translate(-200px, 60px); }
+  to { transform: translate(2500px, -40px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arena .flame, .arena .banner, .arena .canopy, .arena .ripple, .arena .birds { animation: none; }
+}

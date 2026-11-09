@@ -126,6 +126,13 @@ try {
   check('the enemy advances on its own', beforeAll !== (await unitPositions(page)))
   check('the player\'s heroes do not move on their own',
     beforeMine === (await unitPositions(page, '.unit.player')))
+  // The sprites are rigs: limbs must actually move while a hero walks.
+  const limbs = async () => (await page.locator('.unit .part-leg-front').evaluateAll(
+    (nodes) => nodes.map((n) => n.getAttribute('transform')).join('|')))
+  const limbsBefore = await limbs()
+  await page.waitForTimeout(400)
+  check('limbs are animated, not just the whole sprite', limbsBefore !== (await limbs()))
+  check('every hero carries a rig', (await page.locator('.unit .part-head').count()) === 6)
   await shot('05-battle-running')
 
   await page.locator('.portrait').first().click()

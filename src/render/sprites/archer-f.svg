@@ -1,42 +1,71 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" aria-hidden="true">
   <defs>
-    <linearGradient id="af-cloak" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="currentColor"/><stop offset="100%" stop-color="rgba(0,0,0,0.5)"/>
+    <linearGradient id="a-leather" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#b08552"/><stop offset="100%" stop-color="#6d4a24"/>
     </linearGradient>
-    <linearGradient id="af-leather" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#a97b45"/><stop offset="100%" stop-color="#6d4a24"/>
-    </linearGradient>
-    <linearGradient id="af-bow" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#a9793f"/><stop offset="100%" stop-color="#6b4620"/>
+    <linearGradient id="a-bow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b98747"/><stop offset="100%" stop-color="#6b4620"/>
     </linearGradient>
   </defs>
-  <g stroke="#2a1f14" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M40 50 q-16 32 -10 62 l28 -8 q-8 -32 -2 -54 Z" fill="url(#af-cloak)"/>
-    <path d="M50 92 h14 v22 h-14 Z" fill="#5e4a2e"/>
-    <path d="M68 92 h14 v22 h-14 Z" fill="#6f5836"/>
-    <path d="M46 112 h20 v10 h-24 q-2 -6 4 -10 Z" fill="#3f2d1b"/>
-    <path d="M66 112 h20 q4 4 2 10 h-22 Z" fill="#4e381f"/>
-    <!-- quiver -->
-    <path d="M34 46 l14 -5 12 30 -14 6 Z" fill="url(#af-leather)"/>
-    <g stroke="#e8dcc0" stroke-width="3.4">
-      <path d="M38 42 l4 -14"/><path d="M44 40 l4 -14"/><path d="M50 38 l4 -14"/>
+  <g stroke="#241a10" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+
+    <g class="part-cloak">
+      <path d="M52 50 q-20 36 -14 68 q16 6 32 2 q-10 -36 -2 -66 Z" fill="currentColor"/>
+      <path d="M52 50 q-20 36 -14 68 q6 2 11 2 q-5 -38 7 -68 Z" fill="rgba(0,0,0,0.33)" stroke="none"/>
     </g>
-    <!-- torso -->
-    <path d="M46 54 q18 -12 36 0 l2 26 q-20 10 -40 0 Z" fill="url(#af-leather)"/>
-    <path d="M54 52 q10 16 20 0 l2 24 q-12 6 -24 0 Z" fill="#c8a56b"/>
-    <path d="M46 84 q18 10 36 0 l0 8 q-18 10 -36 0 Z" fill="#5d3b1a"/>
-    <path d="M58 54 l12 24" stroke="#4a3418" stroke-width="3"/>
-    <!-- bow arm -->
-    <path d="M82 60 l16 -4 3 10 -16 6 Z" fill="#f2cba4"/>
-    <path d="M100 20 q22 42 0 84" fill="none" stroke="url(#af-bow)" stroke-width="7"/>
-    <path d="M100 20 L100 104" fill="none" stroke="#efe6cf" stroke-width="2.6"/>
-    <path d="M62 62 L112 62" fill="none" stroke="#c6a96f" stroke-width="3.6"/>
-    <path d="M112 62 l-8 -5 M112 62 l-8 5" fill="none" stroke="#9aa6b5" stroke-width="3"/>
-    <!-- head and hood -->
-    <path d="M52 44 q12 -8 24 0 l-2 10 q-10 6 -20 0 Z" fill="#f2cba4"/>
-    <circle cx="72" cy="48" r="2.2" fill="#2a1f14" stroke="none"/>
-    <path d="M48 48 q0 -26 16 -26 q16 0 16 26 q-8 -8 -16 -8 q-8 0 -16 8 Z" fill="currentColor"/>
-    <path d="M48 48 q-4 14 2 24 l10 -4 q-6 -10 -4 -18 Z" fill="currentColor"/>
-    <path d="M46 52 q-8 22 -2 36 l10 -2 q-6 -18 -2 -32 Z" fill="#8a4b1c"/>
+
+    <g class="part-leg-back">
+      <path d="M54 82 h12 v30 h-12 Z" fill="#5e4a2e"/>
+      <path d="M50 110 h18 q4 5 2 11 h-22 q-2 -7 2 -11 Z" fill="#43301a"/>
+    </g>
+    <g class="part-leg-front">
+      <path d="M66 82 h12 v30 h-12 Z" fill="#6f5836"/>
+      <path d="M64 110 h18 q4 5 2 11 h-22 q-2 -7 2 -11 Z" fill="#51391f"/>
+    </g>
+
+    <g class="part-quiver">
+      <path d="M36 42 l16 -6 13 32 -16 7 Z" fill="url(#a-leather)"/>
+      <g stroke="#efe6cf" stroke-width="3.4">
+        <path d="M40 38 l5 -15"/><path d="M47 36 l5 -15"/><path d="M54 34 l5 -15"/>
+      </g>
+      <path d="M38 48 l16 -6" stroke="#4a3418" stroke-width="3"/>
+    </g>
+
+    <g class="part-body">
+      <path d="M48 52 q16 -12 32 0 l3 32 q-19 10 -38 0 Z" fill="url(#a-leather)"/>
+      <path d="M56 50 q8 16 16 0 l2 30 q-10 6 -20 0 Z" fill="#d3b078"/>
+      <path d="M48 84 q16 10 32 0 l0 8 q-16 10 -32 0 Z" fill="#5d3b1a"/>
+      <rect x="59" y="86" width="12" height="9" rx="3" fill="#e8c45a"/>
+      <path d="M52 56 l14 24" stroke="#4a3418" stroke-width="3"/>
+      <path d="M50 54 q6 -8 14 -6" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2.6"/>
+    </g>
+
+    <g class="part-arm-back">
+      <path d="M58 56 q-6 12 -2 22 q10 4 16 -2 q-6 -10 -4 -20 Z" fill="url(#a-leather)"/>
+      <circle cx="68" cy="76" r="5" fill="#f4cea8"/>
+    </g>
+
+    <g class="part-head">
+      <path d="M54 34 q12 -8 24 0 l-2 14 q-11 7 -22 0 Z" fill="#f4cea8"/>
+      <circle cx="74" cy="38" r="2.4" fill="#241a10" stroke="none"/>
+      <path d="M50 38 q0 -26 16 -26 q16 0 16 26 q-8 -9 -16 -9 q-8 0 -16 9 Z" fill="currentColor"/>
+      <path d="M50 38 q-5 16 2 26 l11 -5 q-7 -11 -5 -21 Z" fill="currentColor"/>
+      <path d="M50 38 q-5 16 2 26 l5 -2 q-6 -12 -3 -24 Z" fill="rgba(0,0,0,0.28)" stroke="none"/>
+      <path d="M52 44 q-8 22 -2 38 l12 -3 q-7 -18 -2 -33 Z" fill="#8a4b1c"/>
+    </g>
+
+    <g class="part-arm-front">
+      <path d="M78 56 q14 -2 20 -6 l5 9 q-10 7 -24 9 Z" fill="#f4cea8"/>
+      <g class="part-bow">
+        <path d="M104 18 q24 44 0 88" fill="none" stroke="url(#a-bow)" stroke-width="7"/>
+        <path d="M104 18 q4 44 0 88" fill="none" stroke="#efe6cf" stroke-width="2.6"/>
+        <path d="M100 14 l8 4 M100 110 l8 -4" stroke="#5d3b1a" stroke-width="4"/>
+      </g>
+      <g class="part-arrow">
+        <path d="M66 62 L116 62" stroke="#c6a96f" stroke-width="3.6"/>
+        <path d="M116 62 l-9 -5 M116 62 l-9 5" stroke="#9aa6b5" stroke-width="3"/>
+        <path d="M66 62 l-7 -5 M66 62 l-7 5" stroke="#efe6cf" stroke-width="3"/>
+      </g>
+    </g>
   </g>
 </svg>
