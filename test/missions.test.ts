@@ -8,7 +8,12 @@ import {
 import {
   generateAim, generateIsosceles, generateStraight, generateTriangle,
 } from '../src/missions/kinds/angles'
+import {
+  generateBothSides as generateBalanceBoth, generateSimple as generateBalance, solve as solveBalance,
+} from '../src/missions/kinds/balance'
 import { generate as generateJumps } from '../src/missions/kinds/jumps'
+import { generate as generateLikeTerms } from '../src/missions/kinds/likeTerms'
+import { apply as applyRule, generate as generateMachine } from '../src/missions/kinds/machine'
 import { generate as generateMirror, reflected } from '../src/missions/kinds/mirror'
 import { generate as generatePowers } from '../src/missions/kinds/powers'
 import { factorPairs, generate as generateProduct, generateSquare } from '../src/missions/kinds/product'
@@ -410,5 +415,81 @@ describe('angles', () => {
       expect(logic.check(logic.solution + 1)).toBe(false)
       expect(logic.check(logic.solution - 5)).toBe(false)
     }
+  })
+})
+
+describe('the number machine', () => {
+  it('offers the right rule among four', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateMachine(seed)
+      expect(config.options.length).toBe(4)
+      expect(config.options[solution]).toEqual(config.rule)
+      const written = config.options.map((o) => `${o.a}|${o.b}`)
+      expect(new Set(written).size).toBe(4)
+    }
+  })
+
+  it('reads the rule as a number does', () => {
+    for (let seed = 1; seed <= 100; seed++) {
+      const { config } = generateMachine(seed)
+      expect(applyRule(config.rule, 3)).toBe(config.rule.a * 3 + config.rule.b)
+    }
+  })
+
+  it('accepts the right choice and nothing else', () => {
+    const logic = generateMachine(8)
+    expect(logic.check(logic.solution)).toBe(true)
+    expect(logic.check((logic.solution + 1) % 4)).toBe(false)
+  })
+})
+
+describe('like terms', () => {
+  it('always has tiles of both kinds', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateLikeTerms(seed)
+      expect(config.tiles.some((t) => t.x !== 0)).toBe(true)
+      expect(config.tiles.some((t) => t.x === 0)).toBe(true)
+      expect(config.tiles.length).toBeGreaterThanOrEqual(4)
+    }
+  })
+
+  it('accepts only a full and correct sorting', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const logic = generateLikeTerms(seed)
+      expect(logic.check(logic.solution)).toBe(true)
+      const partial = { ...logic.solution }
+      delete partial[logic.config.tiles[0]!.id]
+      expect(logic.check(partial)).toBe(false)
+      const wrong = { ...logic.solution }
+      wrong[logic.config.tiles[0]!.id] = logic.solution[logic.config.tiles[0]!.id] === 'x' ? 'n' : 'x'
+      expect(logic.check(wrong)).toBe(false)
+    }
+  })
+})
+
+describe('the balance', () => {
+  it('always balances at a whole number of boxes', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      for (const make of [generateBalance, generateBalanceBoth]) {
+        const { config, solution } = make(seed)
+        expect(Number.isInteger(solution)).toBe(true)
+        expect(solution).toBeGreaterThanOrEqual(2)
+        expect(config.leftX * solution + config.leftN).toBe(config.rightX * solution + config.rightN)
+        expect(solveBalance(config)).toBe(solution)
+      }
+    }
+  })
+
+  it('keeps boxes on one side only in the first mission', () => {
+    for (let seed = 1; seed <= 100; seed++) {
+      expect(generateBalance(seed).config.rightX).toBe(0)
+      expect(generateBalanceBoth(seed).config.rightX).toBeGreaterThanOrEqual(1)
+    }
+  })
+
+  it('accepts the value and nothing else', () => {
+    const logic = generateBalance(6)
+    expect(logic.check(logic.solution)).toBe(true)
+    expect(logic.check(logic.solution + 1)).toBe(false)
   })
 })

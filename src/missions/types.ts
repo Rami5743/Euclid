@@ -15,6 +15,10 @@ export type MissionKind =
   | 'angle-straight'
   | 'angle-triangle'
   | 'angle-isosceles'
+  | 'machine'
+  | 'like-terms'
+  | 'balance'
+  | 'balance-both'
 
 export interface MissionSpec {
   id: string

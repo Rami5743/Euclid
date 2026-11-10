@@ -1,5 +1,8 @@
 import { alphameticProduct, alphameticSum } from './kinds/alphametic'
 import { aimAngle, isoscelesAngle, straightAngle, triangleAngle } from './kinds/angles'
+import { balanceBothSides, balanceSimple } from './kinds/balance'
+import { likeTerms } from './kinds/likeTerms'
+import { machine } from './kinds/machine'
 import { jumps } from './kinds/jumps'
 import { mirror } from './kinds/mirror'
 import { powers } from './kinds/powers'
@@ -35,6 +38,10 @@ const MODULES: Partial<Record<MissionKind, AnyMissionModule>> = {
   'angle-straight': erase(straightAngle),
   'angle-triangle': erase(triangleAngle),
   'angle-isosceles': erase(isoscelesAngle),
+  machine: erase(machine),
+  'like-terms': erase(likeTerms),
+  balance: erase(balanceSimple),
+  'balance-both': erase(balanceBothSides),
 }
 
 export function moduleFor(kind: MissionKind): AnyMissionModule | undefined {

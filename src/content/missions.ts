@@ -118,6 +118,38 @@ export const MISSIONS: MissionSpec[] = [
     kind: 'angle-isosceles',
     requires: ['africa-triangle'],
   },
+  {
+    id: 'europe-machine',
+    continent: 'europe',
+    topicId: 'variable',
+    title: 'מכונת המספרים',
+    kind: 'machine',
+    requires: ['africa-straight'],
+  },
+  {
+    id: 'europe-terms',
+    continent: 'europe',
+    topicId: 'like-terms',
+    title: 'קופסאות שוות',
+    kind: 'like-terms',
+    requires: ['europe-machine'],
+  },
+  {
+    id: 'europe-balance',
+    continent: 'europe',
+    topicId: 'equation-id',
+    title: 'מאזניים',
+    kind: 'balance',
+    requires: ['europe-terms'],
+  },
+  {
+    id: 'samerica-balance',
+    continent: 'samerica',
+    topicId: 'linear-eq',
+    title: 'נעלם בשני הצדדים',
+    kind: 'balance-both',
+    requires: ['europe-balance'],
+  },
 ]
 
 export function missionById(id: string): MissionSpec | undefined {
