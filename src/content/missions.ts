@@ -46,6 +46,30 @@ export const MISSIONS: MissionSpec[] = [
     kind: 'mirror',
     requires: ['asia-quadrant'],
   },
+  {
+    id: 'australia-product',
+    continent: 'australia',
+    topicId: 'mul-div',
+    title: 'מלבן המכפלה',
+    kind: 'product',
+    requires: ['asia-quadrant'],
+  },
+  {
+    id: 'australia-powers',
+    continent: 'australia',
+    topicId: 'powers',
+    title: 'סולם החזקות',
+    kind: 'powers',
+    requires: ['australia-product'],
+  },
+  {
+    id: 'australia-square',
+    continent: 'australia',
+    topicId: 'powers',
+    title: 'הריבוע השלם',
+    kind: 'perfect-square',
+    requires: ['australia-powers'],
+  },
 ]
 
 export function missionById(id: string): MissionSpec | undefined {

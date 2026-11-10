@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { MISSIONS, missionById, missionsOf } from '../src/content/missions'
 import { generate as generateJumps } from '../src/missions/kinds/jumps'
 import { generate as generateMirror, reflected } from '../src/missions/kinds/mirror'
+import { generate as generatePowers } from '../src/missions/kinds/powers'
+import { factorPairs, generate as generateProduct, generateSquare } from '../src/missions/kinds/product'
 import { generate as generateQuadrant } from '../src/missions/kinds/quadrant'
 import { generate as generateTreasure } from '../src/missions/kinds/treasureLine'
 import { generate as generateVoyage } from '../src/missions/kinds/voyage'
@@ -231,5 +233,76 @@ describe('the mirror', () => {
       expect(logic.check(logic.config.anchor)).toBe(false)
       expect(logic.check({ x: logic.solution.x + 1, y: logic.solution.y })).toBe(false)
     }
+  })
+})
+
+describe('the product rectangle', () => {
+  it('always asks for a number with more than one rectangle', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateProduct(seed)
+      const pairs = factorPairs(config.target, config.cols, config.rows)
+      expect(pairs.length).toBeGreaterThanOrEqual(2)
+      expect(pairs.filter((p) => p.w > 1 && p.h > 1).length).toBeGreaterThanOrEqual(2)
+    }
+  })
+
+  it('offers a rectangle that fits the board', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateProduct(seed)
+      expect(solution.w).toBeLessThanOrEqual(config.cols)
+      expect(solution.h).toBeLessThanOrEqual(config.rows)
+      expect(solution.w * solution.h).toBe(config.target)
+    }
+  })
+
+  it('accepts any rectangle of the right area', () => {
+    const logic = generateProduct(3)
+    for (const pair of factorPairs(logic.config.target, logic.config.cols, logic.config.rows)) {
+      expect(logic.check(pair)).toBe(true)
+    }
+    expect(logic.check({ w: 1, h: 1 })).toBe(false)
+  })
+})
+
+describe('the perfect square', () => {
+  it('always asks for a square number', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateSquare(seed)
+      expect(solution.w).toBe(solution.h)
+      expect(solution.w * solution.h).toBe(config.target)
+      expect(Number.isInteger(Math.sqrt(config.target))).toBe(true)
+      expect(solution.w).toBeLessThanOrEqual(config.cols)
+    }
+  })
+
+  it('accepts only the square of the right side', () => {
+    const logic = generateSquare(5)
+    expect(logic.check(logic.solution)).toBe(true)
+    expect(logic.check({ w: logic.solution.w + 1, h: logic.solution.h })).toBe(false)
+  })
+})
+
+describe('the ladder of powers', () => {
+  it('always asks for a power of its base', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generatePowers(seed)
+      expect(config.base ** config.exponent).toBe(config.target)
+      expect(solution).toBe(config.target)
+      expect(config.exponent).toBeGreaterThanOrEqual(2)
+      expect(config.keys).toContain(config.base)
+    }
+  })
+
+  it('keeps the target within reach', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generatePowers(seed)
+      expect(config.target).toBeLessThanOrEqual(400)
+    }
+  })
+
+  it('accepts the target and nothing else', () => {
+    const logic = generatePowers(11)
+    expect(logic.check(logic.solution)).toBe(true)
+    expect(logic.check(logic.solution * logic.config.base)).toBe(false)
   })
 })

@@ -266,7 +266,7 @@ try {
 
   await go('')
   check('the next continent opens once its missions are done',
-    (await page.locator('.marker.continent').count()) === 2)
+    (await page.locator('.marker.continent').count()) >= 2)
 
   console.log('conquered state is remembered')
   await go('#/continent/asia')

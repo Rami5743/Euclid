@@ -6,6 +6,9 @@ export type MissionKind =
   | 'voyage'
   | 'quadrant'
   | 'mirror'
+  | 'product'
+  | 'perfect-square'
+  | 'powers'
 
 export interface MissionSpec {
   id: string

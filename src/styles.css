@@ -662,3 +662,43 @@ svg.board { display: block; width: 100%; height: auto; }
 .grid-board .hint-span line { stroke: var(--moss); stroke-width: 5; }
 .grid-board .hint-span text { fill: var(--moss); font: 700 24px system-ui, sans-serif; direction: ltr; }
 .grid-board .grid-dot { fill: var(--gold); stroke: var(--oak-dark); stroke-width: 3; }
+
+/* The rectangle board */
+.rect-board { width: auto; height: min(56vh, 520px); margin: 0 auto; }
+.rect-board .cell-line { stroke: rgba(138, 90, 43, 0.3); stroke-width: 2; }
+.rect-board .area-rect { fill: rgba(47, 111, 179, 0.32); stroke: #23527f; stroke-width: 4; }
+.rect-board .area-handle { fill: var(--gold); stroke: var(--oak-dark); stroke-width: 4; cursor: grab; }
+.rect-board .area-handle:active { cursor: grabbing; }
+.rect-board .area-text { fill: var(--ink); font: 800 30px system-ui, sans-serif; direction: ltr; }
+.rect-board .side-label { fill: var(--ink-soft); font: 700 26px system-ui, sans-serif; direction: ltr; }
+.rect-board .goal { fill: var(--oak-dark); font: 800 44px system-ui, sans-serif; direction: ltr; }
+.rect-board .hint-strip { fill: rgba(201, 138, 22, 0.4); stroke: var(--gold); stroke-width: 3; }
+
+/* The chain board */
+.chain-board { text-align: center; padding: 10px 0 2px; }
+.chain-goal {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--oak-dark);
+  direction: ltr;
+}
+.chain-value {
+  margin: 6px 0 0;
+  font-size: 60px;
+  font-weight: 800;
+  color: var(--ink);
+  direction: ltr;
+}
+.chain-steps { margin: 4px 0 0; color: var(--ink-soft); font-size: 22px; direction: ltr; }
+.chain-hint { margin: 4px 0 0; min-height: 26px; color: var(--moss); font-weight: 700; direction: ltr; }
+
+.chain-goal {
+  display: inline-block;
+  padding: 2px 22px;
+  border: 3px solid var(--gold);
+  border-radius: 999px;
+  background: rgba(201, 138, 22, 0.14);
+}
+
+.chain-value.matched { color: var(--moss); }

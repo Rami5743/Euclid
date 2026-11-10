@@ -62,10 +62,17 @@ export function isOpen(continent: Continent, profile: Profile): boolean {
   return isComplete(order[index - 1]!, profile)
 }
 
-/** The continent being played: the first one not finished. */
+/** Every mission of the continent has been solved at least once. */
+export function missionsDone(continent: Continent, profile: Profile): boolean {
+  const missions = playableMissions(continent)
+  return missions.length > 0 && missions.every((m) => isMissionSolved(profile, m.id))
+}
+
+/** The continent whose missions are being worked on. */
 export function currentContinent(profile: Profile): Continent {
   const order = campaign()
-  return order.find((c) => !isComplete(c, profile) || !isConquered(c, profile)) ?? order[order.length - 1]!
+  const open = order.filter((c) => isOpen(c, profile))
+  return open.find((c) => !missionsDone(c, profile)) ?? open[open.length - 1] ?? order[0]!
 }
 
 export function totalMissions(): number {
