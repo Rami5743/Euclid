@@ -41,8 +41,9 @@ export function generate(seed: number): MissionLogic<NetConfig, number> {
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
-function rect(x: number, y: number, w: number, h: number, label: string): SVGGElement {
+function rect(x: number, y: number, w: number, h: number, label: string, kind = ''): SVGGElement {
   const g = document.createElementNS(SVG_NS, 'g')
+  g.setAttribute('class', `net-pair ${kind}`)
   const node = document.createElementNS(SVG_NS, 'rect')
   node.setAttribute('class', 'net-face')
   node.setAttribute('x', String(x))
@@ -73,12 +74,12 @@ function mount(logic: MissionLogic<NetConfig, number>, onChange: () => void): Bo
 
   const top = unit * c
   // the four sides in a row, with the lid above and the base below
-  root.append(rect(0, top, unit * a, unit * c, `${a}×${c}`))
-  root.append(rect(unit * a, top, unit * b, unit * c, `${b}×${c}`))
-  root.append(rect(unit * (a + b), top, unit * a, unit * c, `${a}×${c}`))
-  root.append(rect(unit * (2 * a + b), top, unit * b, unit * c, `${b}×${c}`))
-  root.append(rect(unit * a, 0, unit * b, unit * c > unit * b ? unit * b : unit * b, `${a}×${b}`))
-  root.append(rect(unit * a, top + unit * c, unit * b, unit * b, `${a}×${b}`))
+  root.append(rect(0, top, unit * a, unit * c, `${a}×${c}`, 'ac'))
+  root.append(rect(unit * a, top, unit * b, unit * c, `${b}×${c}`, 'bc'))
+  root.append(rect(unit * (a + b), top, unit * a, unit * c, `${a}×${c}`, 'ac'))
+  root.append(rect(unit * (2 * a + b), top, unit * b, unit * c, `${b}×${c}`, 'bc'))
+  root.append(rect(unit * a, 0, unit * b, unit * b, `${a}×${b}`, 'ab'))
+  root.append(rect(unit * a, top + unit * c, unit * b, unit * b, `${a}×${b}`, 'ab'))
   wrap.append(root)
 
   const pad = keypad({ max: 999 }, onChange)
@@ -88,6 +89,12 @@ function mount(logic: MissionLogic<NetConfig, number>, onChange: () => void): Bo
     el: wrap,
     answer: () => pad.value(),
     hint(level) {
+      const light = (kind: string): void => {
+        for (const node of Array.from(root.querySelectorAll(`.net-pair.${kind}`))) node.classList.add('lit')
+      }
+      if (level === 1) light('ab')
+      if (level === 2) light('ac')
+      if (level === 3) light('bc')
       if (level >= 4) pad.set(logic.solution)
     },
     demonstrate() { pad.set(logic.solution) },

@@ -926,3 +926,9 @@ svg.board { display: block; width: 100%; height: auto; }
 .bar-chart .bar.watched { stroke: var(--gold); stroke-width: 6; }
 .bar-chart .bar-label { fill: var(--ink); font: 800 26px system-ui, sans-serif; direction: ltr; }
 .bar-chart .bar-axis { stroke: var(--oak-dark); stroke-width: 4; }
+
+.pythagoras-art .leg-square.lit { fill: rgba(79, 122, 63, 0.55); stroke-width: 6; }
+.pythagoras-art .side-label.lit { fill: var(--moss); }
+.net-art .net-pair.lit .net-face { fill: rgba(201, 138, 22, 0.5); stroke-width: 6; }
+.bar-chart .bar.lit { stroke: var(--gold); stroke-width: 6; }
+.chain-steps.lit { color: var(--moss); font-weight: 800; }

@@ -87,14 +87,18 @@ function mount(logic: MissionLogic<PythagorasConfig, number>, onChange: () => vo
   root.setAttribute('class', 'board pythagoras-art')
   root.setAttribute('viewBox', '0 0 900 620')
 
+  const legSquares: SVGElement[] = []
+  const sideLabels: SVGElement[] = []
   if (mode === 'squares') {
     root.append(el('rect', {
       class: 'leg-square', x: String(A.x - a * unit), y: String(C.y), width: String(a * unit), height: String(a * unit),
     }))
+    legSquares.push(root.lastElementChild as SVGElement)
     root.append(el('text', { class: 'square-label', x: String(A.x - (a * unit) / 2), y: String(C.y + (a * unit) / 2 + 10), 'text-anchor': 'middle' }, String(a * a)))
     root.append(el('rect', {
       class: 'leg-square', x: String(A.x), y: String(A.y), width: String(b * unit), height: String(b * unit),
     }))
+    legSquares.push(root.lastElementChild as SVGElement)
     root.append(el('text', { class: 'square-label', x: String(A.x + (b * unit) / 2), y: String(A.y + (b * unit) / 2 + 10), 'text-anchor': 'middle' }, String(b * b)))
     // The square on the hypotenuse, on the far side from the right angle.
     const hx = B.x - C.x
@@ -120,6 +124,7 @@ function mount(logic: MissionLogic<PythagorasConfig, number>, onChange: () => vo
     root.append(el('text', { class: 'side-label', x: String(A.x - 34), y: String((A.y + C.y) / 2), 'text-anchor': 'middle' }, missing === 'a' ? '?' : String(a)))
     root.append(el('text', { class: 'side-label', x: String((A.x + B.x) / 2), y: String(A.y + 44), 'text-anchor': 'middle' }, missing === 'b' ? '?' : String(b)))
     root.append(el('text', { class: 'side-label', x: String((B.x + C.x) / 2 + 30), y: String((B.y + C.y) / 2 - 10), 'text-anchor': 'middle' }, missing === 'c' ? '?' : String(c)))
+    sideLabels.push(...Array.from(root.querySelectorAll<SVGElement>('.side-label')))
   }
 
   root.append(el('polygon', { class: 'triangle', points: `${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}` }))
@@ -133,6 +138,12 @@ function mount(logic: MissionLogic<PythagorasConfig, number>, onChange: () => vo
     el: wrap,
     answer: () => pad.value(),
     hint(level) {
+      // The squares, and then the sides, light up one after another.
+      if (level === 1) legSquares[0]?.classList.add('lit')
+      if (level === 1) sideLabels[0]?.classList.add('lit')
+      if (level === 2) legSquares[1]?.classList.add('lit')
+      if (level === 2) sideLabels[1]?.classList.add('lit')
+      if (level === 3) for (const node of [...legSquares, ...sideLabels]) node.classList.add('lit')
       if (level >= 4) pad.set(logic.solution)
     },
     demonstrate() { pad.set(logic.solution) },

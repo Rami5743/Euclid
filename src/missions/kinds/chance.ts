@@ -262,7 +262,12 @@ function mountFrequency(logic: MissionLogic<FrequencyConfig, number>, onChange: 
   return {
     el: wrap,
     answer: () => pad.value(),
-    hint(level) { if (level >= 4) pad.set(logic.solution) },
+    hint(level) {
+      if (level === 1) chart.querySelector('.bar.watched')?.classList.add('lit')
+      if (level === 2) for (const bar of Array.from(chart.querySelectorAll('.bar'))) bar.classList.add('lit')
+      if (level === 3) totalLine.classList.add('lit')
+      if (level >= 4) pad.set(logic.solution)
+    },
     demonstrate() { pad.set(logic.solution) },
     place: (value) => pad.set(value),
     destroy: () => wrap.remove(),
