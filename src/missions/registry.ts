@@ -1,3 +1,4 @@
+import { alphameticProduct, alphameticSum } from './kinds/alphametic'
 import { jumps } from './kinds/jumps'
 import { mirror } from './kinds/mirror'
 import { powers } from './kinds/powers'
@@ -27,6 +28,8 @@ const MODULES: Partial<Record<MissionKind, AnyMissionModule>> = {
   product: erase(product),
   powers: erase(powers),
   'perfect-square': erase(perfectSquare),
+  'alphametic-sum': erase(alphameticSum),
+  'alphametic-product': erase(alphameticProduct),
 }
 
 export function moduleFor(kind: MissionKind): AnyMissionModule | undefined {

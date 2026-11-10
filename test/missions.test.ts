@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { MISSIONS, missionById, missionsOf } from '../src/content/missions'
+import {
+  generateProduct as generateAlphameticProduct,
+  generateSum as generateAlphameticSum,
+  valueOf,
+} from '../src/missions/kinds/alphametic'
 import { generate as generateJumps } from '../src/missions/kinds/jumps'
 import { generate as generateMirror, reflected } from '../src/missions/kinds/mirror'
 import { generate as generatePowers } from '../src/missions/kinds/powers'
@@ -304,5 +309,58 @@ describe('the ladder of powers', () => {
     const logic = generatePowers(11)
     expect(logic.check(logic.solution)).toBe(true)
     expect(logic.check(logic.solution * logic.config.base)).toBe(false)
+  })
+})
+
+describe('arithmetic in letters', () => {
+  it('writes a sum that its own digits solve', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const logic = generateAlphameticSum(seed)
+      expect(logic.check(logic.solution)).toBe(true)
+      expect(logic.config.values.a + logic.config.values.b).toBe(logic.config.values.result)
+    }
+  })
+
+  it('writes a product that its own digits solve', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const logic = generateAlphameticProduct(seed)
+      expect(logic.check(logic.solution)).toBe(true)
+      expect(logic.config.values.a * logic.config.values.b).toBe(logic.config.values.result)
+    }
+  })
+
+  it('gives every digit its own letter, and back', () => {
+    for (let seed = 1; seed <= 100; seed++) {
+      const { config, solution } = generateAlphameticSum(seed)
+      const digits = config.letters.map((l) => solution[l])
+      expect(new Set(digits).size).toBe(digits.length)
+      expect(valueOf(config.rows[0]!, solution)).toBe(config.values.a)
+      expect(valueOf(config.rows[1]!, solution)).toBe(config.values.b)
+      expect(valueOf(config.rows[2]!, solution)).toBe(config.values.result)
+    }
+  })
+
+  it('refuses a blank letter, a clash and a leading zero', () => {
+    const logic = generateAlphameticSum(9)
+    const { config, solution } = logic
+    const missing = { ...solution }
+    delete missing[config.letters[0]!]
+    expect(logic.check(missing)).toBe(false)
+
+    const clash = { ...solution }
+    clash[config.letters[0]!] = solution[config.letters[1]!]!
+    expect(logic.check(clash)).toBe(false)
+
+    const zeroed = { ...solution, [config.leading[0]!]: 0 }
+    expect(logic.check(zeroed)).toBe(false)
+  })
+
+  it('keeps the puzzle small enough to read', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateAlphameticSum(seed)
+      expect(config.letters.length).toBeLessThanOrEqual(6)
+      expect(config.letters.length).toBeGreaterThanOrEqual(3)
+      expect(config.rows.every((row) => row.length <= 3)).toBe(true)
+    }
   })
 })

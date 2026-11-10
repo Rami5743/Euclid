@@ -9,6 +9,8 @@ export type MissionKind =
   | 'product'
   | 'perfect-square'
   | 'powers'
+  | 'alphametic-sum'
+  | 'alphametic-product'
 
 export interface MissionSpec {
   id: string

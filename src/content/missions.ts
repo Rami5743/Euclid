@@ -70,6 +70,22 @@ export const MISSIONS: MissionSpec[] = [
     kind: 'perfect-square',
     requires: ['australia-powers'],
   },
+  {
+    id: 'australia-sum-letters',
+    continent: 'australia',
+    topicId: 'mul-div',
+    title: 'חיבור בטור עם אותיות',
+    kind: 'alphametic-sum',
+    requires: ['australia-product'],
+  },
+  {
+    id: 'australia-product-letters',
+    continent: 'australia',
+    topicId: 'mul-div',
+    title: 'כפל בטור עם אותיות',
+    kind: 'alphametic-product',
+    requires: ['australia-sum-letters'],
+  },
 ]
 
 export function missionById(id: string): MissionSpec | undefined {
