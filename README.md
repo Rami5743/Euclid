@@ -40,22 +40,30 @@ tools/        headless balance simulation (M6) - not written yet
   `npm run balance` prints the win rate for every combination of fortress
   difficulty and star budget, and `npm run balance:check` verifies the numbers
   the game ships with.
+- **Missions (done).** The engine, the boards and all thirty one missions.
 - **M7 - art (done).** Detailed vector sprites for the three heroes in two
   variants each, a drawn battlefield, fallen heroes, walking and striking
   animation, fireballs, floating damage, selection and healing effects.
 
-## What is not built yet
+## Missions
 
-The missions themselves. `src/missions` is a working seam with an empty
-provider, and the menu lists the curriculum topics marked as coming soon.
-Everything else - maps, battles, upgrades, the star economy - is in place and
-tested, so adding missions means implementing `MissionsProvider` and nothing
-else.
+Thirty one missions, spread over the seven continents and rising in difficulty.
+Each one is played on a board rather than read: a number line, a coordinate
+grid, a rectangle of area, a column of arithmetic in letters, an angle dial, a
+balance, a straightedge and compass, a spinner.
 
-Two things to decide when the missions arrive: how many stars a solved mission
-is worth, and whether the campaign's full ladder (about a thousand stars from
-the first fortress to the last) matches the number of missions a year of
-seventh grade actually offers.
+Every mission carries a ladder of hints. The first points at where to look, the
+next shows the first step, the next performs it, and the last shows the whole
+solution. A correct answer is followed by a short explanation.
+
+Five stars for a clean solve; a hint or a wrong answer costs one, and one star
+always remains. Only the improvement over the best previous solve is paid out,
+so a mission at full marks gives nothing further however often it is replayed -
+and every mission can be replayed, with new numbers each time.
+
+A mission opens once the missions it requires have been solved, so several open
+at once. A continent opens once four fifths of the stars of the one before it
+have been earned; its fortresses can be taken later.
 
 ## The world
 

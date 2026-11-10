@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { MISSIONS, missionById, missionsOf } from '../src/content/missions'
+import { CONTINENTS } from '../src/content/world'
 import {
   generateProduct as generateAlphameticProduct,
   generateSum as generateAlphameticSum,
@@ -784,5 +785,28 @@ describe('the campaign as a whole', () => {
   it('names every mission once', () => {
     const titles = MISSIONS.map((m) => m.title)
     expect(new Set(titles).size).toBe(titles.length)
+  })
+})
+
+describe('the star economy', () => {
+  it('pays enough stars over the whole campaign to reach the last fortress', () => {
+    const supply = MISSIONS.length * MAX_STARS
+    const needed = Math.max(...CONTINENTS.flatMap((c) => c.fortresses.map((f) => f.starsNeeded)))
+    expect(supply).toBeGreaterThanOrEqual(needed)
+  })
+
+  it('leaves a margin, so not every mission has to be perfect', () => {
+    const supply = MISSIONS.length * MAX_STARS
+    const needed = Math.max(...CONTINENTS.flatMap((c) => c.fortresses.map((f) => f.starsNeeded)))
+    expect(supply - needed).toBeGreaterThanOrEqual(10)
+  })
+
+  it('asks for less than the continent pays, fortress by fortress', () => {
+    let paid = 0
+    for (const continent of CONTINENTS.slice().sort((a, b) => a.order - b.order)) {
+      paid += MISSIONS.filter((m) => m.continent === continent.id).length * MAX_STARS
+      const first = continent.fortresses.find((f) => !f.home)!
+      expect(first.starsNeeded).toBeLessThanOrEqual(paid)
+    }
   })
 })

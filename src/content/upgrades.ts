@@ -1,7 +1,7 @@
 import type { Stat } from './heroes'
 
 /** Star price of each successive level, per parameter. */
-const COSTS = [2, 3, 5, 8, 12, 17, 23, 30]
+const COSTS = [1, 2, 3, 4, 6, 8, 10, 12]
 
 export const MAX_LEVEL = COSTS.length
 
