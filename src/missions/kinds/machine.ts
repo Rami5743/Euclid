@@ -58,7 +58,7 @@ export function generate(seed: number): MissionLogic<MachineConfig, number> {
     ],
     explain: [
       `הכלל הוא ${num(write(rule))}.`,
-      `${num(1)} → ${num(apply(rule, 1))} , ${num(2)} → ${num(apply(rule, 2))} , ${num(3)} → ${num(apply(rule, 3))}.`,
+      `${num(`1 → ${apply(rule, 1)}, 2 → ${apply(rule, 2)}, 3 → ${apply(rule, 3)}`)}.`,
     ],
   }
 }

@@ -33,7 +33,7 @@ export function generate(seed: number): MissionLogic<NetConfig, number> {
       { text: `כל פאה מופיעה פעמיים: ${num(total)}` },
     ],
     explain: [
-      `לתיבה שלושה זוגות של פאות: ${num(a * b)} , ${num(a * c)} , ${num(b * c)}.`,
+      `לתיבה שלושה זוגות של פאות: ${num(`${a * b}, ${a * c}, ${b * c}`)}.`,
       `${num(2)} × (${num(a * b)} + ${num(a * c)} + ${num(b * c)}) = ${num(total)}.`,
     ],
   }
