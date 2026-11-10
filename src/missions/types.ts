@@ -11,6 +11,10 @@ export type MissionKind =
   | 'powers'
   | 'alphametic-sum'
   | 'alphametic-product'
+  | 'angle-aim'
+  | 'angle-straight'
+  | 'angle-triangle'
+  | 'angle-isosceles'
 
 export interface MissionSpec {
   id: string

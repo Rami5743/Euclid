@@ -86,6 +86,38 @@ export const MISSIONS: MissionSpec[] = [
     kind: 'alphametic-product',
     requires: ['australia-sum-letters'],
   },
+  {
+    id: 'africa-aim',
+    continent: 'africa',
+    topicId: 'angles',
+    title: 'כוון את הקרן',
+    kind: 'angle-aim',
+    requires: ['australia-product'],
+  },
+  {
+    id: 'africa-straight',
+    continent: 'africa',
+    topicId: 'angle-pairs',
+    title: 'זוויות צמודות',
+    kind: 'angle-straight',
+    requires: ['africa-aim'],
+  },
+  {
+    id: 'africa-triangle',
+    continent: 'africa',
+    topicId: 'triangle-angles',
+    title: 'סכום במשולש',
+    kind: 'angle-triangle',
+    requires: ['africa-straight'],
+  },
+  {
+    id: 'africa-isosceles',
+    continent: 'africa',
+    topicId: 'triangle-angles',
+    title: 'שתי שוקיים',
+    kind: 'angle-isosceles',
+    requires: ['africa-triangle'],
+  },
 ]
 
 export function missionById(id: string): MissionSpec | undefined {

@@ -766,3 +766,22 @@ svg.board { display: block; width: 100%; height: auto; }
 
 .keypad { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 10px; direction: ltr; }
 .digit-key { min-width: 52px; }
+
+/* Angles */
+.angle-board { width: auto; height: min(56vh, 500px); margin: 0 auto; }
+.angle-board .fig-line { stroke: var(--oak-dark); stroke-width: 6; stroke-linecap: round; }
+.angle-board .fig-line.live { stroke: #2f6fb3; }
+.angle-board .fig-arc { fill: none; stroke-width: 6; }
+.angle-board .fig-arc.given { stroke: var(--moss); }
+.angle-board .fig-arc.wanted { stroke: var(--gold); stroke-dasharray: 12 8; }
+.angle-board .fig-label { fill: var(--ink); font: 800 30px system-ui, sans-serif; direction: ltr; }
+.angle-board .fig-dot { fill: var(--oak-dark); }
+.angle-board .board-mark { fill: var(--moss); font: 800 34px system-ui, sans-serif; direction: ltr; }
+
+.angle-board .dial-face { fill: rgba(255, 255, 255, 0.55); stroke: var(--oak); stroke-width: 4; }
+.angle-board .dial-wedge { fill: rgba(201, 138, 22, 0.3); }
+.angle-board .dial-base { stroke: var(--oak-dark); stroke-width: 5; }
+.angle-board .dial-arm { stroke: var(--gold); stroke-width: 7; stroke-linecap: round; }
+.angle-board .dial-knob { fill: var(--gold); stroke: var(--oak-dark); stroke-width: 4; cursor: grab; }
+.angle-board .dial-tick { stroke: var(--oak); stroke-width: 3; }
+.angle-board .dial-readout { fill: var(--ink); font: 800 40px system-ui, sans-serif; direction: ltr; }

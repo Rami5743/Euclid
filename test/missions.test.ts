@@ -5,6 +5,9 @@ import {
   generateSum as generateAlphameticSum,
   valueOf,
 } from '../src/missions/kinds/alphametic'
+import {
+  generateAim, generateIsosceles, generateStraight, generateTriangle,
+} from '../src/missions/kinds/angles'
 import { generate as generateJumps } from '../src/missions/kinds/jumps'
 import { generate as generateMirror, reflected } from '../src/missions/kinds/mirror'
 import { generate as generatePowers } from '../src/missions/kinds/powers'
@@ -361,6 +364,51 @@ describe('arithmetic in letters', () => {
       expect(config.letters.length).toBeLessThanOrEqual(6)
       expect(config.letters.length).toBeGreaterThanOrEqual(3)
       expect(config.rows.every((row) => row.length <= 3)).toBe(true)
+    }
+  })
+})
+
+describe('angles', () => {
+  it('aims at a readable angle', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { solution } = generateAim(seed)
+      expect(solution % 5).toBe(0)
+      expect(solution).toBeGreaterThanOrEqual(15)
+      expect(solution).toBeLessThanOrEqual(165)
+    }
+  })
+
+  it('completes a straight angle', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateStraight(seed)
+      expect(config.given[0]! + solution).toBe(180)
+      expect(solution).toBeGreaterThan(0)
+    }
+  })
+
+  it('completes a triangle', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateTriangle(seed)
+      expect(config.given[0]! + config.given[1]! + solution).toBe(180)
+      expect(solution).toBeGreaterThanOrEqual(25)
+    }
+  })
+
+  it('splits an isosceles triangle', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateIsosceles(seed)
+      expect(config.given[0]! + 2 * solution).toBe(180)
+      expect(Number.isInteger(solution)).toBe(true)
+      expect(solution).toBeGreaterThan(0)
+    }
+  })
+
+  it('accepts the angle and nothing else', () => {
+    for (const make of [generateAim, generateStraight, generateTriangle, generateIsosceles]) {
+      const logic = make(4)
+      expect(logic.check(logic.solution)).toBe(true)
+      expect(logic.check(logic.solution + 1)).toBe(false)
+      expect(logic.check(logic.solution - 5)).toBe(false)
     }
   })
 })
