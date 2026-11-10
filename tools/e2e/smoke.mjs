@@ -184,12 +184,54 @@ try {
   await page.getByRole('button', { name: 'לתפריט המשימות' }).click()
   await page.waitForTimeout(220)
   check('modal leads to the missions menu', page.url().includes('#/missions'))
-  check('only the open topic of the current continent is listed',
-    (await page.locator('.topic').count()) === 1)
-  check('the topic is still marked as coming soon', (await page.locator('.topic.soon').count()) === 1)
+  check('the open missions of the continent are listed',
+    (await page.locator('.mission-card').count()) >= 1)
   check('the missions menu names the continent being played',
     (await page.locator('.subtitle').innerText()).includes('אסיה'))
   await shot('09-missions')
+
+  console.log('a mission from end to end')
+  await page.locator('.mission-card').first().click()
+  await page.waitForTimeout(250)
+  check('mission screen reached', page.url().includes('#/mission/'))
+  check('the board is drawn', (await page.locator('svg.board').count()) === 1)
+  check('checking is blocked until an answer is put down',
+    await page.locator('.hud-actions .btn.primary').isDisabled())
+  await shot('10-mission')
+
+  // a wrong answer first: it must cost a star and not finish the mission
+  // far off the target: the board snaps it to the end of the line
+  await page.evaluate(() => {
+    const m = window.__mission
+    m.place(m.solution() + 1000)
+  })
+  await page.locator('.hud-actions .btn.primary').click()
+  await page.waitForTimeout(250)
+  check('a wrong answer does not finish the mission',
+    (await page.locator('.overlay.hidden').count()) === 1)
+  check('a wrong answer costs a star',
+    (await page.evaluate(() => window.__mission.state().score)) === 4)
+
+  // a hint costs another star, and the last one shows the answer
+  await page.getByRole('button', { name: 'רמז' }).click()
+  await page.waitForTimeout(150)
+  check('a hint costs a star',
+    (await page.evaluate(() => window.__mission.state().score)) === 3)
+  check('the hint is shown in words', (await page.locator('.hint-line').innerText()).length > 0)
+
+  const starsBefore = Number((await page.locator('.stars').innerText()).replace(/\D/g, ''))
+  await page.evaluate(() => window.__mission.solve())
+  await page.locator('.hud-actions .btn.primary').click()
+  await page.waitForTimeout(300)
+  check('a correct answer finishes the mission',
+    (await page.locator('.overlay:not(.hidden) .panel h2').innerText()) === 'נכון')
+  check('the explanation is shown', (await page.locator('.overlay .panel p').count()) >= 2)
+  await shot('11-mission-solved')
+  await page.getByRole('button', { name: 'לתפריט המשימות' }).click()
+  await page.waitForTimeout(250)
+  const starsAfter = Number((await page.locator('.stars').innerText()).replace(/\D/g, ''))
+  check('the stars earned are added to the purse', starsAfter === starsBefore + 3)
+  check('the mission card shows the score', (await page.locator('.mission-card .stars-row').innerText()).includes('★'))
 
   console.log('conquered state is remembered')
   await go('#/continent/asia')

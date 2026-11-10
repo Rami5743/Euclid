@@ -1,42 +1,73 @@
-import { CONTINENTS, enemyFortresses, type Continent, type Topic } from '../content/world'
+import { MISSIONS, missionsOf } from '../content/missions'
+import { enemyFortresses, type Continent } from '../content/world'
+import { CONTINENTS } from '../content/world'
+import { isPlayable } from '../missions/registry'
+import { MAX_STARS } from '../missions/scoring'
+import type { MissionSpec } from '../missions/types'
 import type { Profile } from './profile'
 
-/** Continents in campaign order. */
+/** Share of a continent's mission stars that opens the continent after it. */
+export const CONTINENT_GATE = 0.8
+
 export function campaign(): Continent[] {
   return [...CONTINENTS].sort((a, b) => a.order - b.order)
 }
 
+export function bestOf(profile: Profile, missionId: string): number {
+  return profile.missions[missionId] ?? 0
+}
+
+export function isMissionSolved(profile: Profile, missionId: string): boolean {
+  return bestOf(profile, missionId) > 0
+}
+
+/** A mission opens once every mission it requires has been solved. */
+export function isMissionOpen(spec: MissionSpec, profile: Profile): boolean {
+  return isPlayable(spec.kind) && spec.requires.every((id) => isMissionSolved(profile, id))
+}
+
+export function openMissions(continent: Continent, profile: Profile): MissionSpec[] {
+  return missionsOf(continent.id).filter((m) => isMissionOpen(m, profile))
+}
+
+export function playableMissions(continent: Continent): MissionSpec[] {
+  return missionsOf(continent.id).filter((m) => isPlayable(m.kind))
+}
+
+export function continentStars(continent: Continent, profile: Profile): number {
+  return playableMissions(continent).reduce((sum, m) => sum + bestOf(profile, m.id), 0)
+}
+
+export function continentMaxStars(continent: Continent): number {
+  return playableMissions(continent).length * MAX_STARS
+}
+
+/** Enough of a continent's missions are done to move on. */
+export function isComplete(continent: Continent, profile: Profile): boolean {
+  const max = continentMaxStars(continent)
+  if (max === 0) return false
+  return continentStars(continent, profile) >= CONTINENT_GATE * max
+}
+
+/** Every fortress of the continent has been taken. */
 export function isConquered(continent: Continent, profile: Profile): boolean {
   return enemyFortresses(continent).every((f) => profile.conquered.includes(f.id))
 }
 
-/** A continent opens once the one before it has been taken completely. */
+/** A continent opens once enough of the one before it has been done. */
 export function isOpen(continent: Continent, profile: Profile): boolean {
   const order = campaign()
   const index = order.findIndex((c) => c.id === continent.id)
   if (index <= 0) return true
-  return isConquered(order[index - 1]!, profile)
+  return isComplete(order[index - 1]!, profile)
 }
 
-/** The continent the campaign is standing on: the first one not yet taken. */
+/** The continent being played: the first one not finished. */
 export function currentContinent(profile: Profile): Continent {
   const order = campaign()
-  return order.find((c) => !isConquered(c, profile)) ?? order[order.length - 1]!
+  return order.find((c) => !isComplete(c, profile) || !isConquered(c, profile)) ?? order[order.length - 1]!
 }
 
-/**
- * Topics open one after another: the first one from the start, and each next
- * one once the one before it has been solved.
- */
-export function openTopics(continent: Continent, profile: Profile): Topic[] {
-  const open: Topic[] = []
-  for (const topic of continent.topics) {
-    open.push(topic)
-    if (!profile.solvedTopics.includes(topic.id)) break
-  }
-  return open
-}
-
-export function isTopicOpen(continent: Continent, topicId: string, profile: Profile): boolean {
-  return openTopics(continent, profile).some((t) => t.id === topicId)
+export function totalMissions(): number {
+  return MISSIONS.filter((m) => isPlayable(m.kind)).length
 }

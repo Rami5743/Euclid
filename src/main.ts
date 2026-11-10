@@ -8,6 +8,7 @@ import { resultScreen } from './ui/screens/result'
 import { upgradesScreen } from './ui/screens/upgrades'
 import { missionsScreen } from './ui/screens/missions'
 import { setupScreen } from './ui/screens/setup'
+import { missionScreen } from './ui/screens/mission'
 import { profile } from './state/profile'
 
 route('/', worldMapScreen)
@@ -17,6 +18,7 @@ route('/result/:id/:outcome', resultScreen)
 route('/upgrades', upgradesScreen)
 route('/missions', missionsScreen)
 route('/missions/:id', missionsScreen)
+route('/mission/:id', missionScreen)
 route('/setup', setupScreen)
 
 notFound((): Screen => {

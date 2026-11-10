@@ -190,6 +190,7 @@ describe('army construction', () => {
     stars: 0,
     conquered: [],
     solvedTopics: [],
+    missions: {},
     flags: { sawUpgrades: true, setupDone: true },
   })
 

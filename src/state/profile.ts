@@ -18,6 +18,8 @@ export interface Profile {
   conquered: string[]
   /** ids of curriculum topics whose missions have been solved */
   solvedTopics: string[]
+  /** best score so far in each mission, by mission id */
+  missions: Record<string, number>
   flags: {
     /** the upgrade screen stays hidden until the first battle is over */
     sawUpgrades: boolean
@@ -40,6 +42,7 @@ function freshProfile(): Profile {
     stars: 0,
     conquered: [],
     solvedTopics: [],
+    missions: {},
     flags: { sawUpgrades: false, setupDone: false },
   }
 }
@@ -48,6 +51,7 @@ function migrate(profile: Profile): Profile {
   // Older saves predate some fields; fill them in rather than start over.
   profile.solvedTopics ??= []
   profile.conquered ??= []
+  profile.missions ??= {}
   return profile
 }
 
