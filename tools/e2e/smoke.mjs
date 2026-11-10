@@ -23,6 +23,19 @@ const BASE = `http://127.0.0.1:${PORT}/`
 const OUT = new URL('./out/', import.meta.url).pathname
 mkdirSync(OUT, { recursive: true })
 
+// Every mission of the campaign, kept in step with src/content/missions.ts.
+const MISSION_IDS = [
+  'asia-treasure', 'asia-jumps', 'asia-voyage', 'asia-quadrant', 'asia-mirror',
+  'australia-product', 'australia-powers', 'australia-square',
+  'australia-sum-letters', 'australia-product-letters',
+  'africa-aim', 'africa-straight', 'africa-triangle', 'africa-isosceles',
+  'europe-machine', 'europe-terms', 'europe-balance',
+  'samerica-balance', 'samerica-quest', 'samerica-chase', 'samerica-shift',
+  'namerica-midpoint', 'namerica-perpendicular', 'namerica-equilateral',
+  'namerica-area', 'namerica-squares', 'namerica-side', 'namerica-net',
+  'antarctica-spin', 'antarctica-percent', 'antarctica-wheel',
+]
+
 const failures = []
 function check(label, condition) {
   if (condition) console.log(`  ok   ${label}`)
@@ -277,6 +290,51 @@ try {
   await go('#/battle/asia-1')
   check('going straight to a conquered fortress is refused',
     (await page.locator('.notice').innerText()).includes('כבר נכבש'))
+
+  console.log('every mission at phone width')
+  // 360 wide: narrower than any phone in common use, so it is the hard case.
+  const phone = await browser.newContext({
+    viewport: { width: 360, height: 740 },
+    deviceScaleFactor: 2,
+    isMobile: true,
+    hasTouch: true,
+  })
+  const small = await phone.newPage()
+  const phoneErrors = []
+  small.on('console', (m) => { if (m.type() === 'error') phoneErrors.push(m.text()) })
+  small.on('pageerror', (e) => phoneErrors.push(String(e)))
+  await small.goto(BASE)
+  // every mission open, so each board can be drawn
+  const missionIds = MISSION_IDS
+  await small.evaluate((all) => {
+    const raw = JSON.parse(localStorage.getItem('euclid.profile') || '{}')
+    raw.flags = { ...(raw.flags || {}), setupDone: true, sawUpgrades: true }
+    raw.missions = Object.fromEntries(all.map((id) => [id, 5]))
+    raw.stars = 40
+    localStorage.setItem('euclid.profile', JSON.stringify(raw))
+  }, missionIds)
+
+  let widest = 0
+  // Two passes: each load draws a fresh seed, so more shapes get measured.
+  for (const id of [...missionIds, ...missionIds]) {
+    await small.goto(`${BASE}#/mission/${id}`)
+    await small.waitForFunction(
+      (want) => location.hash === `#/mission/${want}` &&
+        !!document.querySelector('.mission-stage'),
+      id,
+    )
+    await small.waitForTimeout(260)
+    const drawn = await small.locator('.mission-stage').count()
+    const overflow = await small.evaluate(() =>
+      document.documentElement.scrollWidth - document.documentElement.clientWidth)
+    widest = Math.max(widest, overflow)
+    if (overflow > 0) console.log(`   overflow ${overflow}px in ${id}`)
+    if (drawn !== 1) check(`${id}: the board is drawn on a phone`, false)
+  }
+  check('every mission draws on a phone', missionIds.length >= 30)
+  check('no mission spills off a phone screen sideways', widest === 0)
+  check('no console errors on a phone', phoneErrors.length === 0)
+  if (phoneErrors.length) console.log(phoneErrors)
 
   check('no console errors', consoleErrors.length === 0)
   if (consoleErrors.length) console.log(consoleErrors)

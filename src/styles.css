@@ -858,14 +858,23 @@ svg.board { display: block; width: 100%; height: auto; }
 
 /* The quest */
 .quest-board { text-align: center; }
-.quest-table { display: inline-grid; gap: 10px; }
-.quest-row { display: flex; gap: 10px; align-items: center; justify-content: flex-start; direction: ltr; }
+.quest-table { display: inline-grid; gap: clamp(6px, 1.6vw, 10px); }
+.quest-row {
+  display: flex; gap: clamp(5px, 1.6vw, 10px);
+  align-items: center; justify-content: flex-start; direction: ltr;
+}
 .quest-row.lit { background: rgba(201, 138, 22, 0.2); border-radius: 12px; padding: 4px; }
-.quest-token { width: 44px; height: 44px; border-radius: 10px; border: 3px solid var(--oak-dark); }
+.quest-token {
+  width: clamp(26px, 7vw, 44px); height: clamp(26px, 7vw, 44px);
+  border-radius: 10px; border: 3px solid var(--oak-dark);
+}
 .quest-token.a { background: #2f6fb3; }
 .quest-token.b { background: #b23b2e; border-radius: 50%; }
-.quest-equals { font-size: 32px; font-weight: 800; }
-.quest-total { font-size: 32px; font-weight: 800; min-width: 54px; direction: ltr; }
+.quest-equals { font-size: clamp(22px, 6vw, 32px); font-weight: 800; }
+.quest-total {
+  font-size: clamp(22px, 6vw, 32px); font-weight: 800;
+  min-width: clamp(34px, 9vw, 54px); direction: ltr;
+}
 .quest-found { margin: 8px 0 0; color: var(--moss); font-weight: 800; font-size: 24px; direction: ltr; }
 
 /* The chase */
