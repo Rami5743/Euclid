@@ -14,6 +14,22 @@ export const MISSIONS: MissionSpec[] = [
     kind: 'treasure-line',
     requires: [],
   },
+  {
+    id: 'asia-jumps',
+    continent: 'asia',
+    topicId: 'add-sub',
+    title: 'קפיצות',
+    kind: 'jumps',
+    requires: ['asia-treasure'],
+  },
+  {
+    id: 'asia-voyage',
+    continent: 'asia',
+    topicId: 'add-sub',
+    title: 'מסע הספינה',
+    kind: 'voyage',
+    requires: ['asia-treasure'],
+  },
 ]
 
 export function missionById(id: string): MissionSpec | undefined {

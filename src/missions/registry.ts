@@ -1,4 +1,6 @@
+import { jumps } from './kinds/jumps'
 import { treasureLine } from './kinds/treasureLine'
+import { voyage } from './kinds/voyage'
 import type { Board, MissionKind, MissionLogic, MissionModule } from './types'
 
 /** A mission module with its types erased, as the screen handles it. */
@@ -14,6 +16,8 @@ function erase<C, A>(module: MissionModule<C, A>): AnyMissionModule {
 
 const MODULES: Partial<Record<MissionKind, AnyMissionModule>> = {
   'treasure-line': erase(treasureLine),
+  jumps: erase(jumps),
+  voyage: erase(voyage),
 }
 
 export function moduleFor(kind: MissionKind): AnyMissionModule | undefined {

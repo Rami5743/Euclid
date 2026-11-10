@@ -14,11 +14,25 @@ export interface Draggable {
   set: (value: number) => void
 }
 
+export type TokenKind = 'chest' | 'frog' | 'ship'
+
+export interface TrayButton {
+  label: string
+  onClick: () => void
+}
+
 export interface NumberLineBoard {
-  el: SVGSVGElement
+  /** the whole board: the line, and a tray of buttons when there is one */
+  el: HTMLElement
   xOf: (value: number) => number
   flag: (value: number) => void
-  chest: (initial: number, onChange: (value: number) => void) => Draggable
+  /** a token that can be dragged along the line */
+  chest: (initial: number, onChange: (value: number) => void, kind?: TokenKind) => Draggable
+  /** a token that only the board moves; it rides on the line itself */
+  token: (initial: number, kind?: TokenKind) => Draggable
+  tray: (buttons: TrayButton[]) => void
+  trayEnabled: (enabled: boolean) => void
+  clearArrows: () => void
   /** a soft band between two values */
   band: (a: number, b: number) => void
   /** a bracket between two neighbouring ticks, with its size written on it */
@@ -26,7 +40,7 @@ export interface NumberLineBoard {
   /** number every tick from a to b */
   count: (a: number, b: number) => void
   /** an arrow from one value to another, drawn above the line */
-  arrow: (from: number, to: number, label: string, tone?: 'plus' | 'minus') => SVGGElement
+  arrow: (from: number, to: number, label: string, tone?: 'plus' | 'minus', lift?: number, order?: number) => SVGGElement
   clearHints: () => void
   destroy: () => void
 }
@@ -45,7 +59,13 @@ function svg<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string,
 
 export function numberLine(options: NumberLineOptions): NumberLineBoard {
   const { from, to, tickStep, labelEvery } = options
+  const wrap = document.createElement('div')
+  wrap.className = 'board-wrap'
   const root = svg('svg', { class: 'board number-line', viewBox: `0 0 ${W} ${H}` })
+  wrap.append(root)
+  const trayEl = document.createElement('div')
+  trayEl.className = 'tray'
+  wrap.append(trayEl)
   const hintLayer = svg('g', { class: 'hints' })
   const mainLayer = svg('g', { class: 'main' })
   const dragLayer = svg('g', { class: 'drag' })
@@ -91,8 +111,32 @@ export function numberLine(options: NumberLineOptions): NumberLineBoard {
 
   const cleanups: Array<() => void> = []
 
+  const art: Record<TokenKind, string> = {
+    chest: `
+      <ellipse class="chest-shadow" cx="0" cy="34" rx="44" ry="12"/>
+      <path d="M-38 34 h76 v-30 h-76 Z" class="chest-body"/>
+      <path d="M-38 4 q38 -34 76 0 Z" class="chest-lid"/>
+      <rect x="-9" y="0" width="18" height="22" rx="4" class="chest-lock"/>
+      <path d="M-38 16 h76" class="chest-band"/>`,
+    frog: `
+      <ellipse class="chest-shadow" cx="0" cy="30" rx="40" ry="11"/>
+      <ellipse class="frog-body" cx="0" cy="8" rx="34" ry="24"/>
+      <circle class="frog-eye" cx="-14" cy="-12" r="11"/>
+      <circle class="frog-eye" cx="14" cy="-12" r="11"/>
+      <circle class="frog-pupil" cx="-14" cy="-12" r="4.5"/>
+      <circle class="frog-pupil" cx="14" cy="-12" r="4.5"/>
+      <path class="frog-mouth" d="M-16 16 q16 10 32 0"/>
+      <path class="frog-leg" d="M-30 22 q-14 6 -18 -6"/>
+      <path class="frog-leg" d="M30 22 q14 6 18 -6"/>`,
+    ship: `
+      <ellipse class="chest-shadow" cx="0" cy="32" rx="46" ry="12"/>
+      <path class="ship-hull" d="M-44 10 h88 l-16 22 h-56 Z"/>
+      <path class="ship-mast" d="M0 10 v-46"/>
+      <path class="ship-sail" d="M2 -44 q30 16 0 34 Z"/>`,
+  }
+
   const board: NumberLineBoard = {
-    el: root,
+    el: wrap,
     xOf,
 
     flag(value) {
@@ -103,15 +147,10 @@ export function numberLine(options: NumberLineOptions): NumberLineBoard {
       mainLayer.append(g)
     },
 
-    chest(initial, onChange) {
+    chest(initial, onChange, kind = 'chest') {
       let value = snap(initial)
-      const g = svg('g', { class: 'chest' })
-      g.innerHTML = `
-        <ellipse class="chest-shadow" cx="0" cy="34" rx="44" ry="12"/>
-        <path d="M-38 34 h76 v-30 h-76 Z" class="chest-body"/>
-        <path d="M-38 4 q38 -34 76 0 Z" class="chest-lid"/>
-        <rect x="-9" y="0" width="18" height="22" rx="4" class="chest-lock"/>
-        <path d="M-38 16 h76" class="chest-band"/>`
+      const g = svg('g', { class: `chest ${kind}` })
+      g.innerHTML = art[kind]
       // The chest rides below the numbers, with a thread up to the line, so it
       // never covers a label.
       const thread = svg('line', { class: 'chest-thread', y1: String(AXIS + 6), y2: String(AXIS + 78) })
@@ -166,6 +205,42 @@ export function numberLine(options: NumberLineOptions): NumberLineBoard {
       }
     },
 
+    token(initial, kind = 'ship') {
+      let value = snap(initial)
+      const g = svg('g', { class: `chest static ${kind}` })
+      g.innerHTML = art[kind]
+      dragLayer.append(g)
+      // It rides on the line, so it never meets what is dragged below it.
+      const place = (): void => {
+        g.setAttribute('transform', `translate(${xOf(value).toFixed(1)} ${AXIS - 18}) scale(0.78)`)
+      }
+      place()
+      return { get: () => value, set: (v) => { value = snap(v); place() } }
+    },
+
+    tray(buttons) {
+      trayEl.replaceChildren()
+      for (const b of buttons) {
+        const node = document.createElement('button')
+        node.type = 'button'
+        node.className = 'btn small tray-key'
+        node.textContent = b.label
+        node.addEventListener('click', b.onClick)
+        trayEl.append(node)
+      }
+    },
+
+    trayEnabled(enabled) {
+      for (const node of Array.from(trayEl.children)) {
+        if (enabled) node.removeAttribute('disabled')
+        else node.setAttribute('disabled', 'true')
+      }
+    },
+
+    clearArrows() {
+      for (const node of Array.from(mainLayer.querySelectorAll('.line-arrow'))) node.remove()
+    },
+
     band(a, b) {
       const x1 = xOf(Math.min(a, b))
       const x2 = xOf(Math.max(a, b))
@@ -200,10 +275,10 @@ export function numberLine(options: NumberLineOptions): NumberLineBoard {
       }
     },
 
-    arrow(fromValue, toValue, label, tone = 'plus') {
+    arrow(fromValue, toValue, label, tone = 'plus', lift = 0, order) {
       const x1 = xOf(fromValue)
       const x2 = xOf(toValue)
-      const top = AXIS - 56
+      const top = AXIS - 56 - lift * 34
       const g = svg('g', { class: `line-arrow ${tone}` })
       g.append(svg('path', {
         d: `M${x1.toFixed(1)} ${AXIS - 6} C${x1.toFixed(1)} ${top} ${x2.toFixed(1)} ${top} ${x2.toFixed(1)} ${AXIS - 6}`,
@@ -217,6 +292,14 @@ export function numberLine(options: NumberLineOptions): NumberLineBoard {
       const text = svg('text', { x: ((x1 + x2) / 2).toFixed(1), y: String(top - 8), 'text-anchor': 'middle' })
       text.textContent = label
       g.append(text)
+      if (order !== undefined) {
+        const badge = svg('g', { class: 'order' })
+        badge.append(svg('circle', { cx: x1.toFixed(1), cy: String(AXIS - 26), r: '15' }))
+        const n = svg('text', { x: x1.toFixed(1), y: String(AXIS - 19), 'text-anchor': 'middle' })
+        n.textContent = String(order)
+        badge.append(n)
+        g.append(badge)
+      }
       mainLayer.append(g)
       return g
     },
@@ -227,7 +310,7 @@ export function numberLine(options: NumberLineOptions): NumberLineBoard {
 
     destroy() {
       for (const fn of cleanups) fn()
-      root.remove()
+      wrap.remove()
     },
   }
 

@@ -231,7 +231,42 @@ try {
   await page.waitForTimeout(250)
   const starsAfter = Number((await page.locator('.stars').innerText()).replace(/\D/g, ''))
   check('the stars earned are added to the purse', starsAfter === starsBefore + 3)
-  check('the mission card shows the score', (await page.locator('.mission-card .stars-row').innerText()).includes('★'))
+  check('the mission card shows the score',
+    (await page.locator('.mission-card .stars-row').first().innerText()).includes('★'))
+  check('solving a mission opens the next ones',
+    (await page.locator('.mission-card').count()) === 3)
+
+  console.log('every mission that is open, solved cleanly')
+  const solvedTitles = []
+  for (let round = 0; round < 40; round++) {
+    await go('#/missions')
+    const cards = page.locator('.mission-card')
+    const count = await cards.count()
+    let picked = -1
+    for (let i = 0; i < count; i++) {
+      const row = await cards.nth(i).locator('.stars-row').innerText()
+      if (row.includes('☆')) { picked = i; break }
+    }
+    if (picked < 0) break
+    const title = await cards.nth(picked).locator('h3').innerText()
+    await cards.nth(picked).click()
+    await page.waitForTimeout(250)
+    await page.evaluate(() => window.__mission.solve())
+    await page.locator('.hud-actions .btn.primary').click()
+    await page.waitForTimeout(250)
+    const verdict = await page.locator('.overlay:not(.hidden) .panel h2').count()
+    check(`"${title}" can be solved`, verdict === 1)
+    const stars = await page.evaluate(() => window.__mission.state().score)
+    check(`"${title}" pays full marks for a clean solve`, stars === 5)
+    solvedTitles.push(title)
+    await page.getByRole('button', { name: 'לתפריט המשימות' }).click()
+    await page.waitForTimeout(200)
+  }
+  check('more than one mission was played', solvedTitles.length >= 2)
+
+  await go('')
+  check('the next continent opens once its missions are done',
+    (await page.locator('.marker.continent').count()) === 2)
 
   console.log('conquered state is remembered')
   await go('#/continent/asia')

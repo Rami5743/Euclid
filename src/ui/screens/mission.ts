@@ -40,7 +40,8 @@ export function missionScreen(params: Record<string, string>): Screen {
   let lastScore = MAX_STARS
 
   const onChange = (): void => {
-    if (finished) return
+    // The board may call this while it is still being built.
+    if (!board || finished) return
     if (board.answer() === null) checkButton.setAttribute('disabled', 'true')
     else checkButton.removeAttribute('disabled')
   }

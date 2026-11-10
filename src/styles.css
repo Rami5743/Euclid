@@ -601,3 +601,37 @@ svg.board { display: block; width: 100%; height: auto; }
 .panel .reward { font-size: 26px; font-weight: 800; color: var(--gold); direction: ltr; }
 
 .number-line .chest-thread { stroke: var(--oak); stroke-width: 3; stroke-dasharray: 8 8; opacity: 0.7; }
+
+/* Number line tokens and tray */
+.board-wrap { display: grid; gap: 10px; }
+.tray { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.tray-key { min-width: 68px; direction: ltr; font-variant-numeric: tabular-nums; }
+
+.running-total {
+  margin: 0;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  direction: ltr;
+  color: var(--ink-soft);
+}
+
+.running-total.lit { color: var(--moss); }
+
+.number-line .chest.static { cursor: default; }
+.number-line .frog-body { fill: #5a9c4a; stroke: #2e5a24; stroke-width: 4; }
+.number-line .frog-eye { fill: #fdfbf6; stroke: #2e5a24; stroke-width: 3; }
+.number-line .frog-pupil { fill: #241a10; }
+.number-line .frog-mouth { fill: none; stroke: #2e5a24; stroke-width: 4; stroke-linecap: round; }
+.number-line .frog-leg { fill: none; stroke: #2e5a24; stroke-width: 6; stroke-linecap: round; }
+.number-line .ship-hull { fill: #8a5f34; stroke: #45290f; stroke-width: 4; }
+.number-line .ship-mast { stroke: #5a4a32; stroke-width: 6; stroke-linecap: round; }
+.number-line .ship-sail { fill: #f1e6cd; stroke: #6b5847; stroke-width: 4; }
+
+.number-line .line-arrow.lit path { stroke-width: 8; }
+.number-line .line-arrow.lit text { fill: var(--moss); }
+
+.tray-key { unicode-bidi: isolate; }
+
+.number-line .line-arrow .order circle { fill: var(--parchment); stroke: var(--oak); stroke-width: 3; }
+.number-line .line-arrow .order text { fill: var(--ink); font: 700 20px system-ui, sans-serif; direction: ltr; }

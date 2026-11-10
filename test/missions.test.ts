@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { MISSIONS, missionById, missionsOf } from '../src/content/missions'
+import { generate as generateJumps } from '../src/missions/kinds/jumps'
 import { generate as generateTreasure } from '../src/missions/kinds/treasureLine'
+import { generate as generateVoyage } from '../src/missions/kinds/voyage'
 import { MAX_STARS, payout, score } from '../src/missions/scoring'
 
 describe('scoring', () => {
@@ -86,5 +88,85 @@ describe('treasure on the line', () => {
     expect(generateTreasure(42).config).toEqual(generateTreasure(42).config)
     const variants = new Set(Array.from({ length: 40 }, (_, i) => JSON.stringify(generateTreasure(i + 1).config)))
     expect(variants.size).toBeGreaterThan(5)
+  })
+})
+
+describe('jumps', () => {
+  it('always offers a route that lands on the target', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateJumps(seed)
+      const end = config.route.reduce((a, b) => a + b, config.start)
+      expect(end).toBe(config.target)
+      expect(solution).toBe(config.target)
+      expect(config.route.length).toBeGreaterThanOrEqual(3)
+      expect(config.route.every((k) => config.keys.includes(k))).toBe(true)
+    }
+  })
+
+  it('keeps the whole route inside the line', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateJumps(seed)
+      let position = config.start
+      expect(position).toBeGreaterThanOrEqual(config.from)
+      expect(position).toBeLessThanOrEqual(config.to)
+      for (const key of config.route) {
+        position += key
+        expect(position).toBeGreaterThanOrEqual(config.from)
+        expect(position).toBeLessThanOrEqual(config.to)
+      }
+    }
+  })
+
+  it('accepts the target and nothing else', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const logic = generateJumps(seed)
+      expect(logic.check(logic.solution)).toBe(true)
+      expect(logic.check(logic.solution + 1)).toBe(false)
+    }
+  })
+
+  it('moves at all', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateJumps(seed)
+      expect(config.target).not.toBe(config.start)
+    }
+  })
+})
+
+describe('the voyage', () => {
+  it('ends where the moves take it', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateVoyage(seed)
+      expect(solution).toBe(config.start + config.moves.reduce((a, b) => a + b, 0))
+    }
+  })
+
+  it('never leaves the line and never stands still', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateVoyage(seed)
+      let position = config.start
+      for (const move of config.moves) {
+        position += move
+        expect(position).toBeGreaterThanOrEqual(config.from)
+        expect(position).toBeLessThanOrEqual(config.to)
+      }
+      expect(solution).not.toBe(config.start)
+      expect(config.moves.length).toBeGreaterThanOrEqual(3)
+    }
+  })
+
+  it('lands on a tick of the line', () => {
+    for (let seed = 1; seed <= 100; seed++) {
+      const { config, solution } = generateVoyage(seed)
+      expect((solution - config.from) % config.tickStep).toBe(0)
+    }
+  })
+
+  it('accepts the end and nothing else', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const logic = generateVoyage(seed)
+      expect(logic.check(logic.solution)).toBe(true)
+      expect(logic.check(logic.solution + logic.config.tickStep)).toBe(false)
+    }
   })
 })

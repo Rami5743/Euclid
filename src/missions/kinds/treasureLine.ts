@@ -61,7 +61,7 @@ function mount(logic: MissionLogic<TreasureConfig, number>, onChange: () => void
   const nearestLabelAbove = nearestLabelBelow + tickStep * labelEvery
 
   return {
-    el: line.el as unknown as HTMLElement,
+    el: line.el,
     answer: () => current,
     hint(level) {
       if (level === 1) line.band(nearestLabelBelow, nearestLabelAbove)
