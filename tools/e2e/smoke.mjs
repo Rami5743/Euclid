@@ -331,6 +331,33 @@ try {
     if (overflow > 0) console.log(`   overflow ${overflow}px in ${id}`)
     if (drawn !== 1) check(`${id}: the board is drawn on a phone`, false)
   }
+  // A panel must sit inside the screen, buttons and all: the stage clips
+  // whatever sticks out of it, and a clipped button cannot be pressed.
+  // Whatever is painted at the middle of the button has to be the button:
+  // anything else means it is clipped, covered or off the screen.
+  const inView = async (page, where) => {
+    const reached = await page.evaluate(() => {
+      const buttons = [...document.querySelectorAll('.panel button')]
+      const b = buttons[buttons.length - 1]
+      if (!b) return false
+      const r = b.getBoundingClientRect()
+      if (r.bottom > innerHeight || r.top < 0 || r.right > innerWidth || r.left < 0) return false
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+      return !!hit && (hit === b || b.contains(hit))
+    })
+    check(`the button of the ${where} panel can be pressed on a phone`, reached)
+  }
+  await small.goto(`${BASE}#/battle/asia-1`)
+  await small.waitForSelector('.panel button')
+  await inView(small, 'battle briefing')
+  await small.goto(`${BASE}#/mission/namerica-net`)
+  await small.waitForSelector('.mission-stage')
+  await small.waitForTimeout(260)
+  await small.evaluate(() => window.__mission.solve())
+  await small.locator('button').filter({ hasText: /בדיקה/ }).first().click()
+  await small.waitForSelector('.panel button')
+  await inView(small, 'mission success')
+
   check('every mission draws on a phone', missionIds.length >= 30)
   check('no mission spills off a phone screen sideways', widest === 0)
   check('no console errors on a phone', phoneErrors.length === 0)
