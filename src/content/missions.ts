@@ -30,6 +30,22 @@ export const MISSIONS: MissionSpec[] = [
     kind: 'voyage',
     requires: ['asia-treasure'],
   },
+  {
+    id: 'asia-quadrant',
+    continent: 'asia',
+    topicId: 'grid-full',
+    title: 'האוצר ברביע',
+    kind: 'quadrant',
+    requires: ['asia-treasure'],
+  },
+  {
+    id: 'asia-mirror',
+    continent: 'asia',
+    topicId: 'grid-full',
+    title: 'מראה',
+    kind: 'mirror',
+    requires: ['asia-quadrant'],
+  },
 ]
 
 export function missionById(id: string): MissionSpec | undefined {

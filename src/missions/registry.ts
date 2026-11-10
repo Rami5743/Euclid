@@ -1,4 +1,6 @@
 import { jumps } from './kinds/jumps'
+import { mirror } from './kinds/mirror'
+import { quadrant } from './kinds/quadrant'
 import { treasureLine } from './kinds/treasureLine'
 import { voyage } from './kinds/voyage'
 import type { Board, MissionKind, MissionLogic, MissionModule } from './types'
@@ -18,6 +20,8 @@ const MODULES: Partial<Record<MissionKind, AnyMissionModule>> = {
   'treasure-line': erase(treasureLine),
   jumps: erase(jumps),
   voyage: erase(voyage),
+  quadrant: erase(quadrant),
+  mirror: erase(mirror),
 }
 
 export function moduleFor(kind: MissionKind): AnyMissionModule | undefined {

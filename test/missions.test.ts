@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { MISSIONS, missionById, missionsOf } from '../src/content/missions'
 import { generate as generateJumps } from '../src/missions/kinds/jumps'
+import { generate as generateMirror, reflected } from '../src/missions/kinds/mirror'
+import { generate as generateQuadrant } from '../src/missions/kinds/quadrant'
 import { generate as generateTreasure } from '../src/missions/kinds/treasureLine'
 import { generate as generateVoyage } from '../src/missions/kinds/voyage'
 import { MAX_STARS, payout, score } from '../src/missions/scoring'
@@ -167,6 +169,67 @@ describe('the voyage', () => {
       const logic = generateVoyage(seed)
       expect(logic.check(logic.solution)).toBe(true)
       expect(logic.check(logic.solution + logic.config.tickStep)).toBe(false)
+    }
+  })
+})
+
+describe('the treasure in the quadrant', () => {
+  it('never puts the treasure on an axis', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateQuadrant(seed)
+      expect(solution.x).not.toBe(0)
+      expect(solution.y).not.toBe(0)
+      expect(Math.abs(solution.x)).toBeLessThanOrEqual(config.range)
+      expect(Math.abs(solution.y)).toBeLessThanOrEqual(config.range)
+    }
+  })
+
+  it('uses every quadrant across the seeds', () => {
+    const seen = new Set<string>()
+    for (let seed = 1; seed <= 200; seed++) {
+      const { solution } = generateQuadrant(seed)
+      seen.add(`${Math.sign(solution.x)}${Math.sign(solution.y)}`)
+    }
+    expect(seen.size).toBe(4)
+  })
+
+  it('accepts the point and nothing else', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const logic = generateQuadrant(seed)
+      expect(logic.check(logic.solution)).toBe(true)
+      expect(logic.check({ x: logic.solution.x, y: logic.solution.y + 1 })).toBe(false)
+      expect(logic.check({ x: -logic.solution.x, y: logic.solution.y })).toBe(false)
+    }
+  })
+})
+
+describe('the mirror', () => {
+  it('reflects a point across the right axis', () => {
+    expect(reflected({ x: 3, y: 2 }, 'y')).toEqual({ x: -3, y: 2 })
+    expect(reflected({ x: 3, y: 2 }, 'x')).toEqual({ x: 3, y: -2 })
+  })
+
+  it('keeps the shape clear of the mirror and inside the grid', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateMirror(seed)
+      const distance = config.axis === 'y' ? Math.abs(config.anchor.x) : Math.abs(config.anchor.y)
+      expect(distance).toBeGreaterThanOrEqual(2)
+      for (const p of config.shape) {
+        const sx = p.x + config.anchor.x
+        const sy = p.y + config.anchor.y
+        expect(Math.abs(sx)).toBeLessThanOrEqual(config.range)
+        expect(Math.abs(sy)).toBeLessThanOrEqual(config.range)
+      }
+      expect(solution).toEqual(reflected(config.anchor, config.axis))
+    }
+  })
+
+  it('accepts the reflected place and nothing else', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const logic = generateMirror(seed)
+      expect(logic.check(logic.solution)).toBe(true)
+      expect(logic.check(logic.config.anchor)).toBe(false)
+      expect(logic.check({ x: logic.solution.x + 1, y: logic.solution.y })).toBe(false)
     }
   })
 })
