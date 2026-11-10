@@ -881,3 +881,12 @@ svg.board { display: block; width: 100%; height: auto; }
 
 .quest-board, .chase-board, .terms-board, .machine-board { justify-items: center; }
 .quest-table { margin: 0 auto; }
+
+/* Straightedge and compass */
+.construct-board { justify-items: center; }
+.construct { width: auto; height: min(56vh, 500px); }
+.construct .cline { stroke: var(--oak-dark); stroke-width: 4; }
+.construct .ccircle { fill: none; stroke: #2f6fb3; stroke-width: 4; opacity: 0.8; }
+.construct .cpoint { fill: var(--parchment); stroke: var(--oak-dark); stroke-width: 4; }
+.construct .cpoint.pending { fill: var(--gold); }
+.construct .cpoint-label { fill: var(--ink); font: 800 26px system-ui, sans-serif; }

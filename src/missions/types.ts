@@ -22,6 +22,9 @@ export type MissionKind =
   | 'quest'
   | 'chase'
   | 'shift'
+  | 'build-midpoint'
+  | 'build-perpendicular'
+  | 'build-equilateral'
 
 export interface MissionSpec {
   id: string

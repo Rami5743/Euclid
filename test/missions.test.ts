@@ -11,7 +11,11 @@ import {
 import {
   generateBothSides as generateBalanceBoth, generateSimple as generateBalance, solve as solveBalance,
 } from '../src/missions/kinds/balance'
+import { circleCross, lineCross } from '../src/missions/boards/construct'
 import { generate as generateChase } from '../src/missions/kinds/chase'
+import {
+  generateEquilateral, generateMidpoint, generatePerpendicular, satisfied,
+} from '../src/missions/kinds/construct'
 import { generate as generateJumps } from '../src/missions/kinds/jumps'
 import { generate as generateQuest, totalOf as questTotal } from '../src/missions/kinds/quest'
 import { generate as generateShift, write as writeLinear } from '../src/missions/kinds/shift'
@@ -582,6 +586,60 @@ describe('the quest asks something new', () => {
       const [first, second, asked] = config.rows
       expect(`${asked!.a}:${asked!.b}`).not.toBe(`${first!.a}:${first!.b}`)
       expect(`${asked!.a}:${asked!.b}`).not.toBe(`${second!.a}:${second!.b}`)
+    }
+  })
+})
+
+describe('the geometry of the construction board', () => {
+  it('finds where two lines cross', () => {
+    const p = lineCross({ a: { x: 0, y: 0 }, b: { x: 10, y: 10 } }, { a: { x: 0, y: 10 }, b: { x: 10, y: 0 } })
+    expect(p?.x).toBeCloseTo(5)
+    expect(p?.y).toBeCloseTo(5)
+    expect(lineCross({ a: { x: 0, y: 0 }, b: { x: 10, y: 0 } }, { a: { x: 0, y: 5 }, b: { x: 10, y: 5 } })).toBeNull()
+  })
+
+  it('finds where two circles cross', () => {
+    const points = circleCross({ c: { x: 0, y: 0 }, r: 5 }, { c: { x: 6, y: 0 }, r: 5 })
+    expect(points.length).toBe(2)
+    for (const p of points) {
+      expect(Math.hypot(p.x, p.y)).toBeCloseTo(5)
+      expect(Math.hypot(p.x - 6, p.y)).toBeCloseTo(5)
+    }
+    expect(circleCross({ c: { x: 0, y: 0 }, r: 1 }, { c: { x: 10, y: 0 }, r: 1 }).length).toBe(0)
+  })
+})
+
+describe('the constructions', () => {
+  it('accepts the middle of the segment, and only it', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const { config } = generateMidpoint(seed)
+      const mid = { x: (config.a.x + config.b.x) / 2, y: (config.a.y + config.b.y) / 2 }
+      expect(satisfied(config, { points: [mid], lines: [] })).toBe(true)
+      expect(satisfied(config, { points: [config.a, config.b], lines: [] })).toBe(false)
+      expect(satisfied(config, { points: [{ x: mid.x + 40, y: mid.y }], lines: [] })).toBe(false)
+    }
+  })
+
+  it('accepts a perpendicular through the middle, and not a slanted line', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const { config } = generatePerpendicular(seed)
+      const mid = { x: (config.a.x + config.b.x) / 2, y: (config.a.y + config.b.y) / 2 }
+      const upright = { a: { x: mid.x, y: mid.y - 100 }, b: { x: mid.x, y: mid.y + 100 } }
+      expect(satisfied(config, { points: [], lines: [upright] })).toBe(true)
+      const slanted = { a: { x: mid.x - 50, y: mid.y - 100 }, b: { x: mid.x + 50, y: mid.y + 100 } }
+      expect(satisfied(config, { points: [], lines: [slanted] })).toBe(false)
+      const away = { a: { x: mid.x + 120, y: mid.y - 100 }, b: { x: mid.x + 120, y: mid.y + 100 } }
+      expect(satisfied(config, { points: [], lines: [away] })).toBe(false)
+    }
+  })
+
+  it('accepts the apex of an equilateral triangle', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const { config } = generateEquilateral(seed)
+      const side = Math.hypot(config.b.x - config.a.x, config.b.y - config.a.y)
+      const apex = circleCross({ c: config.a, r: side }, { c: config.b, r: side })[0]!
+      expect(satisfied(config, { points: [apex], lines: [] })).toBe(true)
+      expect(satisfied(config, { points: [{ x: config.a.x, y: config.a.y - side }], lines: [] })).toBe(false)
     }
   })
 })

@@ -174,6 +174,30 @@ export const MISSIONS: MissionSpec[] = [
     kind: 'shift',
     requires: ['samerica-chase'],
   },
+  {
+    id: 'namerica-midpoint',
+    continent: 'namerica',
+    topicId: 'congruence',
+    title: 'חצי הדרך',
+    kind: 'build-midpoint',
+    requires: ['africa-isosceles'],
+  },
+  {
+    id: 'namerica-perpendicular',
+    continent: 'namerica',
+    topicId: 'congruence',
+    title: 'אנך',
+    kind: 'build-perpendicular',
+    requires: ['namerica-midpoint'],
+  },
+  {
+    id: 'namerica-equilateral',
+    continent: 'namerica',
+    topicId: 'congruence',
+    title: 'משולש שווה צלעות',
+    kind: 'build-equilateral',
+    requires: ['namerica-perpendicular'],
+  },
 ]
 
 export function missionById(id: string): MissionSpec | undefined {

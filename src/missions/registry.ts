@@ -2,6 +2,7 @@ import { alphameticProduct, alphameticSum } from './kinds/alphametic'
 import { aimAngle, isoscelesAngle, straightAngle, triangleAngle } from './kinds/angles'
 import { balanceBothSides, balanceSimple } from './kinds/balance'
 import { chase } from './kinds/chase'
+import { buildEquilateral, buildMidpoint, buildPerpendicular } from './kinds/construct'
 import { quest } from './kinds/quest'
 import { shift } from './kinds/shift'
 import { likeTerms } from './kinds/likeTerms'
@@ -48,6 +49,9 @@ const MODULES: Partial<Record<MissionKind, AnyMissionModule>> = {
   quest: erase(quest),
   chase: erase(chase),
   shift: erase(shift),
+  'build-midpoint': erase(buildMidpoint),
+  'build-perpendicular': erase(buildPerpendicular),
+  'build-equilateral': erase(buildEquilateral),
 }
 
 export function moduleFor(kind: MissionKind): AnyMissionModule | undefined {
