@@ -33,8 +33,6 @@ const NECK = { x: 66, y: 50 }
 const COLLAR = { x: 60, y: 52 }
 const STAFF_GRIP = { x: 100, y: 70 }
 const HAND = { x: 99, y: 51 }
-/** The head is drawn a little larger than life, so a face reads on the field. */
-const HEAD_SCALE = 1.2
 
 export function readRig(host: Element): Rig {
   const find = <T extends Element>(name: string): T | null => host.querySelector<T>(`.part-${name}`)
@@ -103,10 +101,8 @@ export function poseRig(rig: Rig, pose: Pose): void {
       `translate(0 ${lift.toFixed(2)}) rotate(${(walk * 2 + breath * 0.9).toFixed(2)} ${HIP.x} ${HIP.y})`)
   }
   if (rig.head) {
-    const k = HEAD_SCALE
     rig.head.setAttribute('transform',
-      `translate(0 ${(lift * 1.15).toFixed(2)}) rotate(${(-walk * 2.5 + breath * 1.4).toFixed(2)} ${NECK.x} ${NECK.y}) `
-      + `translate(${(NECK.x * (1 - k)).toFixed(2)} ${(NECK.y * (1 - k)).toFixed(2)}) scale(${k})`)
+      `translate(0 ${(lift * 1.15).toFixed(2)}) rotate(${(-walk * 2.5 + breath * 1.4).toFixed(2)} ${NECK.x} ${NECK.y})`)
   }
 
   switch (pose.cls) {
