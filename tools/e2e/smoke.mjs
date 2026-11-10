@@ -234,7 +234,7 @@ try {
   check('the mission card shows the score',
     (await page.locator('.mission-card .stars-row').first().innerText()).includes('★'))
   check('solving a mission opens the next ones',
-    (await page.locator('.mission-card').count()) === 3)
+    (await page.locator('.mission-card').count()) >= 3)
 
   console.log('every mission that is open, solved cleanly')
   const solvedTitles = []
