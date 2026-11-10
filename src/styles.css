@@ -890,3 +890,39 @@ svg.board { display: block; width: 100%; height: auto; }
 .construct .cpoint { fill: var(--parchment); stroke: var(--oak-dark); stroke-width: 4; }
 .construct .cpoint.pending { fill: var(--gold); }
 .construct .cpoint-label { fill: var(--ink); font: 800 26px system-ui, sans-serif; }
+
+/* Area, Pythagoras and nets */
+.area-board, .pythagoras-board, .net-board { justify-items: center; }
+.grid-board .shape.outline { fill: none; stroke: var(--gold); stroke-width: 5; stroke-dasharray: 12 8; }
+
+.pythagoras-art, .net-art { width: auto; height: min(48vh, 420px); }
+.pythagoras-art .triangle { fill: rgba(47, 111, 179, 0.3); stroke: #23527f; stroke-width: 5; }
+.pythagoras-art .leg-square { fill: rgba(79, 122, 63, 0.3); stroke: var(--moss); stroke-width: 4; }
+.pythagoras-art .hyp-square { fill: rgba(201, 138, 22, 0.28); stroke: var(--gold); stroke-width: 4; }
+.pythagoras-art .square-label { fill: var(--ink); font: 800 30px system-ui, sans-serif; direction: ltr; }
+.pythagoras-art .square-label.wanted { fill: var(--oak-dark); font-size: 46px; }
+.pythagoras-art .side-label { fill: var(--ink); font: 800 30px system-ui, sans-serif; direction: ltr; }
+.pythagoras-art .right-angle { fill: none; stroke: #23527f; stroke-width: 4; }
+
+.net-art .net-face { fill: rgba(201, 138, 22, 0.22); stroke: var(--oak-dark); stroke-width: 4; }
+.net-art .net-label { fill: var(--ink); font: 700 22px system-ui, sans-serif; direction: ltr; }
+
+/* Chance */
+.chance-board { justify-items: center; text-align: center; }
+.wheel { width: min(300px, 70%); height: auto; }
+.wheel-dial { transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.wheel-sector { stroke: var(--oak-dark); stroke-width: 3; }
+.wheel-hub { fill: var(--parchment); stroke: var(--oak-dark); stroke-width: 4; }
+.wheel-pointer { fill: var(--oak-dark); }
+
+.tally-row { display: flex; gap: 12px; justify-content: center; margin-top: 8px; }
+.tally { display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; border: 2px solid transparent; }
+.tally.watched { border-color: var(--gold); background: rgba(201, 138, 22, 0.15); }
+.tally-colour { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--oak-dark); display: inline-block; }
+.tally-count { font-size: 22px; font-weight: 800; direction: ltr; }
+
+.bar-chart { width: min(520px, 92%); height: auto; }
+.bar-chart .bar { stroke: var(--oak-dark); stroke-width: 3; }
+.bar-chart .bar.watched { stroke: var(--gold); stroke-width: 6; }
+.bar-chart .bar-label { fill: var(--ink); font: 800 26px system-ui, sans-serif; direction: ltr; }
+.bar-chart .bar-axis { stroke: var(--oak-dark); stroke-width: 4; }

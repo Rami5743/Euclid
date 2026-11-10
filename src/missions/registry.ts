@@ -1,8 +1,12 @@
 import { alphameticProduct, alphameticSum } from './kinds/alphametic'
 import { aimAngle, isoscelesAngle, straightAngle, triangleAngle } from './kinds/angles'
 import { balanceBothSides, balanceSimple } from './kinds/balance'
+import { buildWheel, relativeFrequency, spinWheel } from './kinds/chance'
 import { chase } from './kinds/chase'
+import { latticeArea } from './kinds/area'
 import { buildEquilateral, buildMidpoint, buildPerpendicular } from './kinds/construct'
+import { boxNet } from './kinds/net'
+import { missingSide, threeSquares } from './kinds/pythagoras'
 import { quest } from './kinds/quest'
 import { shift } from './kinds/shift'
 import { likeTerms } from './kinds/likeTerms'
@@ -52,6 +56,13 @@ const MODULES: Partial<Record<MissionKind, AnyMissionModule>> = {
   'build-midpoint': erase(buildMidpoint),
   'build-perpendicular': erase(buildPerpendicular),
   'build-equilateral': erase(buildEquilateral),
+  area: erase(latticeArea),
+  'pythagoras-squares': erase(threeSquares),
+  'pythagoras-side': erase(missingSide),
+  net: erase(boxNet),
+  spin: erase(spinWheel),
+  frequency: erase(relativeFrequency),
+  'build-wheel': erase(buildWheel),
 }
 
 export function moduleFor(kind: MissionKind): AnyMissionModule | undefined {

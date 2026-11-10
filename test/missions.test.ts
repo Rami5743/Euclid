@@ -12,6 +12,14 @@ import {
   generateBothSides as generateBalanceBoth, generateSimple as generateBalance, solve as solveBalance,
 } from '../src/missions/kinds/balance'
 import { circleCross, lineCross } from '../src/missions/boards/construct'
+import { generate as generateArea, shoelace } from '../src/missions/kinds/area'
+import { generate as generateNet, surface } from '../src/missions/kinds/net'
+import {
+  generateSide as generateMissingSide, generateSquares,
+} from '../src/missions/kinds/pythagoras'
+import {
+  generateFrequency, generateSpin, generateWheel,
+} from '../src/missions/kinds/chance'
 import { generate as generateChase } from '../src/missions/kinds/chase'
 import {
   generateEquilateral, generateMidpoint, generatePerpendicular, satisfied,
@@ -641,5 +649,140 @@ describe('the constructions', () => {
       expect(satisfied(config, { points: [apex], lines: [] })).toBe(true)
       expect(satisfied(config, { points: [{ x: config.a.x, y: config.a.y - side }], lines: [] })).toBe(false)
     }
+  })
+})
+
+describe('area on the lattice', () => {
+  it('draws a square whose area is the sum of two squares', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateArea(seed)
+      expect(solution).toBe(config.p * config.p + config.q * config.q)
+      expect(shoelace(config.shape)).toBeCloseTo(solution)
+      expect(config.shape.length).toBe(4)
+      for (const point of config.shape) {
+        expect(Math.abs(point.x)).toBeLessThanOrEqual(config.range)
+        expect(Math.abs(point.y)).toBeLessThanOrEqual(config.range)
+      }
+    }
+  })
+
+  it('is tilted, not straight', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateArea(seed)
+      expect(config.p).toBeGreaterThanOrEqual(1)
+      expect(config.q).toBeGreaterThanOrEqual(1)
+    }
+  })
+})
+
+describe('Pythagoras', () => {
+  it('always uses a right triangle with whole sides', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      for (const make of [generateSquares, generateMissingSide]) {
+        const { config } = make(seed)
+        expect(config.a * config.a + config.b * config.b).toBe(config.c * config.c)
+      }
+    }
+  })
+
+  it('asks for the square on the hypotenuse, or for a missing side', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const squares = generateSquares(seed)
+      expect(squares.solution).toBe(squares.config.c * squares.config.c)
+      const side = generateMissingSide(seed)
+      const { a, b, c, missing } = side.config
+      expect(side.solution).toBe(missing === 'a' ? a : missing === 'b' ? b : c)
+    }
+  })
+
+  it('accepts the number and nothing else', () => {
+    const logic = generateSquares(3)
+    expect(logic.check(logic.solution)).toBe(true)
+    expect(logic.check(logic.solution + 1)).toBe(false)
+  })
+})
+
+describe('the net of a box', () => {
+  it('asks for the whole surface', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateNet(seed)
+      expect(solution).toBe(2 * (config.a * config.b + config.a * config.c + config.b * config.c))
+      expect(surface(config)).toBe(solution)
+    }
+  })
+
+  it('keeps the box small enough to draw', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateNet(seed)
+      for (const side of [config.a, config.b, config.c]) {
+        expect(side).toBeGreaterThanOrEqual(2)
+        expect(side).toBeLessThanOrEqual(6)
+      }
+    }
+  })
+})
+
+describe('chance', () => {
+  it('counts the spins it has prepared', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateSpin(seed)
+      expect(solution).toBe(config.results.filter((r) => r === config.watched).length)
+      expect(config.results.length).toBeGreaterThanOrEqual(10)
+      expect(config.results.every((r) => r >= 0 && r < config.sectors.length)).toBe(true)
+    }
+  })
+
+  it('turns a tally into a whole percentage', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateFrequency(seed)
+      expect(config.counts.reduce((a, b) => a + b, 0)).toBe(config.total)
+      expect(config.counts.every((c) => c > 0)).toBe(true)
+      expect(solution).toBe(Math.round((config.counts[config.watched]! / config.total) * 100))
+    }
+  })
+
+  it('asks for a share that divides the wheel exactly', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateWheel(seed)
+      const [numerator, denominator] = config.label.split('/').map(Number)
+      expect((config.sectors * numerator!) / denominator!).toBe(solution)
+      expect(solution).toBeLessThan(config.sectors)
+    }
+  })
+
+  it('accepts the number and nothing else', () => {
+    for (const make of [generateSpin, generateFrequency, generateWheel]) {
+      const logic = make(5)
+      expect(logic.check(logic.solution)).toBe(true)
+      expect(logic.check(logic.solution + 1)).toBe(false)
+    }
+  })
+})
+
+describe('the campaign as a whole', () => {
+  it('has a mission for every continent', () => {
+    const continents = new Set(MISSIONS.map((m) => m.continent))
+    expect(continents.size).toBe(7)
+  })
+
+  it('can be walked from the first mission to the last', () => {
+    const solved = new Set<string>()
+    let progress = true
+    while (progress) {
+      progress = false
+      for (const mission of MISSIONS) {
+        if (solved.has(mission.id)) continue
+        if (mission.requires.every((id) => solved.has(id))) {
+          solved.add(mission.id)
+          progress = true
+        }
+      }
+    }
+    expect(solved.size).toBe(MISSIONS.length)
+  })
+
+  it('names every mission once', () => {
+    const titles = MISSIONS.map((m) => m.title)
+    expect(new Set(titles).size).toBe(titles.length)
   })
 })

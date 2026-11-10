@@ -25,6 +25,13 @@ export type MissionKind =
   | 'build-midpoint'
   | 'build-perpendicular'
   | 'build-equilateral'
+  | 'area'
+  | 'pythagoras-squares'
+  | 'pythagoras-side'
+  | 'net'
+  | 'spin'
+  | 'frequency'
+  | 'build-wheel'
 
 export interface MissionSpec {
   id: string
