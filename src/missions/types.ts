@@ -19,6 +19,9 @@ export type MissionKind =
   | 'like-terms'
   | 'balance'
   | 'balance-both'
+  | 'quest'
+  | 'chase'
+  | 'shift'
 
 export interface MissionSpec {
   id: string

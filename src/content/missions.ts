@@ -150,6 +150,30 @@ export const MISSIONS: MissionSpec[] = [
     kind: 'balance-both',
     requires: ['europe-balance'],
   },
+  {
+    id: 'samerica-quest',
+    continent: 'samerica',
+    topicId: 'word-problems',
+    title: 'קווסט',
+    kind: 'quest',
+    requires: ['samerica-balance'],
+  },
+  {
+    id: 'samerica-chase',
+    continent: 'samerica',
+    topicId: 'word-problems',
+    title: 'מרדף',
+    kind: 'chase',
+    requires: ['samerica-quest'],
+  },
+  {
+    id: 'samerica-shift',
+    continent: 'samerica',
+    topicId: 'graph-points',
+    title: 'הזזת גרף',
+    kind: 'shift',
+    requires: ['samerica-chase'],
+  },
 ]
 
 export function missionById(id: string): MissionSpec | undefined {

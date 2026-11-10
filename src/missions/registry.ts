@@ -1,6 +1,9 @@
 import { alphameticProduct, alphameticSum } from './kinds/alphametic'
 import { aimAngle, isoscelesAngle, straightAngle, triangleAngle } from './kinds/angles'
 import { balanceBothSides, balanceSimple } from './kinds/balance'
+import { chase } from './kinds/chase'
+import { quest } from './kinds/quest'
+import { shift } from './kinds/shift'
 import { likeTerms } from './kinds/likeTerms'
 import { machine } from './kinds/machine'
 import { jumps } from './kinds/jumps'
@@ -42,6 +45,9 @@ const MODULES: Partial<Record<MissionKind, AnyMissionModule>> = {
   'like-terms': erase(likeTerms),
   balance: erase(balanceSimple),
   'balance-both': erase(balanceBothSides),
+  quest: erase(quest),
+  chase: erase(chase),
+  shift: erase(shift),
 }
 
 export function moduleFor(kind: MissionKind): AnyMissionModule | undefined {

@@ -31,6 +31,8 @@ export interface GridBoard {
   /** the distance of a point from an axis, with its size written on it */
   span: (from: Point, to: Point, label: string) => void
   dot: (p: Point, cls?: string) => void
+  /** the graph of a function over the whole width */
+  curve: (fn: (x: number) => number, cls?: string) => SVGPolylineElement
   clearHints: () => void
   destroy: () => void
 }
@@ -210,6 +212,18 @@ export function grid(options: GridOptions): GridBoard {
       text.textContent = label
       g.append(text)
       hintLayer.append(g)
+    },
+
+    curve(fn, cls = '') {
+      const points: string[] = []
+      for (let x = -range; x <= range; x += 0.25) {
+        const y = fn(x)
+        if (!Number.isFinite(y) || Math.abs(y) > range + 1) continue
+        points.push(`${xOf(x).toFixed(1)},${yOf(y).toFixed(1)}`)
+      }
+      const node = svg('polyline', { class: `curve ${cls}`, points: points.join(' ') })
+      mainLayer.append(node)
+      return node
     },
 
     dot(p, cls = '') {

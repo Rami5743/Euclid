@@ -11,7 +11,10 @@ import {
 import {
   generateBothSides as generateBalanceBoth, generateSimple as generateBalance, solve as solveBalance,
 } from '../src/missions/kinds/balance'
+import { generate as generateChase } from '../src/missions/kinds/chase'
 import { generate as generateJumps } from '../src/missions/kinds/jumps'
+import { generate as generateQuest, totalOf as questTotal } from '../src/missions/kinds/quest'
+import { generate as generateShift, write as writeLinear } from '../src/missions/kinds/shift'
 import { generate as generateLikeTerms } from '../src/missions/kinds/likeTerms'
 import { apply as applyRule, generate as generateMachine } from '../src/missions/kinds/machine'
 import { generate as generateMirror, reflected } from '../src/missions/kinds/mirror'
@@ -491,5 +494,94 @@ describe('the balance', () => {
     const logic = generateBalance(6)
     expect(logic.check(logic.solution)).toBe(true)
     expect(logic.check(logic.solution + 1)).toBe(false)
+  })
+})
+
+describe('the quest', () => {
+  it('gives away the first token in the first row', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateQuest(seed)
+      const first = config.rows[0]!
+      expect(first.b).toBe(0)
+      expect(first.a).toBeGreaterThanOrEqual(2)
+      expect(first.total).toBe(first.a * config.valueA)
+    }
+  })
+
+  it('asks a row that both tokens appear in', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateQuest(seed)
+      const asked = config.rows[2]!
+      expect(asked.total).toBeNull()
+      expect(asked.a).toBeGreaterThanOrEqual(1)
+      expect(asked.b).toBeGreaterThanOrEqual(1)
+      expect(solution).toBe(asked.a * config.valueA + asked.b * config.valueB)
+    }
+  })
+
+  it('keeps the rows true to the values', () => {
+    for (let seed = 1; seed <= 100; seed++) {
+      const { config } = generateQuest(seed)
+      for (const row of config.rows.slice(0, 2)) {
+        expect(row.total).toBe(questTotal(row, config.valueA, config.valueB))
+      }
+    }
+  })
+})
+
+describe('the chase', () => {
+  it('always meets at a whole step', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateChase(seed)
+      expect(config.speed1).toBeGreaterThan(config.speed2)
+      expect(config.start1 + config.speed1 * solution).toBe(config.start2 + config.speed2 * solution)
+      expect(Number.isInteger(solution)).toBe(true)
+      expect(solution).toBeGreaterThanOrEqual(2)
+    }
+  })
+
+  it('keeps the whole chase on the line', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateChase(seed)
+      expect(config.start2).toBeLessThanOrEqual(config.to)
+      expect(config.start1 + config.speed1 * solution).toBeLessThanOrEqual(config.to)
+    }
+  })
+})
+
+describe('the shifted graph', () => {
+  it('offers the moved line among four', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config, solution } = generateShift(seed)
+      expect(config.options.length).toBe(4)
+      expect(config.options[solution]).toEqual(config.moved)
+      const written = config.options.map((o) => writeLinear(o))
+      expect(new Set(written).size).toBe(4)
+    }
+  })
+
+  it('always moves the line somehow', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateShift(seed)
+      const same = config.moved.slope === config.base.slope && config.moved.offset === config.base.offset
+      expect(same).toBe(false)
+    }
+  })
+
+  it('accepts the right choice and nothing else', () => {
+    const logic = generateShift(13)
+    expect(logic.check(logic.solution)).toBe(true)
+    expect(logic.check((logic.solution + 2) % 4)).toBe(false)
+  })
+})
+
+describe('the quest asks something new', () => {
+  it('never repeats a row that is already answered', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const { config } = generateQuest(seed)
+      const [first, second, asked] = config.rows
+      expect(`${asked!.a}:${asked!.b}`).not.toBe(`${first!.a}:${first!.b}`)
+      expect(`${asked!.a}:${asked!.b}`).not.toBe(`${second!.a}:${second!.b}`)
+    }
   })
 })

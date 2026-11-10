@@ -855,3 +855,29 @@ svg.board { display: block; width: 100%; height: auto; }
 .balance-art .weight { fill: #8a8f98; stroke: var(--oak-dark); stroke-width: 4; }
 
 .balance-art .pan-count { fill: var(--ink); font: 800 28px system-ui, sans-serif; direction: ltr; }
+
+/* The quest */
+.quest-board { text-align: center; }
+.quest-table { display: inline-grid; gap: 10px; }
+.quest-row { display: flex; gap: 10px; align-items: center; justify-content: flex-start; direction: ltr; }
+.quest-row.lit { background: rgba(201, 138, 22, 0.2); border-radius: 12px; padding: 4px; }
+.quest-token { width: 44px; height: 44px; border-radius: 10px; border: 3px solid var(--oak-dark); }
+.quest-token.a { background: #2f6fb3; }
+.quest-token.b { background: #b23b2e; border-radius: 50%; }
+.quest-equals { font-size: 32px; font-weight: 800; }
+.quest-total { font-size: 32px; font-weight: 800; min-width: 54px; direction: ltr; }
+.quest-found { margin: 8px 0 0; color: var(--moss); font-weight: 800; font-size: 24px; direction: ltr; }
+
+/* The chase */
+.chase-board { text-align: center; }
+.step-slider { width: min(80%, 520px); margin-top: 6px; accent-color: var(--gold); }
+.step-label { margin: 2px 0 0; font-size: 26px; font-weight: 800; direction: ltr; }
+
+/* Graphs */
+.grid-board .curve { fill: none; stroke-width: 6; stroke-linejoin: round; }
+.grid-board .curve.base { stroke: rgba(47, 111, 179, 0.55); stroke-dasharray: 14 10; }
+.grid-board .curve.moved { stroke: #b23b2e; }
+.shift-board { text-align: center; }
+
+.quest-board, .chase-board, .terms-board, .machine-board { justify-items: center; }
+.quest-table { margin: 0 auto; }
