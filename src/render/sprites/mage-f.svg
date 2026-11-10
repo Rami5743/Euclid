@@ -80,6 +80,10 @@
         <path d="M100 32 L100 118" fill="none" stroke="#7a5326" stroke-width="7"/>
         <path d="M100 32 q-11 -7 -11 -16 q11 5 11 16 Z" fill="#7a5326"/>
         <circle class="part-orb-halo" cx="100" cy="20" r="19" fill="url(#m-halo)" stroke="none"/>
+        <g class="part-swoosh" opacity="0">
+          <path d="M100 20 m-17 0 a17 17 0 0 1 28 -12" fill="none" stroke="rgba(255,196,110,0.85)" stroke-width="4" stroke-linecap="round"/>
+          <path d="M100 20 m17 0 a17 17 0 0 1 -28 12" fill="none" stroke="rgba(255,150,60,0.7)" stroke-width="3.4" stroke-linecap="round"/>
+        </g>
         <circle class="part-orb" cx="100" cy="20" r="10" fill="url(#m-orb)" stroke="#8e3b0a" stroke-width="2.6"/>
         <circle cx="96" cy="17" r="3.4" fill="#fff6e0" stroke="none"/>
       </g>

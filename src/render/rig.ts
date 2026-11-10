@@ -19,6 +19,8 @@ export interface Rig {
   arrow: SVGGElement | null
   bow: SVGGElement | null
   staff: SVGGElement | null
+  sword: SVGGElement | null
+  swoosh: SVGGElement | null
   orb: SVGCircleElement | null
   orbHalo: SVGCircleElement | null
 }
@@ -30,6 +32,9 @@ const SHOULDER_FRONT = { x: 77, y: 56 }
 const NECK = { x: 66, y: 50 }
 const COLLAR = { x: 60, y: 52 }
 const STAFF_GRIP = { x: 100, y: 70 }
+const HAND = { x: 99, y: 51 }
+/** The head is drawn a little larger than life, so a face reads on the field. */
+const HEAD_SCALE = 1.2
 
 export function readRig(host: Element): Rig {
   const find = <T extends Element>(name: string): T | null => host.querySelector<T>(`.part-${name}`)
@@ -46,6 +51,8 @@ export function readRig(host: Element): Rig {
     arrow: find('arrow'),
     bow: find('bow'),
     staff: find('staff'),
+    sword: find('sword'),
+    swoosh: find('swoosh'),
     orb: find('orb'),
     orbHalo: find('orb-halo'),
   }
@@ -96,14 +103,20 @@ export function poseRig(rig: Rig, pose: Pose): void {
       `translate(0 ${lift.toFixed(2)}) rotate(${(walk * 2 + breath * 0.9).toFixed(2)} ${HIP.x} ${HIP.y})`)
   }
   if (rig.head) {
+    const k = HEAD_SCALE
     rig.head.setAttribute('transform',
-      `translate(0 ${(lift * 1.15).toFixed(2)}) rotate(${(-walk * 2.5 + breath * 1.4).toFixed(2)} ${NECK.x} ${NECK.y})`)
+      `translate(0 ${(lift * 1.15).toFixed(2)}) rotate(${(-walk * 2.5 + breath * 1.4).toFixed(2)} ${NECK.x} ${NECK.y}) `
+      + `translate(${(NECK.x * (1 - k)).toFixed(2)} ${(NECK.y * (1 - k)).toFixed(2)}) scale(${k})`)
   }
 
   switch (pose.cls) {
     case 'warrior': {
       rotate(rig.armBack, -walk * 14, SHOULDER_BACK.x, SHOULDER_BACK.y)
-      rotate(rig.armFront, walk * 10 + hit * 52, SHOULDER_FRONT.x, SHOULDER_FRONT.y)
+      // The arm swings, and the blade whips a further arc inside the hand, so
+      // the sword sweeps about a hundred and sixty degrees in all.
+      rotate(rig.armFront, walk * 10 + hit * 60, SHOULDER_FRONT.x, SHOULDER_FRONT.y)
+      rotate(rig.sword, hit * 42, HAND.x, HAND.y)
+      fade(rig.swoosh, pose.sinceAttack < 0.42 ? Math.max(0, hit) * 0.9 : 0)
       break
     }
     case 'archer': {
@@ -117,6 +130,9 @@ export function poseRig(rig: Rig, pose: Pose): void {
         rig.arrow.setAttribute('transform', `translate(${(-draw * 9).toFixed(2)} 0)`)
       }
       if (rig.bow) rotate(rig.bow, draw * 4, 104, 68)
+      fade(rig.swoosh, pose.sinceAttack >= 0 && pose.sinceAttack < 0.22
+        ? 1 - pose.sinceAttack / 0.22
+        : 0)
       break
     }
     case 'mage': {
@@ -129,9 +145,20 @@ export function poseRig(rig: Rig, pose: Pose): void {
         : 1 + 0.08 * Math.sin(time * 4)
       if (rig.orb) scaleAbout(rig.orb, flare, 100, 20)
       if (rig.orbHalo) scaleAbout(rig.orbHalo, flare * 1.1, 100, 20)
+      // The fire whirls round the orb as it gathers and goes.
+      const casting = pose.sinceAttack >= 0 && pose.sinceAttack < 0.45
+      fade(rig.swoosh, casting ? 1 - pose.sinceAttack / 0.45 : 0)
+      if (rig.swoosh && casting) {
+        rig.swoosh.setAttribute('transform',
+          `rotate(${(pose.sinceAttack * 900).toFixed(0)} 100 20)`)
+      }
       break
     }
   }
+}
+
+function fade(node: SVGElement | null, opacity: number): void {
+  if (node) node.style.opacity = opacity.toFixed(2)
 }
 
 function scaleAbout(node: SVGElement, factor: number, cx: number, cy: number): void {
@@ -147,6 +174,8 @@ export function poseDeath(rig: Rig, t: number): void {
   rotate(rig.legFront, -ease * 20, HIP.x, HIP.y)
   rotate(rig.armBack, ease * 40, SHOULDER_BACK.x, SHOULDER_BACK.y)
   rotate(rig.armFront, -ease * 60, SHOULDER_FRONT.x, SHOULDER_FRONT.y)
+  rotate(rig.sword, ease * 50, HAND.x, HAND.y)
+  fade(rig.swoosh, 0)
   rotate(rig.head, ease * 18, NECK.x, NECK.y)
   rotate(rig.cloak, ease * 12, COLLAR.x, COLLAR.y)
 }

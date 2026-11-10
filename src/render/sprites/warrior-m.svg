@@ -100,11 +100,15 @@
     <g class="part-arm-front">
       <path d="M78 56 q16 -4 22 -12 l8 8 q-10 12 -26 16 Z" fill="#e8c096"/>
       <circle cx="99" cy="51" r="5" fill="#e8c096"/>
-      <path d="M102 46 L96.5 55.5" stroke="#5d3b1a" stroke-width="9"/>
-      <circle cx="95" cy="57.5" r="4" fill="#e8c45a"/>
-      <path d="M94 41 L110 51" stroke="#e8c45a" stroke-width="6"/>
-      <path d="M99 44 L106 48 L126 8 L120.5 5 Z" fill="url(#w-blade)"/>
-      <path d="M101.5 44.6 L104 46 L124 7 L122.6 6.2 Z" fill="rgba(255,255,255,0.6)" stroke="none"/>
+      <g class="part-sword">
+        <path class="part-swoosh" d="M101 49 q34 -16 44 -46 q6 26 -14 48 q-16 17 -30 10 Z"
+              fill="rgba(255,255,255,0.4)" stroke="none" opacity="0"/>
+        <path d="M102 46 L96.5 55.5" stroke="#5d3b1a" stroke-width="9"/>
+        <circle cx="95" cy="57.5" r="4" fill="#e8c45a"/>
+        <path d="M94 41 L110 51" stroke="#e8c45a" stroke-width="6"/>
+        <path d="M99 44 L106 48 L126 8 L120.5 5 Z" fill="url(#w-blade)"/>
+        <path d="M101.5 44.6 L104 46 L124 7 L122.6 6.2 Z" fill="rgba(255,255,255,0.6)" stroke="none"/>
+      </g>
     </g>
   </g>
 </svg>
